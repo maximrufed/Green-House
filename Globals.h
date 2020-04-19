@@ -21,11 +21,11 @@
 #define R8 53
 
 
-// ������ �������� �� ���� ONE_WIRE
-#define TS_EARTH_ADR { 0x28, 0x9B, 0x12, 0x43, 0x98, 0x01, 0x02, 0xB5 }	// ����� ������� �-�� �����
-#define TS_AIR_ADR { 0x28, 0xFF, 0xBE, 0xDF, 0x6D, 0x18, 0x01, 0x4F }	// ����� ������� �-�� �������
+// Адреса устройств на шине ONE_WIRE
+#define TS_EARTH_ADR { 0x28, 0x9B, 0x12, 0x43, 0x98, 0x01, 0x02, 0xB5 }	// адрес датчика Т-ры Земли
+#define TS_AIR_ADR { 0x28, 0xFF, 0xBE, 0xDF, 0x6D, 0x18, 0x01, 0x4F }	// адрес датчика Т-ры Воздуха
 
-// ������ �� ���� I2C
+// Адреса устройств на шине I2C
 #define LCD_ADR 0x27 // 'PCF8574 8-Bit I/O Expander' OR 'LCM1602 LCD Adapter '
 #define EEPROM_ADR 0x50 // 'AT24C32 EEPROM'
 #define RTC_ADR 0x68 // 'DS3231 real-time clock' OR 'MPU-9250 Nine axis sensor module' �� ����� ����������, �.�. ����� � ���������� RTCLib.h

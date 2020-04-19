@@ -7,7 +7,10 @@ extern T_Sensors TSensors;
 extern Earth_Fan EarthFan;
 
 
-LCD_1602_RUS lcd(LCD_ADR, 2, 1, 0, 4, 5, 6, 7, 3, POSITIVE);  
+//LCD_1602_RUS lcd(LCD_ADR, 2, 1, 0, 4, 5, 6, 7, 3, POSITIVE);  
+//LCD_1602_RUS <LiquidCrystal_I2C> lcd(0x27, 16, 2);
+//extern LCD_1602_RUS lcd;
+LCD_1602_RUS lcd(LCD_ADR, 20, 4);  
 
 static unsigned int screenOffTimeOut = 100;
 

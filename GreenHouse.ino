@@ -33,7 +33,7 @@ void setup() {
   EarthFan.Begin();
 
   // Запускаем часы реального времени
-  if (! rtc.begin()) LOG("Couldn't find RTC");
+  if (! rtc.Begin()) LOG("Couldn't find RTC");
 
 
   // Инициализация меню
