@@ -22,9 +22,12 @@ extern LCD_1602_RUS lcd;
 
 // Define menu texts (ïğåîáğàçîâàííûå ñ óäàëåííûì ïåğâûì áàéòîì èç ğóññêèõ ñèìâîëîâ
 //Main menu
-#define txtFan "’•¢˜›¯¢ "		//ÂÅÍÒÈËßÒÎĞ
-#define txtWindow "š"				//ÎÊÍÀ
-#define txtWatering "Ÿ›˜’"				//ÏÎËÈÂ
+/*//#define txtFan "’•¢˜›¯¢ "		//ÂÅÍÒÈËßÒÎĞ
+//#define txtWindow "š"				//ÎÊÍÀ
+#define txtFan "Ventilator"
+#define txtWindow "Okna"
+//#define txtWatering "Ÿ›˜’"				//ÏÎËÈÂ
+#include "gh_menu_1251.h"
 #define txtTank "‘§š"					//ÁÎ×ÊÀ
 #define txtConfigurations "¡¢ ™š"	//ÍÀÑÒĞÎÉÊÀ
 #define txtTAir "¢’¾·´ = "				//ÒÂîçä = 
@@ -40,7 +43,29 @@ extern LCD_1602_RUS lcd;
 #define txtTAirStopHeating "¢’ ¡¢Ÿ “ "			//ÒÂ ÑÒÎÏ ÍÀÃĞ
 #define txtDTFanOn "¢’-¢— ¡¢ ¢"					//ÒÂ-ÒÇ ÑÒÀĞÒ
 #define txtDTFanOff "¢’-¢— ¡¢Ÿ"					//ĞÀÇÍÈÖÀ Ò-Ğ ÑÒÎÏ
+*/
+#define txtFan "Ventilator"
+#define txtWindow "Okna"
+#define txtWatering "Poliv"				//ÏÎËÈÂ
+#define txtTank "Bochka"					//ÁÎ×ÊÀ
+#define txtConfigurations "Configuration"	//ÍÀÑÒĞÎÉÊÀ
+#define txtTAir "TAir = "				//ÒÂîçä = 
+#define txtTEarth "TEarth = "			//ÒÇåìë = 
 
+//FAN submenu
+#define txtAutoMode "AUTO MODE"					//ÀÂÒÎ ĞÅÆÈÌ *
+#define txtOn "On"									//ÂÊË *
+#define txtOff "Off"								//ÂÛÊË *
+#define txtTAirStartCooling "TA Start Cool "			//ÒÂ ÑÒÀĞÒ ÎÕË
+#define txtTAirStopCooling "TA Stop Cool "			//ÒÂ ÑÒÎÏ ÎÕË
+#define txtTAirStartHeating "TA Start Heat"			//ÒÂ ÑÒÀĞÒ ÍÀÃĞ
+#define txtTAirStopHeating "TA Stop Heat "			//ÒÂ ÑÒÎÏ ÍÀÃĞ
+#define txtDTFanOn "TA-TE Start"					//ÒÂ-ÒÇ ÑÒÀĞÒ
+#define txtDTFanOff "T diff Stop"					//ĞÀÇÍÈÖÀ Ò-Ğ ÑÒÎÏ
+
+//WINDOWS submenu
+#define txtOpen "Open"									//Îòêğûòü *
+#define txtClose "Close"								//Çàêğûòü *
 
 void setMenuSleepTime();
 result ScreenSaver(menuOut&, idleEvent);

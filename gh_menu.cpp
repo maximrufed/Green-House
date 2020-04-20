@@ -2,10 +2,11 @@
 #include "globals.h"
 #include "gh_tsensors.h"
 #include "gh_earthfan.h"
+#include "gh_windows.h"
 
 extern T_Sensors TSensors;
 extern Earth_Fan EarthFan;
-
+extern GHWindow Window;
 
 //LCD_1602_RUS lcd(LCD_ADR, 2, 1, 0, 4, 5, 6, 7, 3, POSITIVE);  
 //LCD_1602_RUS <LiquidCrystal_I2C> lcd(0x27, 16, 2);
@@ -52,7 +53,7 @@ chainStream<2> in(inputsList);//3 is the number of inputs
 // ------------------------------------------------------------
 // Меню ВЕНТИЛЯТОР
 
-result AutoMode() {
+result FanAutoMode() {
   EarthFan.SetManualMode(false);
   return proceed;
 }
@@ -67,7 +68,7 @@ result FanOff() {
   return proceed;
 }
 MENU(submFan, txtFan, doNothing, anyEvent, wrapStyle
-	,OP(txtAutoMode,AutoMode,enterEvent)
+	,OP(txtAutoMode,FanAutoMode,enterEvent)
 	,OP(txtOn,FanOn,enterEvent)
     ,OP(txtOff,FanOff,enterEvent)
 	, FIELD(EarthFan.TASettings.TAirStartCooling, txtTAirStartCooling, "C", 0, 60, 10, 1, doNothing, anyEvent, wrapStyle)
@@ -82,9 +83,27 @@ MENU(submFan, txtFan, doNothing, anyEvent, wrapStyle
 // ------------------------------------------------------------
 // ------------------------------------------------------------
 // Меню ОКНА
+
+
+result WindowAutoMode() {
+  Window.SetManualMode(false);
+  return proceed;
+}
+result WindowOpen() {
+  Window.SetManualMode(true);
+  Window.Open();
+  return proceed;
+}
+result WindowClose() {
+  Window.SetManualMode(true);
+  Window.Close();
+  return proceed;
+}
+
 MENU(submWindows, txtWindow, doNothing, anyEvent, wrapStyle
-	, OP("Otkrytt", doNothing, noEvent) 
-	, OP("Zakrytt", doNothing, noEvent) 
+	, OP(txtAutoMode,WindowAutoMode,enterEvent)
+	, OP(txtOpen, WindowOpen, enterEvent) 
+	, OP(txtClose, WindowClose, enterEvent) 
 	, EXIT("<Back")
 ); 
 
@@ -150,6 +169,7 @@ result ScreenSaver(menuOut& o, idleEvent e) {
 				o.setCursor(0, 2);
 				o.print("Screen OFF");
 				lcd.setBacklight(0);
+				LOG ("ВЫКЛЮЧАЕМ ЭКРАН!!!");
 			}
 
 			break;

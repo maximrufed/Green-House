@@ -7,6 +7,7 @@
 #include "gh_TSensors.h"
 #include "gh_EarthFan.h"
 #include "gh_RTC.h"
+#include "gh_windows.h"
 
 
 
@@ -17,7 +18,7 @@ T_Sensors TSensors(ONE_WIRE_BUS);
 Earth_Fan EarthFan(RELAY_EARTH_FAN, LED_FAN, LED_FAN_MANUAL_MODE );
 //RTC_DS3231 rtc;
 gh_RTC rtc;
-
+GHWindow Window;
   
 //---------------------------------------------------------------------
 //----------------------- SETUP & LOOP --------------------------------
@@ -35,10 +36,18 @@ void setup() {
   // Запускаем часы реального времени
   if (! rtc.Begin()) LOG("Couldn't find RTC");
 
+  // Инициализируем окно
+  GHWindowHardwareConfig WinConfig;
+  WinConfig.PinRelay1				= RELAY_WINDOW_1;
+  WinConfig.PinRelay2				= RELAY_WINDOW_2;
+  WinConfig.PinLimitSwitchOpen		= LS_WINDOW_ROOF_OPEN;
+  WinConfig.PinLimitSwitchClosed	= LS_WINDOW_ROOF_CLOSED;
+  if (! Window.Begin(WinConfig)) LOG("Couldn't initialize window");
 
   // Инициализация меню
   joystickBtns.begin();
   lcd.begin(20, 4); // Запускаем экран
+  lcd.setBacklight(255);
   nav.idleTask = ScreenSaver; //Устанавливаем функцию скринсейвера
   nav.showTitle = false;
   nav.timeOut = 10;   // seconds to start screensaver
@@ -66,8 +75,11 @@ void loop() {
     nav.idleChanged=true;
   }
 
-  // Обработка алгоритма работы вентилятора - земляного аккумулятора
+  // Обработка вентилятора - земляного аккумулятора
   EarthFan.TerraAccumulatorPoll(TSensors.GetTEarth(), TSensors.GetTAir(), rtc.IsNight());
+
+  // Обработка форточки
+  Window.WindowPoll(TSensors.GetTEarth(), TSensors.GetTAir(), rtc.IsNight());
   
   /*long currmill = millis();
   if( currmill - prevmill > 6000) {

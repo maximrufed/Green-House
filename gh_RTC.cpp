@@ -21,10 +21,10 @@ bool gh_RTC :: IsNight(){
 	//LOG(nowHour);
 	int Hour = rtcDS3231.now().hour();
 	if( Hour > 20 || Hour < 7 ) {
-		LOG("Night");
+		//LOG("Night");
 		return(true);
 	} else {
-		LOG("Day");
+		//LOG("Day");
 		return(true);
 	}
 }
