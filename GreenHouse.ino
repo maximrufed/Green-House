@@ -30,7 +30,7 @@ void setup() {
   Serial.flush();
   delay(3000); // wait for console opening
 
-  TSensors.Begin();
+  TSensors.Begin(1); // Интервал опроса датчиков на шине 1 минута
   EarthFan.Begin();
 
   // Запускаем часы реального времени
@@ -58,7 +58,7 @@ void setup() {
   //lcd.print("Попробуем?");
   lcd.setCursor(0, 3);
   lcd.print("Does it work?");
-  delay(3000);
+  delay(1000);
   
 }
 
@@ -85,8 +85,8 @@ void loop() {
     nav.poll();
   
     // Запрос обновления значений датчиков на шине
-    if( TSensors.UpdateSensorsOnBus() ){
-      // Перерисовать Screensaver
+    if( TSensors.TSensorsPoll() ){
+      // Если значения датчиков обновились, что случается не часто, то перерисовать Screensaver
       nav.idleChanged=true;
     }
     

@@ -1,4 +1,4 @@
-#ifndef GH_RTC_H
+п»ї#ifndef GH_RTC_H
 #define GH_RTC_H
 
 #include <RTClib.h>
@@ -13,7 +13,7 @@ class gh_RTC
 	bool IsDay();	
 
   private:
-	long IsNightPreviousMillis = 0;      // храним время последнего обновления значений датчиков
+	long IsNightPreviousMillis = 0;      // С…СЂР°РЅРёРј РІСЂРµРјСЏ РїРѕСЃР»РµРґРЅРµРіРѕ РѕР±РЅРѕРІР»РµРЅРёСЏ Р·РЅР°С‡РµРЅРёР№ РґР°С‚С‡РёРєРѕРІ
 	RTC_DS3231 rtcDS3231;
 
 };

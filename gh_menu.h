@@ -1,4 +1,4 @@
-#ifndef GH_MENU_H
+ï»¿#ifndef GH_MENU_H
 #define GH_MENU_H
 
 #include <menu.h>//menu macros and objects
@@ -20,53 +20,53 @@ extern config myMenuOptions;
 extern LCD_1602_RUS lcd;
 
 
-// Define menu texts (ïğåîáğàçîâàííûå ñ óäàëåííûì ïåğâûì áàéòîì èç ğóññêèõ ñèìâîëîâ
+// Define menu texts (Ğ¿Ñ€ĞµĞ¾Ğ±Ñ€Ğ°Ğ·Ğ¾Ğ²Ğ°Ğ½Ğ½Ñ‹Ğµ Ñ ÑƒĞ´Ğ°Ğ»ĞµĞ½Ğ½Ñ‹Ğ¼ Ğ¿ĞµÑ€Ğ²Ñ‹Ğ¼ Ğ±Ğ°Ğ¹Ñ‚Ğ¾Ğ¼ Ğ¸Ğ· Ñ€ÑƒÑÑĞºĞ¸Ñ… ÑĞ¸Ğ¼Ğ²Ğ¾Ğ»Ğ¾Ğ²
 //Main menu
-/*//#define txtFan "’•¢˜›¯¢ "		//ÂÅÍÒÈËßÒÎĞ
-//#define txtWindow "š"				//ÎÊÍÀ
+/*//#define txtFan "â€™â€¢ÑœÑÂ˜â€ºĞ‡ÑÑ›Â "		//Ğ’Ğ•ĞĞ¢Ğ˜Ğ›Ğ¯Ğ¢ĞĞ 
+//#define txtWindow "Ñ›Ñ™ÑœÑ’"				//ĞĞšĞĞ
 #define txtFan "Ventilator"
 #define txtWindow "Okna"
-//#define txtWatering "Ÿ›˜’"				//ÏÎËÈÂ
+//#define txtWatering "ÑŸÑ›â€ºÂ˜â€™"				//ĞŸĞĞ›Ğ˜Ğ’
 #include "gh_menu_1251.h"
-#define txtTank "‘§š"					//ÁÎ×ÊÀ
-#define txtConfigurations "¡¢ ™š"	//ÍÀÑÒĞÎÉÊÀ
-#define txtTAir "¢’¾·´ = "				//ÒÂîçä = 
-#define txtTEarth "¢—µ¼» = "			//ÒÇåìë = 
+#define txtTank "â€˜Ñ›Â§Ñ™Ñ’"					//Ğ‘ĞĞ§ĞšĞ
+#define txtConfigurations "ÑœÑ’ĞÑÂ Ñ›â„¢Ñ™Ñ’"	//ĞĞĞ¡Ğ¢Ğ ĞĞ™ĞšĞ
+#define txtTAir "Ñâ€™Ñ•Â·Ò‘ = "				//Ğ¢Ğ’Ğ¾Ğ·Ğ´ = 
+#define txtTEarth "Ñâ€”ÂµÑ˜Â» = "			//Ğ¢Ğ—ĞµĞ¼Ğ» = 
 
 //FAN submenu
-#define txtAutoMode "’¢  •-˜¼"					//ÀÂÒÎ ĞÅÆÈÌ *
-#define txtOn "’š›"									//ÂÊË *
-#define txtOff "’-š›"								//ÂÛÊË *
-#define txtTAirStartCooling "¢’ ¡¢ ¢ ¥›"			//ÒÂ ÑÒÀĞÒ ÎÕË
-#define txtTAirStopCooling "¢’ ¡¢Ÿ ¥›"			//ÒÂ ÑÒÎÏ ÎÕË
-#define txtTAirStartHeating "¢’ ¡¢ ¢ “ "			//ÒÂ ÑÒÀĞÒ ÍÀÃĞ
-#define txtTAirStopHeating "¢’ ¡¢Ÿ “ "			//ÒÂ ÑÒÎÏ ÍÀÃĞ
-#define txtDTFanOn "¢’-¢— ¡¢ ¢"					//ÒÂ-ÒÇ ÑÒÀĞÒ
-#define txtDTFanOff "¢’-¢— ¡¢Ÿ"					//ĞÀÇÍÈÖÀ Ò-Ğ ÑÒÎÏ
+#define txtAutoMode "Ñ’â€™ÑÑ› Â â€¢-Â˜Ñ˜"					//ĞĞ’Ğ¢Ğ Ğ Ğ•Ğ–Ğ˜Ğœ *
+#define txtOn "â€™Ñ™â€º"									//Ğ’ĞšĞ› *
+#define txtOff "â€™-Ñ™â€º"								//Ğ’Ğ«ĞšĞ› *
+#define txtTAirStartCooling "Ñâ€™ ĞÑÑ’Â Ñ Ñ›Òâ€º"			//Ğ¢Ğ’ Ğ¡Ğ¢ĞĞ Ğ¢ ĞĞ¥Ğ›
+#define txtTAirStopCooling "Ñâ€™ ĞÑÑ›ÑŸ Ñ›Òâ€º"			//Ğ¢Ğ’ Ğ¡Ğ¢ĞĞŸ ĞĞ¥Ğ›
+#define txtTAirStartHeating "Ñâ€™ ĞÑÑ’Â Ñ ÑœÑ’â€œÂ "			//Ğ¢Ğ’ Ğ¡Ğ¢ĞĞ Ğ¢ ĞĞĞ“Ğ 
+#define txtTAirStopHeating "Ñâ€™ ĞÑÑ›ÑŸ ÑœÑ’â€œÂ "			//Ğ¢Ğ’ Ğ¡Ğ¢ĞĞŸ ĞĞĞ“Ğ 
+#define txtDTFanOn "Ñâ€™-Ñâ€” ĞÑÑ’Â Ñ"					//Ğ¢Ğ’-Ğ¢Ğ— Ğ¡Ğ¢ĞĞ Ğ¢
+#define txtDTFanOff "Ñâ€™-Ñâ€” ĞÑÑ›ÑŸ"					//Ğ ĞĞ—ĞĞ˜Ğ¦Ğ Ğ¢-Ğ  Ğ¡Ğ¢ĞĞŸ
 */
 #define txtFan "Ventilator"
 #define txtWindow "Okna"
-#define txtWatering "Poliv"				//ÏÎËÈÂ
-#define txtTank "Bochka"					//ÁÎ×ÊÀ
-#define txtConfigurations "Configuration"	//ÍÀÑÒĞÎÉÊÀ
-#define txtTAir "TAir = "				//ÒÂîçä = 
-#define txtTEarth "TEarth = "			//ÒÇåìë = 
+#define txtWatering "Poliv"				//ĞŸĞĞ›Ğ˜Ğ’
+#define txtTank "Bochka"					//Ğ‘ĞĞ§ĞšĞ
+#define txtConfigurations "Configuration"	//ĞĞĞ¡Ğ¢Ğ ĞĞ™ĞšĞ
+#define txtTAir "TAir = "				//Ğ¢Ğ’Ğ¾Ğ·Ğ´ = 
+#define txtTEarth "TEarth = "			//Ğ¢Ğ—ĞµĞ¼Ğ» = 
 
 //FAN submenu
-#define txtAutoMode "AUTO MODE"					//ÀÂÒÎ ĞÅÆÈÌ *
-#define txtOn "On"									//ÂÊË *
-#define txtOff "Off"								//ÂÛÊË *
-#define txtTAirStartCooling "TA Start Cool "			//ÒÂ ÑÒÀĞÒ ÎÕË
-#define txtTAirStopCooling "TA Stop Cool "			//ÒÂ ÑÒÎÏ ÎÕË
-#define txtTAirStartHeating "TA Start Heat"			//ÒÂ ÑÒÀĞÒ ÍÀÃĞ
-#define txtTAirStopHeating "TA Stop Heat "			//ÒÂ ÑÒÎÏ ÍÀÃĞ
-#define txtDTFanOn "TA-TE Start"					//ÒÂ-ÒÇ ÑÒÀĞÒ
-#define txtDTFanOff "T diff Stop"					//ĞÀÇÍÈÖÀ Ò-Ğ ÑÒÎÏ
+#define txtAutoMode "AUTO MODE"					//ĞĞ’Ğ¢Ğ Ğ Ğ•Ğ–Ğ˜Ğœ *
+#define txtOn "On"									//Ğ’ĞšĞ› *
+#define txtOff "Off"								//Ğ’Ğ«ĞšĞ› *
+#define txtTAirStartCooling "TA Start Cool "			//Ğ¢Ğ’ Ğ¡Ğ¢ĞĞ Ğ¢ ĞĞ¥Ğ›
+#define txtTAirStopCooling "TA Stop Cool "			//Ğ¢Ğ’ Ğ¡Ğ¢ĞĞŸ ĞĞ¥Ğ›
+#define txtTAirStartHeating "TA Start Heat"			//Ğ¢Ğ’ Ğ¡Ğ¢ĞĞ Ğ¢ ĞĞĞ“Ğ 
+#define txtTAirStopHeating "TA Stop HeatÂ "			//Ğ¢Ğ’ Ğ¡Ğ¢ĞĞŸ ĞĞĞ“Ğ 
+#define txtDTFanOn "TA-TE Start"					//Ğ¢Ğ’-Ğ¢Ğ— Ğ¡Ğ¢ĞĞ Ğ¢
+#define txtDTFanOff "T diff Stop"					//Ğ ĞĞ—ĞĞ˜Ğ¦Ğ Ğ¢-Ğ  Ğ¡Ğ¢ĞĞŸ
 
 //WINDOWS submenu
-#define txtOpen "Open"									//Îòêğûòü *
-#define txtClose "Close"								//Çàêğûòü *
-#define txtMotorMaxWorkMillis "MotorLim"		//ÌàêñÂğ ğàáîòû ìîòîğà ìñ
+#define txtOpen "Open"									//ĞÑ‚ĞºÑ€Ñ‹Ñ‚ÑŒ *
+#define txtClose "Close"								//Ğ—Ğ°ĞºÑ€Ñ‹Ñ‚ÑŒ *
+#define txtMotorMaxWorkMillis "MotorLim"		//ĞœĞ°ĞºÑĞ’Ñ€ Ñ€Ğ°Ğ±Ğ¾Ñ‚Ñ‹ Ğ¼Ğ¾Ñ‚Ğ¾Ñ€Ğ° Ğ¼Ñ
 
 void setMenuSleepTime();
 result ScreenSaver(menuOut&, idleEvent);

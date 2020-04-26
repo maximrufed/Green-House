@@ -46,9 +46,17 @@
 
 // Лог в монитор серийного порта для отладки
 #define LOGGING  // uncomment to turn on Serial monitor
+//#define LOGGING_EARTH_FAN						// Снять комментарии для включения логирования объекта EARTH_FAN
+
 
 #ifdef LOGGING
 #define LOG(str) Serial.println(str);
 #else
 #define LOG(str) (str)
+#endif
+
+#ifdef LOGGING_EARTH_FAN
+#define LOG_EA(str) Serial.println(str);
+#else
+#define LOG_EA(str) (str)
 #endif

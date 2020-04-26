@@ -1,4 +1,4 @@
-#ifndef GH_TSENSORS_H
+п»ї#ifndef GH_TSENSORS_H
 #define GH_TSENSORS_H
 
 #include <OneWire.h>
@@ -9,17 +9,21 @@ class T_Sensors
 {
   public:
 	T_Sensors(byte pin);
-	void Begin();
-    bool UpdateSensorsOnBus();	// Возврат True если значения датчиков обновились
+	void Begin(byte UpdateIntervalMinutes);
+    bool UpdateSensorsOnBus();						// Р’РѕР·РІСЂР°С‚ True РµСЃР»Рё Р·РЅР°С‡РµРЅРёСЏ РґР°С‚С‡РёРєРѕРІ РѕР±РЅРѕРІРёР»РёСЃСЊ
+	bool TSensorsPoll();							// Р’РѕР·РІСЂР°С‚ True РµСЃР»Рё Р·РЅР°С‡РµРЅРёСЏ РґР°С‚С‡РёРєРѕРІ РѕР±РЅРѕРІРёР»РёСЃСЊ
 	float GetTEarth();
 	float GetTAir();
 
-	byte TSensorsUpdateIntervalMinutes;    // интервал между обновлениями датчиков температуры на шине
-
   private:
-	long TSensorsPreviousMillis;      // храним время последнего обновления значений датчиков
-	DeviceAddress TSensorEarthAdr = TS_EARTH_ADR;	// адрес датчика Т-ры Земли
-	DeviceAddress TSensorAirAdr = TS_AIR_ADR;	// адрес датчика Т-ры Воздуха
+	long TSensorsPreviousMillis;					// С…СЂР°РЅРёРј РІСЂРµРјСЏ РїРѕСЃР»РµРґРЅРµРіРѕ РѕР±РЅРѕРІР»РµРЅРёСЏ Р·РЅР°С‡РµРЅРёР№ РґР°С‚С‡РёРєРѕРІ
+	byte TSensorsUpdateIntervalMinutes;				// РёРЅС‚РµСЂРІР°Р» РјРµР¶РґСѓ РѕР±РЅРѕРІР»РµРЅРёСЏРјРё РґР°С‚С‡РёРєРѕРІ С‚РµРјРїРµСЂР°С‚СѓСЂС‹ РЅР° С€РёРЅРµ
+
+	DeviceAddress TSensorEarthAdr = TS_EARTH_ADR;	// Р°РґСЂРµСЃ РґР°С‚С‡РёРєР° Рў-СЂС‹ Р—РµРјР»Рё
+	DeviceAddress TSensorAirAdr = TS_AIR_ADR;		// Р°РґСЂРµСЃ РґР°С‚С‡РёРєР° Рў-СЂС‹ Р’РѕР·РґСѓС…Р°
+	float TEarth = 0;								// РџРѕСЃР»РµРґРЅСЏСЏ, СѓСЃРїРµС€РЅРѕ СЃС‡РёС‚Р°РЅРЅР°СЏ СЃ РґР°С‚С‡РёРєР° Рў-СЂС‹ Р·РµРјР»Рё, С‚РµРјРїРµСЂР°С‚СѓСЂР°
+	float TAir = 0;									// РџРѕСЃР»РµРґРЅСЏСЏ, СѓСЃРїРµС€РЅРѕ СЃС‡РёС‚Р°РЅРЅР°СЏ СЃ РґР°С‚С‡РёРєР° Рў-СЂС‹ РІРѕР·РґСѓС…Р°, С‚РµРјРїРµСЂР°С‚СѓСЂР°
+
 	OneWire oneWireTSensors;
 	DallasTemperature DallasTemp;
 

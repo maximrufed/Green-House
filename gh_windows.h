@@ -1,63 +1,63 @@
-#ifndef GH_WINDOWS_H
+п»ї#ifndef GH_WINDOWS_H
 #define GH_WINDOWS_H
 
 #include <Arduino.h>
 #include "globals.h"
 
-// Возможные состояния окна
-#define OPENING			1		// Сейчас открывается
-#define CLOSING			2		// Сейчас закрывается
-#define OPEN			3		// Открыто
-#define	CLOSED			4		// Закрыто
-#define	OPENING_FAILED	5		// Открывание не завершилось корректно, ошибка
-#define CLOSING_FAILED	6		// Закрывание не завершилось корректно, ошибка
+// Р’РѕР·РјРѕР¶РЅС‹Рµ СЃРѕСЃС‚РѕСЏРЅРёСЏ РѕРєРЅР°
+#define OPENING			1		// РЎРµР№С‡Р°СЃ РѕС‚РєСЂС‹РІР°РµС‚СЃСЏ
+#define CLOSING			2		// РЎРµР№С‡Р°СЃ Р·Р°РєСЂС‹РІР°РµС‚СЃСЏ
+#define OPEN			3		// РћС‚РєСЂС‹С‚Рѕ
+#define	CLOSED			4		// Р—Р°РєСЂС‹С‚Рѕ
+#define	OPENING_FAILED	5		// РћС‚РєСЂС‹РІР°РЅРёРµ РЅРµ Р·Р°РІРµСЂС€РёР»РѕСЃСЊ РєРѕСЂСЂРµРєС‚РЅРѕ, РѕС€РёР±РєР°
+#define CLOSING_FAILED	6		// Р—Р°РєСЂС‹РІР°РЅРёРµ РЅРµ Р·Р°РІРµСЂС€РёР»РѕСЃСЊ РєРѕСЂСЂРµРєС‚РЅРѕ, РѕС€РёР±РєР°
 
 
-struct GHWindowSettings						// Структура для хранения внутренних настроек окна
+struct GHWindowSettings						// РЎС‚СЂСѓРєС‚СѓСЂР° РґР»СЏ С…СЂР°РЅРµРЅРёСЏ РІРЅСѓС‚СЂРµРЅРЅРёС… РЅР°СЃС‚СЂРѕРµРє РѕРєРЅР°
 {
-	int MotorMaxWorkMillis; 				// Время работы мотора в секундах для полного открытия/закрытия окна
+	int MotorMaxWorkMillis; 				// Р’СЂРµРјСЏ СЂР°Р±РѕС‚С‹ РјРѕС‚РѕСЂР° РІ СЃРµРєСѓРЅРґР°С… РґР»СЏ РїРѕР»РЅРѕРіРѕ РѕС‚РєСЂС‹С‚РёСЏ/Р·Р°РєСЂС‹С‚РёСЏ РѕРєРЅР°
 };
 
-struct GHWindowHardwareConfig				// Конфигурация пинов оборудования окна
+struct GHWindowHardwareConfig				// РљРѕРЅС„РёРіСѓСЂР°С†РёСЏ РїРёРЅРѕРІ РѕР±РѕСЂСѓРґРѕРІР°РЅРёСЏ РѕРєРЅР°
 {
-	byte PinRelay1 = 0;						// Реле №1 управления мотором окна
-	byte PinRelay2 = 0;						// Реле №2 управления мотором окна
-	byte PinWindowMotorLed = 0;				// Индикатор работы мотора
-	byte PinWindowModeLed = 0;				// Индикатор индикатор ручного режима управления окном
-	byte PinWindowAlarmLed = 0;				// Индикатор тревоги при застревании окна
-	byte PinLimitSwitchOpen = 0;			// Концевой выключатель открытого окна
-	byte PinLimitSwitchClosed = 0;			// Концевой выключатель закрытого окна
+	byte PinRelay1 = 0;						// Р РµР»Рµ в„–1 СѓРїСЂР°РІР»РµРЅРёСЏ РјРѕС‚РѕСЂРѕРј РѕРєРЅР°
+	byte PinRelay2 = 0;						// Р РµР»Рµ в„–2 СѓРїСЂР°РІР»РµРЅРёСЏ РјРѕС‚РѕСЂРѕРј РѕРєРЅР°
+	byte PinWindowMotorLed = 0;				// РРЅРґРёРєР°С‚РѕСЂ СЂР°Р±РѕС‚С‹ РјРѕС‚РѕСЂР°
+	byte PinWindowModeLed = 0;				// РРЅРґРёРєР°С‚РѕСЂ РёРЅРґРёРєР°С‚РѕСЂ СЂСѓС‡РЅРѕРіРѕ СЂРµР¶РёРјР° СѓРїСЂР°РІР»РµРЅРёСЏ РѕРєРЅРѕРј
+	byte PinWindowAlarmLed = 0;				// РРЅРґРёРєР°С‚РѕСЂ С‚СЂРµРІРѕРіРё РїСЂРё Р·Р°СЃС‚СЂРµРІР°РЅРёРё РѕРєРЅР°
+	byte PinLimitSwitchOpen = 0;			// РљРѕРЅС†РµРІРѕР№ РІС‹РєР»СЋС‡Р°С‚РµР»СЊ РѕС‚РєСЂС‹С‚РѕРіРѕ РѕРєРЅР°
+	byte PinLimitSwitchClosed = 0;			// РљРѕРЅС†РµРІРѕР№ РІС‹РєР»СЋС‡Р°С‚РµР»СЊ Р·Р°РєСЂС‹С‚РѕРіРѕ РѕРєРЅР°
 	GHWindowHardwareConfig () {}
 };
 
 class GHWindow
 {
   public:
-	bool Begin(GHWindowHardwareConfig HWConfig); // Возврат false если не определены два реле управления мотором
-	void Open();							// Открыть окно
-	void Close();							// Закрыть окно
-	void HaltMotor();						// Экстренная остановка мотора, включение режима тревоги
-	void WindowPoll(float TEarth, float TAir, bool IsNight);			// Обработка логики работы умного окна
-	void SetManualMode(bool bMode);			// Установить/снять ручной режим работы окна
-	bool IsMotorOn();						// Возврат True если мотор включен
-	bool IsManualMode();					// Проверить режим работы окна
-	bool IsAlarmOn();						// Возврат True если окно находится в режиме тревоги
-	GHWindowSettings WinSettings;			// Настройки окна
+	bool Begin(GHWindowHardwareConfig HWConfig); // Р’РѕР·РІСЂР°С‚ false РµСЃР»Рё РЅРµ РѕРїСЂРµРґРµР»РµРЅС‹ РґРІР° СЂРµР»Рµ СѓРїСЂР°РІР»РµРЅРёСЏ РјРѕС‚РѕСЂРѕРј
+	void Open();							// РћС‚РєСЂС‹С‚СЊ РѕРєРЅРѕ
+	void Close();							// Р—Р°РєСЂС‹С‚СЊ РѕРєРЅРѕ
+	void HaltMotor();						// Р­РєСЃС‚СЂРµРЅРЅР°СЏ РѕСЃС‚Р°РЅРѕРІРєР° РјРѕС‚РѕСЂР°, РІРєР»СЋС‡РµРЅРёРµ СЂРµР¶РёРјР° С‚СЂРµРІРѕРіРё
+	void WindowPoll(float TEarth, float TAir, bool IsNight);			// РћР±СЂР°Р±РѕС‚РєР° Р»РѕРіРёРєРё СЂР°Р±РѕС‚С‹ СѓРјРЅРѕРіРѕ РѕРєРЅР°
+	void SetManualMode(bool bMode);			// РЈСЃС‚Р°РЅРѕРІРёС‚СЊ/СЃРЅСЏС‚СЊ СЂСѓС‡РЅРѕР№ СЂРµР¶РёРј СЂР°Р±РѕС‚С‹ РѕРєРЅР°
+	bool IsMotorOn();						// Р’РѕР·РІСЂР°С‚ True РµСЃР»Рё РјРѕС‚РѕСЂ РІРєР»СЋС‡РµРЅ
+	bool IsManualMode();					// РџСЂРѕРІРµСЂРёС‚СЊ СЂРµР¶РёРј СЂР°Р±РѕС‚С‹ РѕРєРЅР°
+	bool IsAlarmOn();						// Р’РѕР·РІСЂР°С‚ True РµСЃР»Рё РѕРєРЅРѕ РЅР°С…РѕРґРёС‚СЃСЏ РІ СЂРµР¶РёРјРµ С‚СЂРµРІРѕРіРё
+	GHWindowSettings WinSettings;			// РќР°СЃС‚СЂРѕР№РєРё РѕРєРЅР°
 
   private:
-	GHWindowHardwareConfig WinCfg;			// Конфигурация пинов
-	byte WindowStatus;						// Состояние окна. Принимает значения, определенные через define выше
+	GHWindowHardwareConfig WinCfg;			// РљРѕРЅС„РёРіСѓСЂР°С†РёСЏ РїРёРЅРѕРІ
+	byte WindowStatus;						// РЎРѕСЃС‚РѕСЏРЅРёРµ РѕРєРЅР°. РџСЂРёРЅРёРјР°РµС‚ Р·РЅР°С‡РµРЅРёСЏ, РѕРїСЂРµРґРµР»РµРЅРЅС‹Рµ С‡РµСЂРµР· define РІС‹С€Рµ
 	bool bIsMotorOn;
 	bool bIsAlarm;
 	bool bIsManualMode;
-	unsigned long millisInOperation;		// Количество миллисекунд, которые уже длится операция открытия/закрытия
+	unsigned long millisInOperation;		// РљРѕР»РёС‡РµСЃС‚РІРѕ РјРёР»Р»РёСЃРµРєСѓРЅРґ, РєРѕС‚РѕСЂС‹Рµ СѓР¶Рµ РґР»РёС‚СЃСЏ РѕРїРµСЂР°С†РёСЏ РѕС‚РєСЂС‹С‚РёСЏ/Р·Р°РєСЂС‹С‚РёСЏ
 
 
-	void StartMotorToOpen();				// Включить мотор на открывание
-	void StartMotorToClose();				// Включить мотор на закрывание
-	void StopMotor();						// Выключить мотор
-	void SetAlarm(bool bAlarm);				// Установить/сбросить режим тревоги
-	void CompleteOperationByTimerOrLS();	// Завершить операцию закрытия/открытия по таймеру или концевому выключателю
+	void StartMotorToOpen();				// Р’РєР»СЋС‡РёС‚СЊ РјРѕС‚РѕСЂ РЅР° РѕС‚РєСЂС‹РІР°РЅРёРµ
+	void StartMotorToClose();				// Р’РєР»СЋС‡РёС‚СЊ РјРѕС‚РѕСЂ РЅР° Р·Р°РєСЂС‹РІР°РЅРёРµ
+	void StopMotor();						// Р’С‹РєР»СЋС‡РёС‚СЊ РјРѕС‚РѕСЂ
+	void SetAlarm(bool bAlarm);				// РЈСЃС‚Р°РЅРѕРІРёС‚СЊ/СЃР±СЂРѕСЃРёС‚СЊ СЂРµР¶РёРј С‚СЂРµРІРѕРіРё
+	void CompleteOperationByTimerOrLS();	// Р—Р°РІРµСЂС€РёС‚СЊ РѕРїРµСЂР°С†РёСЋ Р·Р°РєСЂС‹С‚РёСЏ/РѕС‚РєСЂС‹С‚РёСЏ РїРѕ С‚Р°Р№РјРµСЂСѓ РёР»Рё РєРѕРЅС†РµРІРѕРјСѓ РІС‹РєР»СЋС‡Р°С‚РµР»СЋ
 
 };
 
