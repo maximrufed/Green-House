@@ -66,6 +66,7 @@ extern LCD_1602_RUS lcd;
 //WINDOWS submenu
 #define txtOpen "Open"									//Открыть *
 #define txtClose "Close"								//Закрыть *
+#define txtMotorMaxWorkMillis "MotorLim"		//МаксВр работы мотора мс
 
 void setMenuSleepTime();
 result ScreenSaver(menuOut&, idleEvent);

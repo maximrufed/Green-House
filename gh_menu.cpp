@@ -104,6 +104,7 @@ MENU(submWindows, txtWindow, doNothing, anyEvent, wrapStyle
 	, OP(txtAutoMode,WindowAutoMode,enterEvent)
 	, OP(txtOpen, WindowOpen, enterEvent) 
 	, OP(txtClose, WindowClose, enterEvent) 
+	, FIELD(Window.WinSettings.MotorMaxWorkMillis, txtMotorMaxWorkMillis, "ms", 400, 10000, 1000, 50, doNothing, anyEvent, wrapStyle)
 	, EXIT("<Back")
 ); 
 

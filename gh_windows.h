@@ -15,18 +15,19 @@
 
 struct GHWindowSettings						// Структура для хранения внутренних настроек окна
 {
-	double MotorMaxWorkMillis; 				// Время работы мотора в секундах для полного открытия/закрытия окна
+	int MotorMaxWorkMillis; 				// Время работы мотора в секундах для полного открытия/закрытия окна
 };
 
 struct GHWindowHardwareConfig				// Конфигурация пинов оборудования окна
 {
-	byte PinRelay1;							// Реле №1 управления мотором окна
-	byte PinRelay2;							// Реле №2 управления мотором окна
-	byte PinWindowMotorLed;					// Индикатор работы мотора
-	byte PinWindowModeLed;					// Индикатор индикатор ручного режима управления окном
-	byte PinWindowAlarmLed;					// Индикатор тревоги при застревании окна
-	byte PinLimitSwitchOpen;				// Концевой выключатель открытого окна
-	byte PinLimitSwitchClosed;				// Концевой выключатель закрытого окна
+	byte PinRelay1 = 0;						// Реле №1 управления мотором окна
+	byte PinRelay2 = 0;						// Реле №2 управления мотором окна
+	byte PinWindowMotorLed = 0;				// Индикатор работы мотора
+	byte PinWindowModeLed = 0;				// Индикатор индикатор ручного режима управления окном
+	byte PinWindowAlarmLed = 0;				// Индикатор тревоги при застревании окна
+	byte PinLimitSwitchOpen = 0;			// Концевой выключатель открытого окна
+	byte PinLimitSwitchClosed = 0;			// Концевой выключатель закрытого окна
+	GHWindowHardwareConfig () {}
 };
 
 class GHWindow

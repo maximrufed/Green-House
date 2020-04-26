@@ -21,7 +21,7 @@ gh_RTC rtc;
 GHWindow Window;
   
 //---------------------------------------------------------------------
-//----------------------- SETUP & LOOP --------------------------------
+//----------------------------- SETUP  --------------------------------
 
 void setup() {
   Serial.begin(115200);
@@ -64,47 +64,78 @@ void setup() {
 
 long prevmill = 0;
 
+//---------------------------------------------------------------------
+//------------------------------ LOOP ---------------------------------
+
+
 void loop() {
-
-  // Отработка меню
-  nav.poll();
   
-  // Запрос обновления значений датчиков на шине
-  if( TSensors.UpdateSensorsOnBus() ){
-    // Перерисовать Screensaver
-    nav.idleChanged=true;
-  }
-
-  // Обработка вентилятора - земляного аккумулятора
-  EarthFan.TerraAccumulatorPoll(TSensors.GetTEarth(), TSensors.GetTAir(), rtc.IsNight());
+  // *****************************************
+  // Обработка быстрых устройств - каждый цикл
 
   // Обработка форточки
   Window.WindowPoll(TSensors.GetTEarth(), TSensors.GetTAir(), rtc.IsNight());
+
+
   
-  /*long currmill = millis();
-  if( currmill - prevmill > 6000) {
-    prevmill = currmill;
+
+    // ****************************************************
+    //Обработка медленных устройств - каждые 100 миллисекунд
+    // Отработка меню
+    nav.poll();
+  
+    // Запрос обновления значений датчиков на шине
+    if( TSensors.UpdateSensorsOnBus() ){
+      // Перерисовать Screensaver
+      nav.idleChanged=true;
+    }
     
-    float cAir = TSensors.GetTAir();
-    //float cAir = TSensorAir.getT();
-    LOG("Air temp1 in C = ");
-    LOG(cAir );
-    //float cEarth = TSensorEarth.getT();
-    float cEarth = TSensors.GetTEarth();
-    LOG("Earth temp1 in C = ");
-    LOG(cEarth );
-    LOG("------------");
-    LOG("");
+    // Обработка вентилятора - земляного аккумулятора
+    EarthFan.TerraAccumulatorPoll(TSensors.GetTEarth(), TSensors.GetTAir(), rtc.IsNight());
 
-  }*/
   
-
-
-  delay( 100 );
+  // Если делать delay, то концевые выключатели не успевают нормально отработать.
+  //delay( 100 );
 
   
 }
 
-//--------------------------------------------------------------------------------------
+/*
+void loop() {
+  static unsigned long LastMillis = millis();
+  
+  // *****************************************
+  // Обработка быстрых устройств - каждый цикл
+
+  // Обработка форточки
+  Window.WindowPoll(TSensors.GetTEarth(), TSensors.GetTAir(), rtc.IsNight());
+
 
   
+  if( millis() - LastMillis > 100) {
+    LastMillis = millis();
+
+    // ****************************************************
+    //Обработка медленных устройств - каждые 100 миллисекунд
+    // Отработка меню
+    nav.poll();
+  
+    // Запрос обновления значений датчиков на шине
+    if( TSensors.UpdateSensorsOnBus() ){
+      // Перерисовать Screensaver
+      nav.idleChanged=true;
+    }
+    
+    // Обработка вентилятора - земляного аккумулятора
+    EarthFan.TerraAccumulatorPoll(TSensors.GetTEarth(), TSensors.GetTAir(), rtc.IsNight());
+
+  }
+  
+  // Если делать delay, то концевые выключатели не успевают нормально отработать.
+  //delay( 100 );
+
+  
+}
+//--------------------------------------------------------------------------------------
+
+  */
