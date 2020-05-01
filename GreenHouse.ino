@@ -1,5 +1,4 @@
 #include <Arduino.h>
-//#include "RTClib.h"
 #include <Wire.h>
 
 #include "Globals.h"
@@ -16,7 +15,6 @@
 
 T_Sensors TSensors(ONE_WIRE_BUS);
 Earth_Fan EarthFan(RELAY_EARTH_FAN, LED_FAN, LED_FAN_MANUAL_MODE );
-//RTC_DS3231 rtc;
 gh_RTC rtc;
 GHWindow Window;
   

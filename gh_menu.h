@@ -1,4 +1,14 @@
-﻿#ifndef GH_MENU_H
+﻿// -----------------------------------------------------------------------
+// Мощнейшее экранное меню от https://github.com/neu-rah/ArduinoMenu
+// 
+// Описание https://github.com/neu-rah/ArduinoMenu/wiki
+//
+// Устройства:	LCD дисплей
+//
+// -----------------------------------------------------------------------
+
+
+#ifndef GH_MENU_H
 #define GH_MENU_H
 
 #include <menu.h>//menu macros and objects
