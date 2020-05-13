@@ -28,6 +28,8 @@ bool GHWindow::Begin(GHWindowHardwareConfig HWConfig) {
 	millisInOperation = 0;
 
 	WinSettings.MotorMaxWorkMillis = WINDOW_MOTOR_MAX_WORK_MILLIS;
+  WinSettings.TAirOpen = 30;      // Температура воздуха, при достижении которой 
+  WinSettings.TAirClose = 18;     // Температура воздуха, при достижении которой 
 
 	if(WinCfg.PinRelay1 == 0 || WinCfg.PinRelay2 == 0) { 
 		// Минимальная конфигурация оборудования для управления окном - два реле мотора
@@ -121,6 +123,15 @@ void GHWindow::WindowPoll(float TEarth, float TAir, bool IsNight) {
 
 	// Обработка автоматического режима
 	if( !IsManualMode() ) {
+    if( TAir > WinSettings.TAirOpen and WindowStatus == CLOSED and !IsNight) {
+      LOG("Открываем окно, т.к. достигнута температура открытия");
+      Open();
+    }
+    if( TAir < WinSettings.TAirOpen and WindowStatus == OPEN) {
+      LOG("Закрываем окно, т.к. достигнута температура закрытия");
+      Close();
+    }
+    
 	}
 
 }

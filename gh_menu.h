@@ -14,7 +14,7 @@
 #include <menu.h>//menu macros and objects
 
 //#include <menuIO/lcdOut.h>//malpartidas lcd menu output
-#include <menuIO/lcdOut_AK_LCDRUS.h>//malpartidas lcd menu output
+#include <menuIO/lcdOut_AK.h>//malpartidas lcd menu output
 #include <menuIO/serialIn.h>//Serial input
 #include <menuIO/serialOut.h>
 #include <menuIO/altKeyIn.h>
@@ -26,9 +26,9 @@ extern navRoot nav;
 extern config myMenuOptions;
 
 //LCD Definitions
+#define _LCD_TYPE 1
 #include <LCD_1602_RUS.h>
 extern LCD_1602_RUS lcd;
-
 
 // Define menu texts (преобразованные с удаленным первым байтом из русских символов
 //Main menu
@@ -77,6 +77,9 @@ extern LCD_1602_RUS lcd;
 #define txtOpen "Open"									//Открыть *
 #define txtClose "Close"								//Закрыть *
 #define txtMotorMaxWorkMillis "MotorLim"		//МаксВр работы мотора мс
+#define txtTAirOpen "T to Open"
+#define txtTAirClose "T to Close"
+
 
 void setMenuSleepTime();
 result ScreenSaver(menuOut&, idleEvent);

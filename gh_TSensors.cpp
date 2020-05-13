@@ -26,7 +26,42 @@ bool T_Sensors::TSensorsPoll()
 		} else {
 			TAir = T;
 		}
-		
+
+    //задокументировать
+    T = (float)DallasTemp.getTempC(TSensorBoardAdr );
+    if( T == (float)-127 ) {
+      LOG("ОШИБКА СЧИТЫВАНИЯ одного из ДАТЧИКов ТЕМПЕРАТУРЫ!");
+    } else {
+      TBoard = T;
+    }
+    T = (float)DallasTemp.getTempC(TSensorOutAdr );
+    if( T == (float)-127 ) {
+      LOG("ОШИБКА СЧИТЫВАНИЯ одного из ДАТЧИКов ТЕМПЕРАТУРЫ!");
+    } else {
+      TOut  = T;
+    }
+    T = (float)DallasTemp.getTempC(TSensorEarth2Adr );
+    if( T == (float)-127 ) {
+      LOG("ОШИБКА СЧИТЫВАНИЯ одного из ДАТЧИКов ТЕМПЕРАТУРЫ!");
+    } else {
+      TEarth2  = T;
+    }
+    T = (float)DallasTemp.getTempC(TSensorTAFanInAdr );
+    if( T == (float)-127 ) {
+      LOG("ОШИБКА СЧИТЫВАНИЯ одного из ДАТЧИКов ТЕМПЕРАТУРЫ!");
+    } else {
+      T_TAFanIn  = T;
+    }
+    T = (float)DallasTemp.getTempC(TSensorTAFanOutAdr );
+    if( T == (float)-127 ) {
+      LOG("ОШИБКА СЧИТЫВАНИЯ одного из ДАТЧИКов ТЕМПЕРАТУРЫ!");
+    } else {
+      T_TAFanOut = T;
+    }
+
+    
+    
+    
 		// Запрашиваем шину на обновление
 		DallasTemp.requestTemperatures();
 
@@ -54,6 +89,21 @@ float T_Sensors::GetTAir()
 	//return (float)DallasTemp.getTempC(TSensorAirAdr);
 }
 
+  float T_Sensors::GetTBoard(){
+    return TBoard;  
+  }
+  float T_Sensors::GetTOut(){
+    return TOut;
+  }
+  float T_Sensors::GetT_TAFanIn(){
+    return T_TAFanIn;
+  }
+    float T_Sensors::GetT_TAFanOut(){
+      return T_TAFanOut;
+  }
+  float T_Sensors::GetTEarth2(){
+    return TEarth2;
+  }
 
 
 //---------------------------------------------------------------------

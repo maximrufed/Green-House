@@ -12,5 +12,5 @@
 
 struct gh_Config
 {
-	byte T;			// 
+	//byte T;			// 
 };

@@ -11,7 +11,8 @@ extern GHWindow Window;
 //LCD_1602_RUS lcd(LCD_ADR, 2, 1, 0, 4, 5, 6, 7, 3, POSITIVE);  
 //LCD_1602_RUS <LiquidCrystal_I2C> lcd(0x27, 16, 2);
 //extern LCD_1602_RUS lcd;
-LCD_1602_RUS lcd(LCD_ADR, 20, 4);  
+LCD_1602_RUS lcd(LCD_ADR,20,4);  
+//LCD_1602_RUS <LiquidCrystal_I2C> lcd(0x27, 20, 4);
 
 static unsigned int screenOffTimeOut = 100;
 
@@ -105,6 +106,8 @@ MENU(submWindows, txtWindow, doNothing, anyEvent, wrapStyle
 	, OP(txtOpen, WindowOpen, enterEvent) 
 	, OP(txtClose, WindowClose, enterEvent) 
 	, FIELD(Window.WinSettings.MotorMaxWorkMillis, txtMotorMaxWorkMillis, "ms", 400, 10000, 1000, 50, doNothing, anyEvent, wrapStyle)
+  , FIELD(Window.WinSettings.TAirOpen, txtTAirOpen, "C", 0, 40, 5, 1, doNothing, anyEvent, wrapStyle)
+  , FIELD(Window.WinSettings.TAirClose, txtTAirClose, "C", 0, 40, 5, 1, doNothing, anyEvent, wrapStyle)
 	, EXIT("<Back")
 ); 
 
@@ -159,13 +162,37 @@ result ScreenSaver(menuOut& o, idleEvent e) {
 			delay(100);
 			break;
 		case idling:
-			o.clear();
+			/*o.clear();
 			o.setCursor(0, 0);
 			o.print(txtTAir);
 			o.print(TSensors.GetTAir());
 			o.setCursor(0, 1);
 			o.print(txtTEarth);
 			o.print(TSensors.GetTEarth());
+      */
+      o.clear();
+      o.setCursor(0,0);
+      o.print("AirIn: ");
+      o.print((int)TSensors.GetTAir());
+      o.setCursor(10,0);
+      o.print("AirOut:");
+      o.print((int)TSensors.GetTOut());
+      o.setCursor(0,1);
+      o.print("Earth1:");
+      o.print((int)TSensors.GetTEarth());
+      o.setCursor(10,1);
+      o.print("Earth2:");
+      o.print((int)TSensors.GetTEarth2());
+      o.setCursor(0,2);
+      o.print("FanIn: ");
+      o.print((int)TSensors.GetT_TAFanIn());
+      o.setCursor(10,2);
+      o.print("FanOut:");
+      o.print((int)TSensors.GetT_TAFanOut());
+      o.setCursor(0,3);
+      o.print("Board: ");
+      o.print((int)TSensors.GetTBoard());
+      
 			if(millis() - millisInIdle > (unsigned long)screenOffTimeOut*1000){
 				o.setCursor(0, 2);
 				o.print("Screen OFF");

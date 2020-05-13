@@ -27,6 +27,8 @@
 struct GHWindowSettings						// Структура для хранения внутренних настроек окна
 {
 	int MotorMaxWorkMillis; 				// Время работы мотора в секундах для полного открытия/закрытия окна
+  byte TAirOpen;      // Температура воздуха, при достижении которой 
+  byte TAirClose;     // Температура воздуха, при достижении которой 
 };
 
 struct GHWindowHardwareConfig				// Конфигурация пинов оборудования окна
@@ -41,6 +43,8 @@ struct GHWindowHardwareConfig				// Конфигурация пинов обор
 	GHWindowHardwareConfig () {}
 };
 
+
+
 class GHWindow
 {
   public:
@@ -54,7 +58,7 @@ class GHWindow
 	bool IsManualMode();					// Проверить режим работы окна
 	bool IsAlarmOn();						// Возврат True если окно находится в режиме тревоги
 	GHWindowSettings WinSettings;			// Настройки окна
-
+  
   private:
 	GHWindowHardwareConfig WinCfg;			// Конфигурация пинов
 	byte WindowStatus;						// Состояние окна. Принимает значения, определенные через define выше

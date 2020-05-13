@@ -43,9 +43,9 @@ Earth_Fan::Earth_Fan(byte pinFan, byte pinFanLed, byte pinFanModeLed){
 void Earth_Fan::Begin() {
 
 	// Загружаем сохраненные настройки работы вентилятора
-	TASettings.TAirStartCooling = 30;
-	TASettings.TAirStopCooling = 25;
-	TASettings.TAirStartHeating = 10;
+	TASettings.TAirStartCooling = 25;
+	TASettings.TAirStopCooling = 20;
+	TASettings.TAirStartHeating = 12;
 	TASettings.TAirStopHeating = 14;
 	TASettings.DTFanOn = 3;
 	TASettings.DTFanOff = 1;
