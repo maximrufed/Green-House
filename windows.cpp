@@ -12,13 +12,13 @@ bool GHWindow::Begin(GHWindowHardwareConfig HWConfig) {
 	WinCfg.PinLimitSwitchOpen	= HWConfig.PinLimitSwitchOpen;
 	WinCfg.PinLimitSwitchClosed	= HWConfig.PinLimitSwitchClosed;
 
-	if( WinCfg.PinRelay1            != 0 ) pinMode(WinCfg.PinRelay1,            OUTPUT);
-	if( WinCfg.PinRelay2            != 0 ) pinMode(WinCfg.PinRelay2,            OUTPUT);
-	if( WinCfg.PinWindowMotorLed    != 0 ) pinMode(WinCfg.PinWindowMotorLed,    OUTPUT);
-	if( WinCfg.PinWindowModeLed     != 0 ) pinMode(WinCfg.PinWindowModeLed,     OUTPUT);
-	if( WinCfg.PinWindowAlarmLed    != 0 ) pinMode(WinCfg.PinWindowAlarmLed,    OUTPUT);
-	if( WinCfg.PinLimitSwitchOpen   != 0 ) pinMode(WinCfg.PinLimitSwitchOpen,   INPUT_PULLUP);
-	if( WinCfg.PinLimitSwitchClosed != 0 ) pinMode(WinCfg.PinLimitSwitchClosed, INPUT_PULLUP);
+	if( WinCfg.PinRelay1            != -1 ) pinMode(WinCfg.PinRelay1,            OUTPUT);
+	if( WinCfg.PinRelay2            != -1 ) pinMode(WinCfg.PinRelay2,            OUTPUT);
+	if( WinCfg.PinWindowMotorLed    != -1 ) pinMode(WinCfg.PinWindowMotorLed,    OUTPUT);
+	if( WinCfg.PinWindowModeLed     != -1 ) pinMode(WinCfg.PinWindowModeLed,     OUTPUT);
+	if( WinCfg.PinWindowAlarmLed    != -1 ) pinMode(WinCfg.PinWindowAlarmLed,    OUTPUT);
+	if( WinCfg.PinLimitSwitchOpen   != -1 ) pinMode(WinCfg.PinLimitSwitchOpen,   INPUT_PULLUP);
+	if( WinCfg.PinLimitSwitchClosed != -1 ) pinMode(WinCfg.PinLimitSwitchClosed, INPUT_PULLUP);
 
 	// ИЦнициализация переменных
 	WindowStatus = CLOSED;
@@ -28,10 +28,10 @@ bool GHWindow::Begin(GHWindowHardwareConfig HWConfig) {
 	millisInOperation = 0;
 
 	WinSettings.MotorMaxWorkMillis = WINDOW_MOTOR_MAX_WORK_MILLIS;
-  WinSettings.TAirOpen = 30;      // Температура воздуха, при достижении которой 
-  WinSettings.TAirClose = 18;     // Температура воздуха, при достижении которой 
+	WinSettings.TAirOpen = 30;      // Температура воздуха, при достижении которой 
+	WinSettings.TAirClose = 18;     // Температура воздуха, при достижении которой 
 
-	if(WinCfg.PinRelay1 == 0 || WinCfg.PinRelay2 == 0) { 
+	if(WinCfg.PinRelay1 == -1 || WinCfg.PinRelay2 == -1) { 
 		// Минимальная конфигурация оборудования для управления окном - два реле мотора
 		SetAlarm(true);
 		return false;
@@ -51,10 +51,11 @@ void GHWindow::Open() {
 
 	if( WindowStatus == OPEN || WindowStatus == OPENING ) return;
 	
-	if( WinCfg.PinLimitSwitchOpen != 0 && digitalRead(WinCfg.PinLimitSwitchOpen) == LOW ) { 
+	if( WinCfg.PinLimitSwitchOpen != -1 && digitalRead(WinCfg.PinLimitSwitchOpen) == LOW ) { 
 	// Если концевой выключатель открытого окна уже замкнут, то нельзя включать мотор
 		WindowStatus = OPENING_FAILED;
 		// Ставим сигнал тревоги и выходим
+		LOG("Ставим сигнал тревоги и выходим");
 		SetAlarm (true);
 		return;
 	}
@@ -75,7 +76,7 @@ void GHWindow::Open() {
 void GHWindow::Close() {
 	if( WindowStatus == CLOSED|| WindowStatus == CLOSING) return;
 	
-	if( WinCfg.PinLimitSwitchClosed != 0 && digitalRead(WinCfg.PinLimitSwitchClosed) == LOW ) { 
+	if( WinCfg.PinLimitSwitchClosed != -1 && digitalRead(WinCfg.PinLimitSwitchClosed) == LOW ) { 
 	// Если концевой выключатель закрытого окна уже замкнут, то нельзя включать мотор
 		WindowStatus = CLOSING_FAILED;
 		// Ставим сигнал тревоги и выходим
@@ -141,7 +142,7 @@ void GHWindow::WindowPoll(float TEarth, float TAir, bool IsNight) {
 void GHWindow::SetManualMode(bool bMode) {
 	bIsManualMode = bMode;
 
-	if(WinCfg.PinWindowModeLed != 0) digitalWrite(WinCfg.PinWindowModeLed, bMode ? HIGH : LOW);
+	if(WinCfg.PinWindowModeLed != -1) digitalWrite(WinCfg.PinWindowModeLed, bMode ? HIGH : LOW);
 }
 
 //---------------------------------------------------------------------
@@ -176,7 +177,7 @@ void GHWindow::CompleteOperationByTimerOrLS() {
 
     //LOG("GHWindow::CompleteOperationByTimerOrLS()");
 
-	if( WinCfg.PinLimitSwitchOpen != 0 && digitalRead(WinCfg.PinLimitSwitchOpen) == LOW ) { 
+	if( WinCfg.PinLimitSwitchOpen != -1 && digitalRead(WinCfg.PinLimitSwitchOpen) == LOW ) { 
 		// Сработал концевой выключатель открытого окна
 		LOG("Сработал концевой выключатель открытого окна");
 		switch( WindowStatus ) {
@@ -199,7 +200,7 @@ void GHWindow::CompleteOperationByTimerOrLS() {
 	}
 
 	// Сработал концевой выключатель закрытого окна
-	if( WinCfg.PinLimitSwitchClosed != 0 && digitalRead(WinCfg.PinLimitSwitchClosed) == LOW ) { 
+	if( WinCfg.PinLimitSwitchClosed != -1 && digitalRead(WinCfg.PinLimitSwitchClosed) == LOW ) { 
 		LOG("Сработал концевой выключатель закрытого окна");
 		switch( WindowStatus ) {
 			case CLOSING:
@@ -247,7 +248,7 @@ void GHWindow::StartMotorToOpen() {
 	digitalWrite(WinCfg.PinRelay2, HIGH);
 	bIsMotorOn = true;
 	millisInOperation = millis();
-	if(WinCfg.PinWindowMotorLed != 0) digitalWrite(WinCfg.PinWindowMotorLed, HIGH);
+	if(WinCfg.PinWindowMotorLed != -1) digitalWrite(WinCfg.PinWindowMotorLed, HIGH);
 }
 
 //---------------------------------------------------------------------
@@ -259,7 +260,7 @@ void GHWindow::StartMotorToClose() {
 	digitalWrite(WinCfg.PinRelay2, LOW);
 	bIsMotorOn = true;
 	millisInOperation = millis();
-	if(WinCfg.PinWindowMotorLed != 0) digitalWrite(WinCfg.PinWindowMotorLed, HIGH);
+	if(WinCfg.PinWindowMotorLed != -1) digitalWrite(WinCfg.PinWindowMotorLed, HIGH);
 }
 
 //---------------------------------------------------------------------
@@ -275,7 +276,7 @@ void GHWindow::StopMotor() {
 	LOG("3");
 	bIsMotorOn = false;
 	LOG("3");
-	if(WinCfg.PinWindowMotorLed != 0) digitalWrite(WinCfg.PinWindowMotorLed, LOW);
+	if(WinCfg.PinWindowMotorLed != -1) digitalWrite(WinCfg.PinWindowMotorLed, LOW);
 	LOG("4");
 }
 
@@ -286,5 +287,5 @@ void GHWindow::SetAlarm(bool bAlarm) {
 	bIsAlarm = bAlarm;
 
 	// Включаем или выключаем индикатор в зависимости от значения bAlarm
-	if(WinCfg.PinWindowAlarmLed != 0) digitalWrite(WinCfg.PinWindowAlarmLed, bAlarm ? HIGH : LOW);
+	if(WinCfg.PinWindowAlarmLed != -1) digitalWrite(WinCfg.PinWindowAlarmLed, bAlarm ? HIGH : LOW);
 }

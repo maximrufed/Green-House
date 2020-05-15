@@ -34,14 +34,6 @@ void setup() {
   // Запускаем часы реального времени
   if (! rtc.Begin()) LOG("Couldn't find RTC");
 
-  // Инициализируем окно
-  GHWindowHardwareConfig WinConfig;
-  WinConfig.PinRelay1				= RELAY_WINDOW_1;
-  WinConfig.PinRelay2				= RELAY_WINDOW_2;
-  WinConfig.PinLimitSwitchOpen		= LS_WINDOW_ROOF_OPEN;
-  WinConfig.PinLimitSwitchClosed	= LS_WINDOW_ROOF_CLOSED;
-  if (! Window.Begin(WinConfig)) LOG("Couldn't initialize window");
-
   // Инициализация меню
   joystickBtns.begin();
   lcd.begin(20, 4); // Запускаем экран
@@ -50,6 +42,16 @@ void setup() {
   nav.showTitle = false;
   nav.timeOut = 10;   // seconds to start screensaver
   options=&myMenuOptions; // Устанавливаем свои значения глобальных Options для меню
+
+  // Инициализируем окно
+  GHWindowHardwareConfig WinConfig;
+  WinConfig.PinRelay1             = RELAY_WINDOW_1;
+  WinConfig.PinRelay2             = RELAY_WINDOW_2;
+  WinConfig.PinLimitSwitchOpen    = LS_WINDOW_ROOF_OPEN;
+  WinConfig.PinLimitSwitchClosed  = LS_WINDOW_ROOF_CLOSED;
+  WinConfig.PinWindowMotorLed     = LED_WINDOW_MANUAL_MODE;
+  WinConfig.PinWindowModeLed      = LED_WINDOW;
+  if (! Window.Begin(WinConfig)) LOG("Couldn't initialize window");
 
   // Печатаем приветствие
   lcd.setCursor(0, 0);
