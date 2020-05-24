@@ -4,6 +4,7 @@
 //---------------------------------------------------------------------
 // Begin
 bool GHWindow::Begin(GHWindowHardwareConfig HWConfig) {
+	WinCfg.PinRelayPow    = HWConfig.PinRelayPow;
 	WinCfg.PinRelay1			= HWConfig.PinRelay1;
 	WinCfg.PinRelay2			= HWConfig.PinRelay2;
 	WinCfg.PinWindowMotorLed	= HWConfig.PinWindowMotorLed;
@@ -12,7 +13,8 @@ bool GHWindow::Begin(GHWindowHardwareConfig HWConfig) {
 	WinCfg.PinLimitSwitchOpen	= HWConfig.PinLimitSwitchOpen;
 	WinCfg.PinLimitSwitchClosed	= HWConfig.PinLimitSwitchClosed;
 
-	if( WinCfg.PinRelay1            != -1 ) pinMode(WinCfg.PinRelay1,            OUTPUT);
+  if( WinCfg.PinRelayPow          != -1 ) pinMode(WinCfg.PinRelayPow,          OUTPUT);
+  if( WinCfg.PinRelay1            != -1 ) pinMode(WinCfg.PinRelay1,            OUTPUT);
 	if( WinCfg.PinRelay2            != -1 ) pinMode(WinCfg.PinRelay2,            OUTPUT);
 	if( WinCfg.PinWindowMotorLed    != -1 ) pinMode(WinCfg.PinWindowMotorLed,    OUTPUT);
 	if( WinCfg.PinWindowModeLed     != -1 ) pinMode(WinCfg.PinWindowModeLed,     OUTPUT);
@@ -20,7 +22,7 @@ bool GHWindow::Begin(GHWindowHardwareConfig HWConfig) {
 	if( WinCfg.PinLimitSwitchOpen   != -1 ) pinMode(WinCfg.PinLimitSwitchOpen,   INPUT_PULLUP);
 	if( WinCfg.PinLimitSwitchClosed != -1 ) pinMode(WinCfg.PinLimitSwitchClosed, INPUT_PULLUP);
 
-	// ИЦнициализация переменных
+	// Инициализация переменных
 	WindowStatus = CLOSED;
 	bIsMotorOn = false;
 	bIsAlarm = false;
@@ -31,7 +33,7 @@ bool GHWindow::Begin(GHWindowHardwareConfig HWConfig) {
 	WinSettings.TAirOpen = 30;      // Температура воздуха, при достижении которой 
 	WinSettings.TAirClose = 18;     // Температура воздуха, при достижении которой 
 
-	if(WinCfg.PinRelay1 == -1 || WinCfg.PinRelay2 == -1) { 
+	if(WinCfg.PinRelay1 == -1 || WinCfg.PinRelay2 == -1 || WinCfg.PinRelayPow == -1) { 
 		// Минимальная конфигурация оборудования для управления окном - два реле мотора
 		SetAlarm(true);
 		return false;
@@ -66,7 +68,8 @@ void GHWindow::Open() {
 
 	WindowStatus = OPENING;
 
-	StartMotorToOpen();
+	SetMotorToOpen();
+  StartMotor();
 
 	// Сюда можно вставить вывод на экран чего-нибудь типа "открываюсь..."
 }
@@ -88,8 +91,9 @@ void GHWindow::Close() {
 	SetAlarm (false);
 
 	WindowStatus = CLOSING;
-	StartMotorToClose();
-	
+	SetMotorToClose();
+  StartMotor();
+
 	// Сюда можно вставить вывод на экран чего-нибудь типа "открываюсь..."
 }
 
@@ -240,32 +244,55 @@ void GHWindow::CompleteOperationByTimerOrLS() {
 
 
 //---------------------------------------------------------------------
-// Включить мотор на открывание
-void GHWindow::StartMotorToOpen() {
-	LOG("GHWindow::StartMotorToOpen");
+// Установить режим открывания
+void GHWindow::SetMotorToOpen() {
+	LOG("GHWindow::SetMotorToOpen");
 	LOG("Включаем мотор на открывание");
 	digitalWrite(WinCfg.PinRelay1, LOW);
 	digitalWrite(WinCfg.PinRelay2, HIGH);
-	bIsMotorOn = true;
+	/*bIsMotorOn = true;
 	millisInOperation = millis();
-	if(WinCfg.PinWindowMotorLed != -1) digitalWrite(WinCfg.PinWindowMotorLed, HIGH);
+	if(WinCfg.PinWindowMotorLed != -1) digitalWrite(WinCfg.PinWindowMotorLed, HIGH);*/
 }
 
 //---------------------------------------------------------------------
-// Включить мотор на закрывание
-void GHWindow::StartMotorToClose() {
-	LOG("GHWindow::StartMotorToClose");
+// Установить режим закрывания
+void GHWindow::SetMotorToClose() {
+	LOG("GHWindow::SetMotorToClose");
 	LOG("Включаем мотор на закрывание");
 	digitalWrite(WinCfg.PinRelay1, HIGH);
 	digitalWrite(WinCfg.PinRelay2, LOW);
-	bIsMotorOn = true;
+	/*bIsMotorOn = true;
 	millisInOperation = millis();
-	if(WinCfg.PinWindowMotorLed != -1) digitalWrite(WinCfg.PinWindowMotorLed, HIGH);
+	if(WinCfg.PinWindowMotorLed != -1) digitalWrite(WinCfg.PinWindowMotorLed, HIGH);*/
+}
+
+//---------------------------------------------------------------------
+// Включить мотор
+void GHWindow::StartMotor() {
+  LOG("GHWindow::StartMotor");
+  LOG("Включаем мотор");
+  delay(50);
+  digitalWrite(WinCfg.PinRelayPow, LOW);
+  bIsMotorOn = true;
+  millisInOperation = millis();
+  if(WinCfg.PinWindowMotorLed != -1) digitalWrite(WinCfg.PinWindowMotorLed, HIGH);
 }
 
 //---------------------------------------------------------------------
 // Выключить мотор
 void GHWindow::StopMotor() {
+  LOG("GHWindow::StopMotor");
+  LOG("Выключаем мотор");
+  digitalWrite(WinCfg.PinRelayPow, HIGH);
+  delay(50);
+  digitalWrite(WinCfg.PinRelay1, HIGH);
+  digitalWrite(WinCfg.PinRelay2, HIGH);
+  millisInOperation = 0;
+  bIsMotorOn = false;
+  if(WinCfg.PinWindowMotorLed != -1) digitalWrite(WinCfg.PinWindowMotorLed, LOW);
+}
+/*void GHWindow::StopMotor() {
 	LOG("GHWindow::StopMotor");
 	LOG("Выключаем мотор");
 	digitalWrite(WinCfg.PinRelay1, HIGH);
@@ -278,7 +305,7 @@ void GHWindow::StopMotor() {
 	LOG("3");
 	if(WinCfg.PinWindowMotorLed != -1) digitalWrite(WinCfg.PinWindowMotorLed, LOW);
 	LOG("4");
-}
+}*/
 
 //---------------------------------------------------------------------
 // Установить/сбросить режим тревоги

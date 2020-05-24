@@ -45,6 +45,7 @@ void setup() {
 
   // Инициализируем окно
   GHWindowHardwareConfig WinConfig;
+  WinConfig.PinRelayPow           = RELAY_WINDOW_POW;
   WinConfig.PinRelay1             = RELAY_WINDOW_1;
   WinConfig.PinRelay2             = RELAY_WINDOW_2;
   WinConfig.PinLimitSwitchOpen    = LS_WINDOW_ROOF_OPEN;

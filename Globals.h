@@ -2,39 +2,87 @@
 // Пины на плате Ардуино
 // *************************************************************
 
-// Плата управления
-#define BTN_UP                  8  // Кнопка Вверх
-#define BTN_DOWN                7    // Кнопка Вниз
-#define BTN_SEL                 6  // Кнопка Ввод
+//#define PRODUCTION_ENV  // uncomment to switch to TEST environment
 
-// Плата светодиодов
-#define LED_FAN_MANUAL_MODE     28  // Индикатор ручного режима вентилятора
-#define LED_FAN                 28  // Индикатор работы вентилятора
-#define LED_WINDOW_MANUAL_MODE  28  // Индикатор ручного режима окна
-#define LED_WINDOW              28  // Индикатор работы мотора окна
-#define L3                      28
-#define L3                      49
-#define L3                      51
-#define L3                      53
+#ifdef PRODUCTION_ENV
+  // **************************************************
+  // Пины для продуктива
+  // **************************************************
 
-// Плата вспомогательная бортовая - к ней коммунируется UTP8 с датчиками и форточкой
-#define GC_BARREL_FULL          23    // Геркон наполненной бочки
-#define GC_BARREL_EMPTY         25    // Геркон опустевшей бочки
-#define LS_WINDOW_ROOF_CLOSED   27    // Концевой выключатель форточки на крыше - закрыта
-#define LS_WINDOW_ROOF_OPEN     29    // Концевой выключатель форточки на крыше - открыта
-#define ONE_WIRE_BUS            31    // Шина One Wire
-#define UTP_GREEN_WHITE         33    // ********* Пока не задействован
+  // Плата управления
+  #define BTN_UP                  8  // Кнопка Вверх
+  #define BTN_DOWN                7    // Кнопка Вниз
+  #define BTN_SEL                 6  // Кнопка Ввод
+  
+  // Плата светодиодов
+  #define LED_FAN_MANUAL_MODE     28  // Индикатор ручного режима вентилятора
+  #define LED_FAN                 28  // Индикатор работы вентилятора
+  #define LED_WINDOW_MANUAL_MODE  28  // Индикатор ручного режима окна
+  #define LED_WINDOW              28  // Индикатор работы мотора окна
+  #define L3                      28
+  #define L3                      49
+  #define L3                      51
+  #define L3                      53
+  
+  // Плата вспомогательная бортовая - к ней коммунируется UTP8 с датчиками и форточкой
+  #define GC_BARREL_FULL          23    // Геркон наполненной бочки
+  #define GC_BARREL_EMPTY         25    // Геркон опустевшей бочки
+  #define LS_WINDOW_ROOF_CLOSED   27    // Концевой выключатель форточки на крыше - закрыта
+  #define LS_WINDOW_ROOF_OPEN     29    // Концевой выключатель форточки на крыше - открыта
+  #define ONE_WIRE_BUS            31    // Шина One Wire
+  #define UTP_GREEN_WHITE         33    // ********* Пока не задействован
+  
+  
+  // Плата Реле 
+  #define R1						40 // Похоже, что это реле сгорело :(
+  #define RELAY_WINDOW_1          46 // Реле №2 - Реле1 управления окнами
+  #define RELAY_WINDOW_2          47 // Реле №3 - Реле2 управления окнами
+  #define RELAY_EARTH_FAN		    43 // Реле №4 - вентилятор земляного аккумулятора
+  #define RELAY_BARREL_PUMP	    44 // Реле №5 - насос наполнения бочки
+  #define RELAY_WATER_VALVE1      41 // Реле №6 - клапан полива линии №1
+  #define RELAY_WATER_VALVE2      42 // Реле №7 - клапан полива линии №2
+  #define R8 47
 
+#else
+  // **************************************************
+  // Пины для тестового контура
+  // **************************************************
 
-// Плата Реле 
-#define R1						40 // Похоже, что это реле сгорело :(
-#define RELAY_WINDOW_1          46 // Реле №2 - Реле1 управления окнами
-#define RELAY_WINDOW_2          47 // Реле №3 - Реле2 управления окнами
-#define RELAY_EARTH_FAN		    43 // Реле №4 - вентилятор земляного аккумулятора
-#define RELAY_BARREL_PUMP	    44 // Реле №5 - насос наполнения бочки
-#define RELAY_WATER_VALVE1      41 // Реле №6 - клапан полива линии №1
-#define RELAY_WATER_VALVE2      42 // Реле №7 - клапан полива линии №2
-#define R8 47
+  // Плата управления
+  #define BTN_UP                  8  // Кнопка Вверх
+  #define BTN_DOWN                7  // Кнопка Вниз
+  #define BTN_SEL                 6  // Кнопка Ввод
+  
+  // Плата светодиодов
+  #define LED_FAN_MANUAL_MODE     34  // Индикатор ручного режима вентилятора
+  #define LED_FAN                 34  // Индикатор работы вентилятора
+  #define LED_WINDOW_MANUAL_MODE  38  // Индикатор ручного режима окна
+  #define LED_WINDOW              36  // Индикатор работы мотора окна
+  #define L3                      34
+  #define L3                      34
+  #define L3                      34
+  #define L3                      34
+  
+  // Плата вспомогательная бортовая - к ней коммунируется UTP8 с датчиками и форточкой
+  #define GC_BARREL_FULL          23    // Геркон наполненной бочки
+  #define GC_BARREL_EMPTY         25    // Геркон опустевшей бочки
+  #define LS_WINDOW_ROOF_CLOSED   27    // Концевой выключатель форточки на крыше - закрыта
+  #define LS_WINDOW_ROOF_OPEN     29    // Концевой выключатель форточки на крыше - открыта
+  #define ONE_WIRE_BUS            31    // Шина One Wire
+  #define UTP_GREEN_WHITE         33    // ********* Пока не задействован
+  
+  
+  // Плата Реле 
+  #define R1                      40 
+  #define RELAY_WATER_VALVE1      41 // Реле №6 - клапан полива линии №1
+  #define RELAY_WATER_VALVE2      42 // Реле №7 - клапан полива линии №2
+  #define RELAY_EARTH_FAN         43 // Реле №4 - вентилятор земляного аккумулятора
+  #define RELAY_BARREL_PUMP       44 // Реле №5 - насос наполнения бочки
+  #define RELAY_WINDOW_POW        45 // Реле №6 - Подача питания на мотор окна
+  #define RELAY_WINDOW_1          46 // Реле №7 - Реле1 управления реверсом окна
+  #define RELAY_WINDOW_2          47 // Реле №8 - Реле2 управления реверсом окна
+
+#endif
 
 
 // *************************************************************
