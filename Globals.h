@@ -3,16 +3,16 @@
 // *************************************************************
 
 // Плата управления
-#define BTN_UP                  22  // Кнопка Вверх
-#define BTN_DOWN                24  // Кнопка Вниз
-#define BTN_SEL                 26  // Кнопка Ввод
+#define BTN_UP                  8  // Кнопка Вверх
+#define BTN_DOWN                7    // Кнопка Вниз
+#define BTN_SEL                 6  // Кнопка Ввод
 
 // Плата светодиодов
-#define LED_FAN_MANUAL_MODE     39  // Индикатор ручного режима вентилятора
-#define LED_FAN                 41  // Индикатор работы вентилятора
-#define LED_WINDOW_MANUAL_MODE  45  // Индикатор ручного режима окна
-#define LED_WINDOW              43  // Индикатор работы мотора окна
-#define L3                      47
+#define LED_FAN_MANUAL_MODE     28  // Индикатор ручного режима вентилятора
+#define LED_FAN                 28  // Индикатор работы вентилятора
+#define LED_WINDOW_MANUAL_MODE  28  // Индикатор ручного режима окна
+#define LED_WINDOW              28  // Индикатор работы мотора окна
+#define L3                      28
 #define L3                      49
 #define L3                      51
 #define L3                      53
@@ -27,14 +27,14 @@
 
 
 // Плата Реле 
-#define R1						3 // Похоже, что это реле сгорело :(
-#define RELAY_WINDOW_1          4 // Реле №2 - Реле1 управления окнами
-#define RELAY_WINDOW_2          5 // Реле №3 - Реле2 управления окнами
-#define RELAY_EARTH_FAN		    6 // Реле №4 - вентилятор земляного аккумулятора
-#define RELAY_BARREL_PUMP	    7 // Реле №5 - насос наполнения бочки
-#define RELAY_WATER_VALVE1      8 // Реле №6 - клапан полива линии №1
-#define RELAY_WATER_VALVE2      9 // Реле №7 - клапан полива линии №2
-#define R8 10
+#define R1						40 // Похоже, что это реле сгорело :(
+#define RELAY_WINDOW_1          46 // Реле №2 - Реле1 управления окнами
+#define RELAY_WINDOW_2          47 // Реле №3 - Реле2 управления окнами
+#define RELAY_EARTH_FAN		    43 // Реле №4 - вентилятор земляного аккумулятора
+#define RELAY_BARREL_PUMP	    44 // Реле №5 - насос наполнения бочки
+#define RELAY_WATER_VALVE1      41 // Реле №6 - клапан полива линии №1
+#define RELAY_WATER_VALVE2      42 // Реле №7 - клапан полива линии №2
+#define R8 47
 
 
 // *************************************************************
