@@ -287,6 +287,7 @@ void GHWindow::StopMotor() {
   digitalWrite(WinCfg.PinRelayPow, HIGH);
   delay(50);
   digitalWrite(WinCfg.PinRelay1, HIGH);
+  delay(50);
   digitalWrite(WinCfg.PinRelay2, HIGH);
   millisInOperation = 0;
   bIsMotorOn = false;
