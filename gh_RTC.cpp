@@ -1,9 +1,9 @@
 ﻿#include "gh_RTC.h"
 
 
-bool gh_RTC :: Begin(){
-	return(rtcDS3231.begin());
-}
+/*bool gh_RTC :: Begin(){
+  return(rtcDS3231.begin());
+}*/
 
 bool gh_RTC :: IsNight(){
 
@@ -19,7 +19,7 @@ bool gh_RTC :: IsNight(){
 	//DateTime nowTime = now();
 	//int nowHour = nowTime.hour();
 	//LOG(nowHour);
-	int Hour = rtcDS3231.now().hour();
+	int Hour = now().hour();
 	if( Hour > 20 || Hour < 7 ) {
 		//LOG("Night");
 		return(true);

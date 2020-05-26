@@ -15,6 +15,10 @@
 #include <Arduino.h>
 #include "globals.h"
 
+#include "gh_Logger.h"
+extern Logger lg;
+
+
 // Возможные состояния окна
 #define OPENING			1		// Сейчас открывается
 #define CLOSING			2		// Сейчас закрывается
@@ -24,23 +28,23 @@
 #define CLOSING_FAILED	6		// Закрывание не завершилось корректно, ошибка
 
 
-struct GHWindowSettings						// Структура для хранения внутренних настроек окна
+struct GHWindowSettings					// Структура для хранения внутренних настроек окна
 {
-	int MotorMaxWorkMillis; 				// Время работы мотора в секундах для полного открытия/закрытия окна
-  byte TAirOpen;      // Температура воздуха, при достижении которой 
-  byte TAirClose;     // Температура воздуха, при достижении которой 
+	uint16_t MotorMaxWorkMillis; 	// Время работы мотора в секундах для полного открытия/закрытия окна
+  uint8_t TAirOpen;             // Температура воздуха, при достижении которой 
+  uint8_t TAirClose;            // Температура воздуха, при достижении которой 
 };
 
 struct GHWindowHardwareConfig				// Конфигурация пинов оборудования окна
 {
-  byte PinRelayPow = -1;              // Реле подачи питания на мотор окна
-	byte PinRelay1 = -1;						    // Реле №1 управления реверсом мотора
-	byte PinRelay2 = -1;						    // Реле №2 управления реверсом мотора
-	byte PinWindowMotorLed = -1;				// Индикатор работы мотора
-	byte PinWindowModeLed = -1;					// Индикатор индикатор ручного режима управления окном
-	byte PinWindowAlarmLed = -1;				// Индикатор тревоги при застревании окна
-	byte PinLimitSwitchOpen = -1;				// Концевой выключатель открытого окна
-	byte PinLimitSwitchClosed = -1;				// Концевой выключатель закрытого окна
+  uint8_t PinRelayPow = 0xFF;              // Реле подачи питания на мотор окна
+	uint8_t PinRelay1 = 0xFF;						    // Реле №1 управления реверсом мотора
+	uint8_t PinRelay2 = 0xFF;						    // Реле №2 управления реверсом мотора
+	uint8_t PinWindowMotorLed = 0xFF;				// Индикатор работы мотора
+	uint8_t PinWindowModeLed = 0xFF;					// Индикатор индикатор ручного режима управления окном
+	uint8_t PinWindowAlarmLed = 0xFF;				// Индикатор тревоги при застревании окна
+	uint8_t PinLimitSwitchOpen = 0xFF;				// Концевой выключатель открытого окна
+	uint8_t PinLimitSwitchClosed = 0xFF;				// Концевой выключатель закрытого окна
 	GHWindowHardwareConfig () {}
 };
 
@@ -61,6 +65,7 @@ class GHWindow
 	GHWindowSettings WinSettings;			// Настройки окна
   
   private:
+  const char ObjectName[7] = "Window";      // используется для логгера
 	GHWindowHardwareConfig WinCfg;			// Конфигурация пинов
 	byte WindowStatus;						// Состояние окна. Принимает значения, определенные через define выше
 	bool bIsMotorOn;

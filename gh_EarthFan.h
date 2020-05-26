@@ -13,6 +13,8 @@
 
 #include <Arduino.h>
 #include "globals.h"
+#include "gh_Logger.h"
+extern Logger lg;
 
 struct TerraAccumulatorSettings
 {
@@ -40,11 +42,14 @@ class Earth_Fan
 	TerraAccumulatorSettings TASettings;	// Настройки земляного аккумулятора тепла
 
   private:
+  const char ObjectName[9] = "EarthFan";      // используется для логгера
 	byte RelayPin;
 	byte FanLedPin;
 	byte ModeLedPin;
 	bool bIsOn;
 	bool bIsManualMode;
+
+  void SetNewFileName(byte CurrentDayOfMonth);    // Генерируем новое имя файла
 
 };
 

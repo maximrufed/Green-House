@@ -91,12 +91,12 @@ result WindowAutoMode() {
   return proceed;
 }
 result WindowOpen() {
-  Window.SetManualMode(true);
+  if(!Window.IsManualMode()) Window.SetManualMode(true);
   Window.Open();
   return proceed;
 }
 result WindowClose() {
-  Window.SetManualMode(true);
+  if(!Window.IsManualMode()) Window.SetManualMode(true);
   Window.Close();
   return proceed;
 }

@@ -13,14 +13,14 @@ bool GHWindow::Begin(GHWindowHardwareConfig HWConfig) {
 	WinCfg.PinLimitSwitchOpen	= HWConfig.PinLimitSwitchOpen;
 	WinCfg.PinLimitSwitchClosed	= HWConfig.PinLimitSwitchClosed;
 
-  if( WinCfg.PinRelayPow          != -1 ) pinMode(WinCfg.PinRelayPow,          OUTPUT);
-  if( WinCfg.PinRelay1            != -1 ) pinMode(WinCfg.PinRelay1,            OUTPUT);
-	if( WinCfg.PinRelay2            != -1 ) pinMode(WinCfg.PinRelay2,            OUTPUT);
-	if( WinCfg.PinWindowMotorLed    != -1 ) pinMode(WinCfg.PinWindowMotorLed,    OUTPUT);
-	if( WinCfg.PinWindowModeLed     != -1 ) pinMode(WinCfg.PinWindowModeLed,     OUTPUT);
-	if( WinCfg.PinWindowAlarmLed    != -1 ) pinMode(WinCfg.PinWindowAlarmLed,    OUTPUT);
-	if( WinCfg.PinLimitSwitchOpen   != -1 ) pinMode(WinCfg.PinLimitSwitchOpen,   INPUT_PULLUP);
-	if( WinCfg.PinLimitSwitchClosed != -1 ) pinMode(WinCfg.PinLimitSwitchClosed, INPUT_PULLUP);
+  if( WinCfg.PinRelayPow          != 0xFF ) pinMode(WinCfg.PinRelayPow,          OUTPUT);
+  if( WinCfg.PinRelay1            != 0xFF ) pinMode(WinCfg.PinRelay1,            OUTPUT);
+	if( WinCfg.PinRelay2            != 0xFF ) pinMode(WinCfg.PinRelay2,            OUTPUT);
+	if( WinCfg.PinWindowMotorLed    != 0xFF ) pinMode(WinCfg.PinWindowMotorLed,    OUTPUT);
+	if( WinCfg.PinWindowModeLed     != 0xFF ) pinMode(WinCfg.PinWindowModeLed,     OUTPUT);
+	if( WinCfg.PinWindowAlarmLed    != 0xFF ) pinMode(WinCfg.PinWindowAlarmLed,    OUTPUT);
+	if( WinCfg.PinLimitSwitchOpen   != 0xFF ) pinMode(WinCfg.PinLimitSwitchOpen,   INPUT_PULLUP);
+	if( WinCfg.PinLimitSwitchClosed != 0xFF ) pinMode(WinCfg.PinLimitSwitchClosed, INPUT_PULLUP);
 
 	// Инициализация переменных
 	WindowStatus = CLOSED;
@@ -39,7 +39,7 @@ bool GHWindow::Begin(GHWindowHardwareConfig HWConfig) {
 		return false;
 	}
 
-	// На всякий пожарный выключаем мотор
+  // На всякий пожарный выключаем мотор
 	StopMotor();
 
 	return true;
@@ -70,6 +70,8 @@ void GHWindow::Open() {
 
 	SetMotorToOpen();
   StartMotor();
+  // Делаем запись в журнале активности
+  lg.RecordActivity(EVT_WIN_GO_TO_OPEN, ObjectName, "Форточка открывается");
 
 	// Сюда можно вставить вывод на экран чего-нибудь типа "открываюсь..."
 }
@@ -94,6 +96,9 @@ void GHWindow::Close() {
 	SetMotorToClose();
   StartMotor();
 
+  // Делаем запись в журнале активности
+  lg.RecordActivity(EVT_WIN_GO_TO_CLOSE, ObjectName, "Форточка закрывается");
+
 	// Сюда можно вставить вывод на экран чего-нибудь типа "открываюсь..."
 }
 
@@ -116,6 +121,9 @@ void GHWindow::HaltMotor() {
 			break;
 	}
 
+  // Делаем запись в журнале активности
+  lg.RecordActivity(EVT_WIN_HALT, ObjectName, "Экстренная остановка");
+
 }
 
 //---------------------------------------------------------------------
@@ -124,17 +132,31 @@ void GHWindow::WindowPoll(float TEarth, float TAir, bool IsNight) {
 	// Если окно сейчас работает, нужно вовремя выключить мотор
 	if( WindowStatus == OPENING || WindowStatus == CLOSING ) {
 		CompleteOperationByTimerOrLS();
+    return;
 	}
 
 	// Обработка автоматического режима
 	if( !IsManualMode() ) {
     if( TAir > WinSettings.TAirOpen and WindowStatus == CLOSED and !IsNight) {
       LOG("Открываем окно, т.к. достигнута температура открытия");
+      // Делаем запись в журнале активности
+      lg.RecordActivity(EVT_WIN_GO_TO_OPEN, ObjectName, "Открываем окно, т.к. достигнута температура открытия");
       Open();
+      return;
     }
     if( TAir < WinSettings.TAirOpen and WindowStatus == OPEN) {
       LOG("Закрываем окно, т.к. достигнута температура закрытия");
+      // Делаем запись в журнале активности
+      lg.RecordActivity(EVT_WIN_GO_TO_CLOSE, ObjectName, "Закрываем окно, т.к. достигнута температура закрытия");
       Close();
+      return;
+    }
+    if( IsNight and WindowStatus != CLOSED) {
+      LOG("Закрываем окно, т.к. ночь на дворе");
+      // Делаем запись в журнале активности
+      lg.RecordActivity(EVT_WIN_GO_TO_CLOSE, ObjectName, "Закрываем окно, т.к. ночь на дворе");
+      Close();
+      return;
     }
     
 	}
@@ -146,7 +168,15 @@ void GHWindow::WindowPoll(float TEarth, float TAir, bool IsNight) {
 void GHWindow::SetManualMode(bool bMode) {
 	bIsManualMode = bMode;
 
-	if(WinCfg.PinWindowModeLed != -1) digitalWrite(WinCfg.PinWindowModeLed, bMode ? HIGH : LOW);
+  if(WinCfg.PinWindowModeLed != -1) digitalWrite(WinCfg.PinWindowModeLed, bMode ? HIGH : LOW);
+
+  // Делаем запись в журнале активности
+  if(bIsManualMode) 
+    lg.RecordActivity(EVT_WIN_SET_MANUAL, ObjectName, "Переход в ручной режим управления");    
+  else
+    lg.RecordActivity(EVT_WIN_SET_AUTO, ObjectName, "Переход в автоматический режим управления");    
+
+
 }
 
 //---------------------------------------------------------------------
@@ -190,6 +220,7 @@ void GHWindow::CompleteOperationByTimerOrLS() {
 				LOG("Все нормально, окно успешно открылось");
 				WindowStatus = OPEN;
 				StopMotor();
+        lg.RecordActivity(EVT_WIN_OPENED, ObjectName, "Окно открылось по концевику");     // Делаем запись в журнале активности
 				return;
 			case CLOSING:
 				// Теоретически мы как раз стартуем закрытие из положения замкнутого выключателя открытия
@@ -212,6 +243,7 @@ void GHWindow::CompleteOperationByTimerOrLS() {
 				LOG("Все нормально, окно успешно закрылось");
 				WindowStatus = CLOSED;
 				StopMotor();
+        lg.RecordActivity(EVT_WIN_CLOSED, ObjectName, "Окно закрылось по концевику");     // Делаем запись в журнале активности
 				return;
 			case OPENING:
 				// Теоретически мы как раз стартуем открытие из положения замкнутого выключателя закрытия
@@ -230,8 +262,10 @@ void GHWindow::CompleteOperationByTimerOrLS() {
 		LOG("Превышено время работы мотора выше лимита. Пора заканчивать и ставить статус OPEN или CLOSED");
 		if( WindowStatus == OPENING ) {
 			WindowStatus = OPEN;
+      lg.RecordActivity(EVT_WIN_OPENED, ObjectName, "Окно открылось по таймеру");     // Делаем запись в журнале активности
 		} else { // Любой другой статус может быть только CLOSING
 			WindowStatus = CLOSED;
+      lg.RecordActivity(EVT_WIN_CLOSED, ObjectName, "Окно закрылось по таймеру");     // Делаем запись в журнале активности
 		}
 
 		StopMotor();
@@ -250,9 +284,6 @@ void GHWindow::SetMotorToOpen() {
 	LOG("Включаем мотор на открывание");
 	digitalWrite(WinCfg.PinRelay1, LOW);
 	digitalWrite(WinCfg.PinRelay2, HIGH);
-	/*bIsMotorOn = true;
-	millisInOperation = millis();
-	if(WinCfg.PinWindowMotorLed != -1) digitalWrite(WinCfg.PinWindowMotorLed, HIGH);*/
 }
 
 //---------------------------------------------------------------------
@@ -262,9 +293,6 @@ void GHWindow::SetMotorToClose() {
 	LOG("Включаем мотор на закрывание");
 	digitalWrite(WinCfg.PinRelay1, HIGH);
 	digitalWrite(WinCfg.PinRelay2, LOW);
-	/*bIsMotorOn = true;
-	millisInOperation = millis();
-	if(WinCfg.PinWindowMotorLed != -1) digitalWrite(WinCfg.PinWindowMotorLed, HIGH);*/
 }
 
 //---------------------------------------------------------------------
@@ -293,20 +321,7 @@ void GHWindow::StopMotor() {
   bIsMotorOn = false;
   if(WinCfg.PinWindowMotorLed != -1) digitalWrite(WinCfg.PinWindowMotorLed, LOW);
 }
-/*void GHWindow::StopMotor() {
-	LOG("GHWindow::StopMotor");
-	LOG("Выключаем мотор");
-	digitalWrite(WinCfg.PinRelay1, HIGH);
-	LOG("1");
-	digitalWrite(WinCfg.PinRelay2, HIGH);
-	LOG("2");
-	millisInOperation = 0;
-	LOG("3");
-	bIsMotorOn = false;
-	LOG("3");
-	if(WinCfg.PinWindowMotorLed != -1) digitalWrite(WinCfg.PinWindowMotorLed, LOW);
-	LOG("4");
-}*/
+
 
 //---------------------------------------------------------------------
 // Установить/сбросить режим тревоги
@@ -316,4 +331,10 @@ void GHWindow::SetAlarm(bool bAlarm) {
 
 	// Включаем или выключаем индикатор в зависимости от значения bAlarm
 	if(WinCfg.PinWindowAlarmLed != -1) digitalWrite(WinCfg.PinWindowAlarmLed, bAlarm ? HIGH : LOW);
+
+  if(bIsAlarm)
+        lg.RecordActivity(EVT_WIN_ERR_ON, ObjectName, "Установка флага тревоги окна");     // Делаем запись в журнале активности
+  else
+        lg.RecordActivity(EVT_WIN_ERR_OFF, ObjectName, "Сброс флага тревоги окна");     // Делаем запись в журнале активности
+    
 }

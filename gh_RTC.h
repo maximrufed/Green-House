@@ -13,17 +13,17 @@
 #include "globals.h"
 
 
-class gh_RTC
+class gh_RTC: public RTC_DS3231
 {
 
   public:
-	bool Begin();
-    bool IsNight();	
+  bool IsNight();	
 	bool IsDay();	
+  //bool Begin();
 
   private:
 	long IsNightPreviousMillis = 0;      // храним время последнего обновления значений датчиков
-	RTC_DS3231 rtcDS3231;
+	//RTC_DS3231 rtcDS3231;
 
 };
 

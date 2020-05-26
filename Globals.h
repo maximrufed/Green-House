@@ -54,14 +54,14 @@
   #define BTN_SEL                 6  // Кнопка Ввод
   
   // Плата светодиодов
-  #define LED_FAN_MANUAL_MODE     34  // Индикатор ручного режима вентилятора
-  #define LED_FAN                 34  // Индикатор работы вентилятора
-  #define LED_WINDOW_MANUAL_MODE  38  // Индикатор ручного режима окна
-  #define LED_WINDOW              36  // Индикатор работы мотора окна
-  #define L3                      34
-  #define L3                      34
-  #define L3                      34
-  #define L3                      34
+  #define LED_FAN_MANUAL_MODE     30  // Индикатор ручного режима вентилятора
+  #define LED_FAN                 32  // Индикатор работы вентилятора
+  #define LED_WINDOW_MANUAL_MODE  36  // Индикатор ручного режима окна
+  #define LED_WINDOW              34  // Индикатор работы мотора окна
+  #define L3                      31
+  #define L3                      31
+  #define L3                      31
+  #define L3                      31
   
   // Плата вспомогательная бортовая - к ней коммунируется UTP8 с датчиками и форточкой
   #define GC_BARREL_FULL          23    // Геркон наполненной бочки
@@ -74,14 +74,17 @@
   
   // Плата Реле 
   #define R1                      40 
-  #define RELAY_WATER_VALVE1      41 // Реле №6 - клапан полива линии №1
-  #define RELAY_WATER_VALVE2      42 // Реле №7 - клапан полива линии №2
+  #define RELAY_WATER_VALVE1      41 // Реле №2 - клапан полива линии №1
+  #define RELAY_WATER_VALVE2      42 // Реле №3 - клапан полива линии №2
   #define RELAY_EARTH_FAN         43 // Реле №4 - вентилятор земляного аккумулятора
   #define RELAY_BARREL_PUMP       44 // Реле №5 - насос наполнения бочки
   #define RELAY_WINDOW_POW        45 // Реле №6 - Подача питания на мотор окна
   #define RELAY_WINDOW_1          46 // Реле №7 - Реле1 управления реверсом окна
   #define RELAY_WINDOW_2          47 // Реле №8 - Реле2 управления реверсом окна
 
+  // SDCard
+  #define SDCARD                  4  // Модуль SD Карточки
+  #define LOG_FILE_NAME           "gh_" // Начало имени файла для журнала - из него получится вот такое имя gh_20200525.csv
 #endif
 
 
@@ -107,6 +110,31 @@
 // Лог в монитор серийного порта для отладки
 #define LOGGING  // uncomment to turn on Serial monitor
 //#define LOGGING_EARTH_FAN						// Снять комментарии для включения логирования объекта EARTH_FAN
+
+// *************************************************************
+// *************************************************************
+// Коды событий логгера
+#define EVT_DEV_START         1
+#define EVT_DEV_SHUTDOWN      2
+#define EVT_WIN_GO_TO_OPEN    10
+#define EVT_WIN_GO_TO_CLOSE   11
+#define EVT_WIN_CLOSED        12
+#define EVT_WIN_OPENED        13
+#define EVT_WIN_HALT          14
+#define EVT_WIN_SET_MANUAL    15
+#define EVT_WIN_SET_AUTO      16
+#define EVT_FAN_OFF           20
+#define EVT_FAN_ON            21
+#define EVT_FAN_SET_MANUAL    22
+#define EVT_FAN_SET_AUTO      23
+
+
+#define EVT_WIN_ERR_ON        100
+#define EVT_WIN_ERR_OFF       100
+
+
+
+
 
 
 #ifdef LOGGING
