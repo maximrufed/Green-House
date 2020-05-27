@@ -76,8 +76,7 @@ void Earth_Fan::TerraAccumulatorPoll(float TEarth, float TAir, bool IsNight) {
 
 	if(bIsOn and DT < TASettings.DTFanOff) {
 		// Разница температур меньше разумной. Вентилятор ВЫКЛ
-    sprintf(buf, "Разница темп-р мала. Вентилятор ВЫКЛ. TEarth: %d; TAir: %d", (int)TEarth , (int)TAir);
-    lg.RecordActivity(EVT_FAN_OFF, ObjectName,  buf); // Делаем запись в журнале активности
+    lg.RecordActivity(DEV_FAN, EVT_FAN_OFF, S_EVT_FAN_OFF_SMALLDT, (int8_t)TEarth, (int8_t)TAir); // Делаем запись в журнале активности
 		Off();
 		return;
 	}
@@ -85,32 +84,31 @@ void Earth_Fan::TerraAccumulatorPoll(float TEarth, float TAir, bool IsNight) {
 	if (!IsNight){ //День
     if(TAir > TASettings.TAirStartCooling) {
   		// Солнце жарит. Пора начать охлаждение воздуха в теплице.
-      sprintf(buf, "Солнце жарит. Вентилятор ВКЛ. TEarth: %d; TAir: %d", (int)TEarth , (int)TAir);
-      lg.RecordActivity(EVT_FAN_ON, ObjectName,  buf); // Делаем запись в журнале активности
+      lg.RecordActivity(DEV_FAN, EVT_FAN_ON, S_EVT_FAN_ON_HOTDAY, (int8_t)TEarth, (int8_t)TAir); // Делаем запись в журнале активности
   		On();
   		return;
   	}
   
   	// Солнце скрылось. Пора остановить охлаждение воздуха в теплице
   	if(TAir < TASettings.TAirStopCooling) {
-      sprintf(buf, "Солнце скрылось. Вентилятор ВЫКЛ. TEarth: %d; TAir: %d", (int)TEarth , (int)TAir);
-      lg.RecordActivity(EVT_FAN_OFF, ObjectName,  buf); // Делаем запись в журнале активности
+      // Солнце скрылось. Вентилятор ВЫКЛ
+      lg.RecordActivity(DEV_FAN, EVT_FAN_OFF, S_EVT_FAN_OFF_SUNHIDE, (int8_t)TEarth, (int8_t)TAir); // Делаем запись в журнале активности
   		Off();
   		return;
   	}
 	} else { // Ночь
 		// Становится холодно. Пора начать нагрев воздуха в теплице
 		if(!bIsOn and TAir < TASettings.TAirStartHeating) {
-      sprintf(buf, "Ночь, холодно, греемся. Вентилятор ВКЛ. TEarth: %d; TAir: %d", (int)TEarth , (int)TAir);
-      lg.RecordActivity(EVT_FAN_ON, ObjectName,  buf); // Делаем запись в журнале активности
+      // Ночь, холодно, греемся. Вентилятор ВКЛ.
+      lg.RecordActivity(DEV_FAN, EVT_FAN_ON, S_EVT_FAN_ON_COLDNIGHT, (int8_t)TEarth, (int8_t)TAir); // Делаем запись в журнале активности
 			On();
 			return;
 		}
 
 		// Утро наступило. Пора прекратить нагрев воздуха в теплице
 		if(bIsOn and TAir > TASettings.TAirStopHeating) {
-      sprintf(buf, "Ночь, не холодно. Вентилятор ВЫКЛ. TEarth: %d; TAir: %d", (int)TEarth , (int)TAir);
-      lg.RecordActivity(EVT_FAN_OFF, ObjectName,  buf); // Делаем запись в журнале активности
+      // Ночь, не холодно. Вентилятор ВЫКЛ.
+      lg.RecordActivity(DEV_FAN, EVT_FAN_OFF, S_EVT_FAN_OFF_HOTNIGHT, (int8_t)TEarth, (int8_t)TAir); // Делаем запись в журнале активности
 			Off();
 			return;
 		}
@@ -123,7 +121,7 @@ void Earth_Fan::TerraAccumulatorPoll(float TEarth, float TAir, bool IsNight) {
 // Выключить вентилятор
 void Earth_Fan::Off() {
 	bIsOn = false;
-  lg.RecordActivity(EVT_FAN_OFF, ObjectName,  "Вентилятор ВЫКЛ."); // Делаем запись в журнале активности
+  lg.RecordActivity(DEV_FAN, EVT_FAN_OFF, S_EVT_FAN_OFF_JUSTOFF, 0, 0); // Делаем запись в журнале активности
 	digitalWrite(RelayPin, HIGH);
 	if(FanLedPin != 0) digitalWrite(FanLedPin, LOW);
 }
@@ -132,7 +130,7 @@ void Earth_Fan::Off() {
 // Включить вентилятор
 void Earth_Fan::On() {
 	bIsOn = true;
-  lg.RecordActivity(EVT_FAN_ON, ObjectName,  "Вентилятор ВКЛ."); // Делаем запись в журнале активности
+  lg.RecordActivity(DEV_FAN, EVT_FAN_ON, S_EVT_FAN_ON_JUSTON, 0, 0); // Делаем запись в журнале активности
 	digitalWrite(RelayPin, LOW);
 	if(FanLedPin != 0) digitalWrite(FanLedPin, HIGH);
 }
@@ -151,9 +149,9 @@ void Earth_Fan::SetManualMode(bool bMode){
 	if(ModeLedPin != 0) digitalWrite(ModeLedPin, bMode ? HIGH : LOW);
  
   if( bIsManualMode )
-    lg.RecordActivity(EVT_FAN_SET_MANUAL, ObjectName,  "Переходим в ручной режим"); // Делаем запись в журнале активности
+    lg.RecordActivity(DEV_FAN, EVT_FAN_SETMODE, S_EVT_FAN_SETMODE_MANUAL, 0, 0); // Делаем запись в журнале активности
   else
-    lg.RecordActivity(EVT_FAN_SET_AUTO, ObjectName,  "Переходим в автоматический режим"); // Делаем запись в журнале активности
+    lg.RecordActivity(DEV_FAN, EVT_FAN_SETMODE, S_EVT_FAN_SETMODE_AUTO, 0, 0); // Делаем запись в журнале активности
  
 	// Выключить вентилятор при смене режима работы
 	Off();

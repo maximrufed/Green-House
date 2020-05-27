@@ -10,6 +10,7 @@
 #define GH_LOGGER_H
 #include <Arduino.h>
 #include "globals.h"
+#include "gh_LoggerEvents.h"
 #include <SD.h>
 #include "gh_rtc.h"
 
@@ -18,7 +19,7 @@ class Logger
   public:
   Logger(uint8_t pinSD);//, char File[12]);
   Logger(uint8_t pinSD, /*char File[12], */byte pinErrorLed);
-  void RecordActivity(uint16_t EventCode, char *gh_Object, char *EventText);            // Запись в журнал
+  void RecordActivity(uint8_t DeviceId, uint8_t EventID, uint8_t SubEventID, int8_t TEarth, int8_t TAir);            // Запись в журнал
   void LoggerPoll();
   bool Begin(gh_RTC *rtc);                                                     // False если не удалось открыть файл и сделать в него запись о начале работы
   //bool Begin();                                                     // False если не удалось открыть файл и сделать в него запись о начале работы

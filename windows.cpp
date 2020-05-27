@@ -71,7 +71,7 @@ void GHWindow::Open() {
 	SetMotorToOpen();
   StartMotor();
   // Делаем запись в журнале активности
-  lg.RecordActivity(EVT_WIN_GO_TO_OPEN, ObjectName, "Форточка открывается");
+  lg.RecordActivity(DEV_SIDE_WINDOW, EVT_SW_START, S_EVT_SW_START_TOOPEN, 0, 0);// Делаем запись в журнале активности
 
 	// Сюда можно вставить вывод на экран чего-нибудь типа "открываюсь..."
 }
@@ -96,8 +96,8 @@ void GHWindow::Close() {
 	SetMotorToClose();
   StartMotor();
 
-  // Делаем запись в журнале активности
-  lg.RecordActivity(EVT_WIN_GO_TO_CLOSE, ObjectName, "Форточка закрывается");
+  
+  lg.RecordActivity(DEV_SIDE_WINDOW, EVT_SW_START, S_EVT_SW_START_TOCLOSE, 0, 0);// Делаем запись в журнале активности
 
 	// Сюда можно вставить вывод на экран чего-нибудь типа "открываюсь..."
 }
@@ -122,7 +122,7 @@ void GHWindow::HaltMotor() {
 	}
 
   // Делаем запись в журнале активности
-  lg.RecordActivity(EVT_WIN_HALT, ObjectName, "Экстренная остановка");
+  lg.RecordActivity(DEV_SIDE_WINDOW, EVT_SW_STOP, S_EVT_SW_STOP_HALT, 0, 0);
 
 }
 
@@ -140,21 +140,21 @@ void GHWindow::WindowPoll(float TEarth, float TAir, bool IsNight) {
     if( TAir > WinSettings.TAirOpen and WindowStatus == CLOSED and !IsNight) {
       LOG("Открываем окно, т.к. достигнута температура открытия");
       // Делаем запись в журнале активности
-      lg.RecordActivity(EVT_WIN_GO_TO_OPEN, ObjectName, "Открываем окно, т.к. достигнута температура открытия");
+      lg.RecordActivity(DEV_SIDE_WINDOW, EVT_SW_START, S_EVT_SW_START_OPENBYTEMP, (int8_t)TEarth, (int8_t)TAir);
       Open();
       return;
     }
     if( TAir < WinSettings.TAirOpen and WindowStatus == OPEN) {
       LOG("Закрываем окно, т.к. достигнута температура закрытия");
       // Делаем запись в журнале активности
-      lg.RecordActivity(EVT_WIN_GO_TO_CLOSE, ObjectName, "Закрываем окно, т.к. достигнута температура закрытия");
+      lg.RecordActivity(DEV_SIDE_WINDOW, EVT_SW_START, S_EVT_SW_START_CLOSEBYTEMP, (int8_t)TEarth, (int8_t)TAir);
       Close();
       return;
     }
     if( IsNight and WindowStatus != CLOSED) {
       LOG("Закрываем окно, т.к. ночь на дворе");
       // Делаем запись в журнале активности
-      lg.RecordActivity(EVT_WIN_GO_TO_CLOSE, ObjectName, "Закрываем окно, т.к. ночь на дворе");
+      lg.RecordActivity(DEV_SIDE_WINDOW, EVT_SW_START, S_EVT_SW_START_CLOSEFORNIGHT, 0, 0);
       Close();
       return;
     }
@@ -172,9 +172,9 @@ void GHWindow::SetManualMode(bool bMode) {
 
   // Делаем запись в журнале активности
   if(bIsManualMode) 
-    lg.RecordActivity(EVT_WIN_SET_MANUAL, ObjectName, "Переход в ручной режим управления");    
+    lg.RecordActivity(DEV_SIDE_WINDOW, EVT_SW_SETMODE, S_EVT_SW_SETMODE_MANUAL, 0, 0);
   else
-    lg.RecordActivity(EVT_WIN_SET_AUTO, ObjectName, "Переход в автоматический режим управления");    
+    lg.RecordActivity(DEV_SIDE_WINDOW, EVT_SW_SETMODE, S_EVT_SW_SETMODE_AUTO, 0, 0);
 
 
 }
@@ -220,7 +220,7 @@ void GHWindow::CompleteOperationByTimerOrLS() {
 				LOG("Все нормально, окно успешно открылось");
 				WindowStatus = OPEN;
 				StopMotor();
-        lg.RecordActivity(EVT_WIN_OPENED, ObjectName, "Окно открылось по концевику");     // Делаем запись в журнале активности
+        lg.RecordActivity(DEV_SIDE_WINDOW, EVT_SW_STOP, S_EVT_SW_STOP_OPENEDBYLS, 0, 0);     // Делаем запись в журнале активности
 				return;
 			case CLOSING:
 				// Теоретически мы как раз стартуем закрытие из положения замкнутого выключателя открытия
@@ -243,7 +243,7 @@ void GHWindow::CompleteOperationByTimerOrLS() {
 				LOG("Все нормально, окно успешно закрылось");
 				WindowStatus = CLOSED;
 				StopMotor();
-        lg.RecordActivity(EVT_WIN_CLOSED, ObjectName, "Окно закрылось по концевику");     // Делаем запись в журнале активности
+        lg.RecordActivity(DEV_SIDE_WINDOW, EVT_SW_STOP, S_EVT_SW_STOP_CLOSEDBYLS, 0, 0);     // Делаем запись в журнале активности
 				return;
 			case OPENING:
 				// Теоретически мы как раз стартуем открытие из положения замкнутого выключателя закрытия
@@ -262,10 +262,10 @@ void GHWindow::CompleteOperationByTimerOrLS() {
 		LOG("Превышено время работы мотора выше лимита. Пора заканчивать и ставить статус OPEN или CLOSED");
 		if( WindowStatus == OPENING ) {
 			WindowStatus = OPEN;
-      lg.RecordActivity(EVT_WIN_OPENED, ObjectName, "Окно открылось по таймеру");     // Делаем запись в журнале активности
+      lg.RecordActivity(DEV_SIDE_WINDOW, EVT_SW_STOP, S_EVT_SW_STOP_OPENEDBYTIMER, 0, 0);     // Делаем запись в журнале активности
 		} else { // Любой другой статус может быть только CLOSING
 			WindowStatus = CLOSED;
-      lg.RecordActivity(EVT_WIN_CLOSED, ObjectName, "Окно закрылось по таймеру");     // Делаем запись в журнале активности
+      lg.RecordActivity(DEV_SIDE_WINDOW, EVT_SW_STOP, S_EVT_SW_STOP_CLOSEDBYTIMER, 0, 0);     // Делаем запись в журнале активности
 		}
 
 		StopMotor();
@@ -333,8 +333,8 @@ void GHWindow::SetAlarm(bool bAlarm) {
 	if(WinCfg.PinWindowAlarmLed != -1) digitalWrite(WinCfg.PinWindowAlarmLed, bAlarm ? HIGH : LOW);
 
   if(bIsAlarm)
-        lg.RecordActivity(EVT_WIN_ERR_ON, ObjectName, "Установка флага тревоги окна");     // Делаем запись в журнале активности
+        lg.RecordActivity(DEV_SIDE_WINDOW, EVT_SW_ALARM, S_EVT_SW_ALARM_ON, 0, 0);     // Делаем запись в журнале активности
   else
-        lg.RecordActivity(EVT_WIN_ERR_OFF, ObjectName, "Сброс флага тревоги окна");     // Делаем запись в журнале активности
+        lg.RecordActivity(DEV_SIDE_WINDOW, EVT_SW_ALARM, S_EVT_SW_ALARM_OFF, 0, 0);     // Делаем запись в журнале активности
     
 }

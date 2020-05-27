@@ -42,7 +42,6 @@ class Earth_Fan
 	TerraAccumulatorSettings TASettings;	// Настройки земляного аккумулятора тепла
 
   private:
-  const char ObjectName[9] = "EarthFan";      // используется для логгера
 	byte RelayPin;
 	byte FanLedPin;
 	byte ModeLedPin;

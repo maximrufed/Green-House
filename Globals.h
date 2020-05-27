@@ -111,28 +111,6 @@
 #define LOGGING  // uncomment to turn on Serial monitor
 //#define LOGGING_EARTH_FAN						// Снять комментарии для включения логирования объекта EARTH_FAN
 
-// *************************************************************
-// *************************************************************
-// Коды событий логгера
-#define EVT_DEV_START         1
-#define EVT_DEV_SHUTDOWN      2
-#define EVT_WIN_GO_TO_OPEN    10
-#define EVT_WIN_GO_TO_CLOSE   11
-#define EVT_WIN_CLOSED        12
-#define EVT_WIN_OPENED        13
-#define EVT_WIN_HALT          14
-#define EVT_WIN_SET_MANUAL    15
-#define EVT_WIN_SET_AUTO      16
-#define EVT_FAN_OFF           20
-#define EVT_FAN_ON            21
-#define EVT_FAN_SET_MANUAL    22
-#define EVT_FAN_SET_AUTO      23
-
-
-#define EVT_WIN_ERR_ON        100
-#define EVT_WIN_ERR_OFF       100
-
-
 
 
 
