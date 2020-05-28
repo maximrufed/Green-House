@@ -18,7 +18,7 @@ T_Sensors TSensors(ONE_WIRE_BUS);
 Earth_Fan EarthFan(RELAY_EARTH_FAN, LED_FAN, LED_FAN_MANUAL_MODE );
 gh_RTC rtc;
 GHWindow Window;
-Logger lg(SDCARD);//, LOG_FILE_NAME);
+Logger lg(SDCARD, LED_SD_ERROR);//, LOG_FILE_NAME);
 
 
 //---------------------------------------------------------------------
@@ -95,7 +95,7 @@ void loop() {
     nav.poll();
     
     // Обработка логгера
-    //lg.LoggerPoll();
+    lg.Poll();
     
     // Запрос обновления значений датчиков на шине
     if( TSensors.TSensorsPoll() ){

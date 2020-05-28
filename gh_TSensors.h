@@ -13,6 +13,8 @@
 #include <OneWire.h>
 #include <DallasTemperature.h>
 #include "globals.h"
+#include "gh_Logger.h"
+extern Logger lg;
 
 class T_Sensors
 {

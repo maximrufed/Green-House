@@ -59,8 +59,8 @@ bool T_Sensors::TSensorsPoll()
       T_TAFanOut = T;
     }
 
-    
-    
+    // Делаем запись в журнале наблюдений
+    lg.RecordSensors(TEarth, TAir, TBoard, TOut, TEarth2, T_TAFanIn, T_TAFanOut); 
     
 		// Запрашиваем шину на обновление
 		DallasTemp.requestTemperatures();

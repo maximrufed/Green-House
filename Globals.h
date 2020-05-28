@@ -54,11 +54,11 @@
   #define BTN_SEL                 6  // Кнопка Ввод
   
   // Плата светодиодов
-  #define LED_FAN_MANUAL_MODE     30  // Индикатор ручного режима вентилятора
-  #define LED_FAN                 32  // Индикатор работы вентилятора
-  #define LED_WINDOW_MANUAL_MODE  36  // Индикатор ручного режима окна
+  #define LED_FAN_MANUAL_MODE     31  // Индикатор ручного режима вентилятора
+  #define LED_FAN                 31  // Индикатор работы вентилятора
+  #define LED_WINDOW_MANUAL_MODE  31  // Индикатор ручного режима окна
   #define LED_WINDOW              34  // Индикатор работы мотора окна
-  #define L3                      31
+  #define LED_SD_ERROR            36  // Индикатор ошибки чтения SD карты (управляется by Logger)
   #define L3                      31
   #define L3                      31
   #define L3                      31
