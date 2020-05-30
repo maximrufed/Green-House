@@ -105,7 +105,7 @@
 #define RTC_ADR 0x68 // 'DS3231 real-time clock' Определяем для порядка. На самом деле адрес прошит в базовой библиотеке RTCLib.h
 
 // Глобальные настройки конфигурации
-#define WINDOW_MOTOR_MAX_WORK_MILLIS 1500		// Максимальное время работы мотора открывания окна
+#define WINDOW_MOTOR_MAX_WORK_MILLIS 2500		// Максимальное время работы мотора открывания окна
 
 // Лог в монитор серийного порта для отладки
 #define LOGGING  // uncomment to turn on Serial monitor

@@ -25,18 +25,22 @@ bool GHWindow::Begin(GHWindowHardwareConfig HWConfig) {
 	if( WinCfg.PinLimitSwitchClosed != 0xFF ) pinMode(WinCfg.PinLimitSwitchClosed, INPUT_PULLUP);
 
 	// Инициализация переменных
-	WindowStatus = CLOSED;
-	bIsMotorOn = false;
-	bIsAlarm = false;
-	bIsManualMode = false;
-	millisInOperation = 0;
+  bIsMotorOn = false;
+  bIsAlarm = false;
+  bIsManualMode = false;
+  millisInOperation = 0;
+
+	WindowStatus = CLOSED; // По-умолчанию считаем окно закрытым
+  // Если концевой выключатель закрытого окна заявлен в конфигурации и он не замкнут, тогда считаем окно открытым
+  if( WinCfg.PinLimitSwitchClosed != -1 && digitalRead(WinCfg.PinLimitSwitchClosed) == HIGH )
+      WindowStatus = OPEN;
 
 	WinSettings.MotorMaxWorkMillis = WINDOW_MOTOR_MAX_WORK_MILLIS;
 	WinSettings.TAirOpen = 30;      // Температура воздуха, при достижении которой 
 	WinSettings.TAirClose = 18;     // Температура воздуха, при достижении которой 
 
 	if(WinCfg.PinRelay1 == -1 || WinCfg.PinRelay2 == -1 || WinCfg.PinRelayPow == -1) { 
-		// Минимальная конфигурация оборудования для управления окном - два реле мотора
+		// Минимальная конфигурация оборудования для управления окном - три реле мотора
 		SetAlarm(true);
 		return false;
 	}

@@ -160,7 +160,8 @@ String Logger::FtoS(float val) {
 
     dtostrf(val, 7, 2, cBuf);  // выводим в строку 7 символов, 2 разряда после запятой
     sBuf = (String)cBuf;
-    sBuf.trim();
+    sBuf.setCharAt(4,',');     // меняем десятичный разделитель на запятую
+    sBuf.trim();         
     return sBuf;
 }
 
@@ -202,6 +203,7 @@ uint32_t Logger::SaveRecordToFile(char *FileName, uint32_t prevFileSize, String 
   if (!currentFile) {
     LOG("Failed to open file");
     setErr(true, S_EVT_BOARD_SD_ERRFILEOPEN);
+    SDReinit();
     return;
   }
   bErrFlag = false;
