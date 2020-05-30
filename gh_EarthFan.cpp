@@ -5,35 +5,22 @@
 // Constructor
 Earth_Fan::Earth_Fan(byte pinFan) {
 	RelayPin = pinFan;
-	pinMode(RelayPin, OUTPUT);
 	FanLedPin = 0;
 	ModeLedPin = 0;
 
-	// Выключаем вентилятор
-	Off();
 }
 
 Earth_Fan::Earth_Fan(byte pinFan, byte pinFanLed) {
 	RelayPin = pinFan;
-	pinMode(RelayPin, OUTPUT);
 	FanLedPin = pinFanLed;
-	pinMode(FanLedPin, OUTPUT);
 	ModeLedPin = 0;
 
-	// Выключаем вентилятор
-	Off();
 }
 
 Earth_Fan::Earth_Fan(byte pinFan, byte pinFanLed, byte pinFanModeLed){
 	RelayPin = pinFan;
-	pinMode(RelayPin, OUTPUT);
 	FanLedPin = pinFanLed;
-	pinMode(FanLedPin, OUTPUT);
 	ModeLedPin = pinFanModeLed;
-	pinMode(ModeLedPin, OUTPUT);
-
-	// Выключаем вентилятор
-	Off();
 }
 
 
@@ -42,6 +29,8 @@ Earth_Fan::Earth_Fan(byte pinFan, byte pinFanLed, byte pinFanModeLed){
 // Begin
 void Earth_Fan::Begin() {
 
+  LOG("Earth_Fan Begin");
+
 	// Загружаем сохраненные настройки работы вентилятора
 	TASettings.TAirStartCooling = 25;
 	TASettings.TAirStopCooling = 20;
@@ -49,6 +38,10 @@ void Earth_Fan::Begin() {
 	TASettings.TAirStopHeating = 14;
 	TASettings.DTFanOn = 3;
 	TASettings.DTFanOff = 1;
+
+  if( RelayPin != 0xFF) pinMode(RelayPin, OUTPUT);
+  if( FanLedPin != 0xFF) pinMode(FanLedPin, OUTPUT);
+  if( ModeLedPin != 0xFF) pinMode(ModeLedPin, OUTPUT);
 
 	// Устанавливаем автоматический режим работы вентилятора
 	SetManualMode(false);
@@ -76,7 +69,7 @@ void Earth_Fan::TerraAccumulatorPoll(float TEarth, float TAir, bool IsNight) {
 
 	if(bIsOn and DT < TASettings.DTFanOff) {
 		// Разница температур меньше разумной. Вентилятор ВЫКЛ
-    lg.RecordActivity(DEV_FAN, EVT_FAN_OFF, S_EVT_FAN_OFF_SMALLDT, (int8_t)TEarth, (int8_t)TAir); // Делаем запись в журнале активности
+    lg.RecordActivityInt(DEV_FAN, EVT_FAN_OFF, S_EVT_FAN_OFF_SMALLDT, (int8_t)TEarth, (int8_t)TAir); // Делаем запись в журнале активности
 		Off();
 		return;
 	}
@@ -84,7 +77,7 @@ void Earth_Fan::TerraAccumulatorPoll(float TEarth, float TAir, bool IsNight) {
 	if (!IsNight){ //День
     if(TAir > TASettings.TAirStartCooling) {
   		// Солнце жарит. Пора начать охлаждение воздуха в теплице.
-      lg.RecordActivity(DEV_FAN, EVT_FAN_ON, S_EVT_FAN_ON_HOTDAY, (int8_t)TEarth, (int8_t)TAir); // Делаем запись в журнале активности
+      lg.RecordActivityInt(DEV_FAN, EVT_FAN_ON, S_EVT_FAN_ON_HOTDAY, (int8_t)TEarth, (int8_t)TAir); // Делаем запись в журнале активности
   		On();
   		return;
   	}
@@ -92,7 +85,7 @@ void Earth_Fan::TerraAccumulatorPoll(float TEarth, float TAir, bool IsNight) {
   	// Солнце скрылось. Пора остановить охлаждение воздуха в теплице
   	if(TAir < TASettings.TAirStopCooling) {
       // Солнце скрылось. Вентилятор ВЫКЛ
-      lg.RecordActivity(DEV_FAN, EVT_FAN_OFF, S_EVT_FAN_OFF_SUNHIDE, (int8_t)TEarth, (int8_t)TAir); // Делаем запись в журнале активности
+      lg.RecordActivityInt(DEV_FAN, EVT_FAN_OFF, S_EVT_FAN_OFF_SUNHIDE, (int8_t)TEarth, (int8_t)TAir); // Делаем запись в журнале активности
   		Off();
   		return;
   	}
@@ -100,7 +93,7 @@ void Earth_Fan::TerraAccumulatorPoll(float TEarth, float TAir, bool IsNight) {
 		// Становится холодно. Пора начать нагрев воздуха в теплице
 		if(!bIsOn and TAir < TASettings.TAirStartHeating) {
       // Ночь, холодно, греемся. Вентилятор ВКЛ.
-      lg.RecordActivity(DEV_FAN, EVT_FAN_ON, S_EVT_FAN_ON_COLDNIGHT, (int8_t)TEarth, (int8_t)TAir); // Делаем запись в журнале активности
+      lg.RecordActivityInt(DEV_FAN, EVT_FAN_ON, S_EVT_FAN_ON_COLDNIGHT, (int8_t)TEarth, (int8_t)TAir); // Делаем запись в журнале активности
 			On();
 			return;
 		}
@@ -108,7 +101,7 @@ void Earth_Fan::TerraAccumulatorPoll(float TEarth, float TAir, bool IsNight) {
 		// Утро наступило. Пора прекратить нагрев воздуха в теплице
 		if(bIsOn and TAir > TASettings.TAirStopHeating) {
       // Ночь, не холодно. Вентилятор ВЫКЛ.
-      lg.RecordActivity(DEV_FAN, EVT_FAN_OFF, S_EVT_FAN_OFF_HOTNIGHT, (int8_t)TEarth, (int8_t)TAir); // Делаем запись в журнале активности
+      lg.RecordActivityInt(DEV_FAN, EVT_FAN_OFF, S_EVT_FAN_OFF_HOTNIGHT, (int8_t)TEarth, (int8_t)TAir); // Делаем запись в журнале активности
 			Off();
 			return;
 		}
@@ -121,7 +114,7 @@ void Earth_Fan::TerraAccumulatorPoll(float TEarth, float TAir, bool IsNight) {
 // Выключить вентилятор
 void Earth_Fan::Off() {
 	bIsOn = false;
-  lg.RecordActivity(DEV_FAN, EVT_FAN_OFF, S_EVT_FAN_OFF_JUSTOFF, 0, 0); // Делаем запись в журнале активности
+  lg.RecordActivityInt(DEV_FAN, EVT_FAN_OFF, S_EVT_FAN_OFF_JUSTOFF, 0, 0); // Делаем запись в журнале активности
 	digitalWrite(RelayPin, HIGH);
 	if(FanLedPin != 0) digitalWrite(FanLedPin, LOW);
 }
@@ -130,7 +123,7 @@ void Earth_Fan::Off() {
 // Включить вентилятор
 void Earth_Fan::On() {
 	bIsOn = true;
-  lg.RecordActivity(DEV_FAN, EVT_FAN_ON, S_EVT_FAN_ON_JUSTON, 0, 0); // Делаем запись в журнале активности
+  lg.RecordActivityInt(DEV_FAN, EVT_FAN_ON, S_EVT_FAN_ON_JUSTON, 0, 0); // Делаем запись в журнале активности
 	digitalWrite(RelayPin, LOW);
 	if(FanLedPin != 0) digitalWrite(FanLedPin, HIGH);
 }
@@ -149,9 +142,9 @@ void Earth_Fan::SetManualMode(bool bMode){
 	if(ModeLedPin != 0) digitalWrite(ModeLedPin, bMode ? HIGH : LOW);
  
   if( bIsManualMode )
-    lg.RecordActivity(DEV_FAN, EVT_FAN_SETMODE, S_EVT_FAN_SETMODE_MANUAL, 0, 0); // Делаем запись в журнале активности
+    lg.RecordActivityInt(DEV_FAN, EVT_FAN_SETMODE, S_EVT_FAN_SETMODE_MANUAL, 0, 0); // Делаем запись в журнале активности
   else
-    lg.RecordActivity(DEV_FAN, EVT_FAN_SETMODE, S_EVT_FAN_SETMODE_AUTO, 0, 0); // Делаем запись в журнале активности
+    lg.RecordActivityInt(DEV_FAN, EVT_FAN_SETMODE, S_EVT_FAN_SETMODE_AUTO, 0, 0); // Делаем запись в журнале активности
  
 	// Выключить вентилятор при смене режима работы
 	Off();

@@ -20,8 +20,16 @@ Logger::Logger(byte pinSD, byte pinErrorLed) {
 // Begin
 
 bool Logger::Begin(gh_RTC *gh_rtc) {
-  
+
+  LOG("Logger Begin");
   rtc = gh_rtc;
+
+  // Устанавливаем имя файла для журналов - каждый запуск новый файл либо если в течение одного дня, то туда же писать.
+  strcpy(ActivityLogFile, rtc->now().toString(ActivityLogFileNamePattern));
+  LOG(ActivityLogFile);
+  strcpy(SensorsLogFile, rtc->now().toString(SensorsLogFileNamePattern));
+  LOG(SensorsLogFile);
+
   if (!SD.begin(SDPin)) {
     LOG("Could not initialize SDCard");
     bErrFlag = true;
@@ -29,8 +37,7 @@ bool Logger::Begin(gh_RTC *gh_rtc) {
   }
   LOG("SD Card initialized");
 
-  // Устанавливаем имя файла для журнала активности - каждый запуск новый файл либо если в течение одного дня, то туда же писать.
-  strcpy(ActivityLogFile, rtc->now().toString(ActivityLogFileNamePattern));
+  // Открываем журнал активности
   currentFile = SD.open(ActivityLogFile, FILE_WRITE);
   if (!currentFile) {
     LOG("Could not open the file for write");
@@ -38,9 +45,8 @@ bool Logger::Begin(gh_RTC *gh_rtc) {
   }
   currentFile.close();
 
-  // Устанавливаем имя файла для журнала активности - каждый запуск новый файл либо если в течение одного дня, то туда же писать.
-  strcpy(SensorsLogFile, rtc->now().toString(SensorsLogFileNamePattern));
-  currentFile = SD.open(ActivityLogFile, FILE_WRITE);
+  // Открываем журнал наблюдений
+  currentFile = SD.open(SensorsLogFile, FILE_WRITE);
   if (!currentFile) {
     LOG("Could not open the file for write");
     return false;
@@ -50,64 +56,72 @@ bool Logger::Begin(gh_RTC *gh_rtc) {
   LOG("Log files opened successfully!")
   
   // Делаем запись в журнале активности о запуске
-  RecordActivity(DEV_BOARD, EVT_BOARD_ON, S_EVT_BOARD_ON_JUSTON, 0, 0);
+  RecordActivityInt(DEV_BOARD, EVT_BOARD_ON, S_EVT_BOARD_ON_JUSTON, 0, 0);
+  /*
+   * пробуем наладить работу со строковыми переменными
+  String s1 = "qq";
+  String s2 = "ww";
+  RecordActivityStr(DEV_BOARD, 255, 255, s1, s2);//rtc->now().toString(SensorsLogFileNamePattern),rtc->now().toString(SensorsLogFileNamePattern));
+  RecordActivityChar(DEV_BOARD, 255, 255, ActivityLogFile, SensorsLogFile);
+  */
   return true;
 }
 
 
 //---------------------------------------------------------------------
-// RecordActivity
+// RecordActivityInt
 
-void Logger::RecordActivity(uint8_t DeviceID, uint8_t EventID, uint8_t SubEventID, int8_t Param1, int8_t Param2) {
-  char DTFormat[20] = "YYYY-MM-DD;hh:mm:ss";
+void Logger::RecordActivityInt(uint8_t DeviceID, uint8_t EventID, uint8_t SubEventID, int8_t Param1, int8_t Param2) {
   static String Delim = ";";
-  
-  currentFile = SD.open(ActivityLogFile, FILE_WRITE);
+  String sRecord = "";
 
-  if (!currentFile) {
-    LOG("ERROR!!! Could not open the file for write");
-    bErrFlag = true;
-    return;
-  }
-  bErrFlag = false;
-  currentFile.print(rtc->now().toString(DTFormat) + Delim);
-  currentFile.print(DeviceID + Delim + EventID + Delim + SubEventID + Delim);
-  currentFile.println(Param1 + Delim + Param2);
-  
-  LOG((String)"Recording activity: " + rtc->now().toString(DTFormat) + Delim + DeviceID + Delim + EventID + Delim + SubEventID + Delim + Param1 + Delim + Param2);
-  currentFile.close();
+  sRecord = (String)DeviceID + Delim + (String)EventID + Delim + (String)SubEventID + Delim;
+  sRecord += (String)Param1 + Delim + (String)Param2;
+
+  FileSizeActivity = SaveRecordToFile(ActivityLogFile, FileSizeActivity, sRecord);
+ 
 }
 
+void Logger::RecordActivityChar(uint8_t DeviceID, uint8_t EventID, uint8_t SubEventID, char *Param1, char *Param2) {
+  static String Delim = ";";
+  String sRecord;
+  String sParam1 = Param1;
+  String sParam2 = Param2;
+
+  //LOG(sParam2.length());
+  sRecord = (String)DeviceID + Delim + (String)EventID + Delim + (String)SubEventID + Delim;
+  sRecord += sParam1 + Delim;
+  sRecord += sParam2;
+  LOG(sRecord);
+  FileSizeActivity = SaveRecordToFile(ActivityLogFile, FileSizeActivity, sRecord);
+  LOG("!!!");
+}
+void Logger::RecordActivityStr(uint8_t DeviceID, uint8_t EventID, uint8_t SubEventID, String Param1, String Param2) {
+  static String Delim = ";";
+  String sRecord = "";
+
+  sRecord = (String)DeviceID + Delim + (String)EventID + Delim + (String)SubEventID + Delim;
+  sRecord += (String)Param1 + Delim + (String)Param2;
+
+  FileSizeActivity = SaveRecordToFile(ActivityLogFile, FileSizeActivity, sRecord);
+
+}
 //---------------------------------------------------------------------
 // Запись в журнал значений наблюдений
 
 void Logger::RecordSensors(float TEarth, float TAir, float TBoard, float TOut, float TEarth2, float T_TAFanIn, float T_TAFanOut) {
-  char DTFormat[20] = "YYYY-MM-DD;hh:mm:ss";
   static String Delim = ";";
   String sRecord = "";
   
-  currentFile = SD.open(SensorsLogFile, FILE_WRITE);
-
-  if (!currentFile) {
-    LOG("ERROR!!! Could not open the file for write");
-    bErrFlag = true;
-    return;
-  }
-  bErrFlag = false;
-  //currentFile.print(rtc->now().toString(DTFormat) + Delim);
-  sRecord = rtc->now().toString(DTFormat) + Delim;
-  sRecord += FtoS(TEarth) + Delim;
+  sRecord = FtoS(TEarth) + Delim;
   sRecord += FtoS(TAir) + Delim;
   sRecord += FtoS(TBoard) + Delim;
   sRecord += FtoS(TOut) + Delim;
   sRecord += FtoS(TEarth2) + Delim;
   sRecord += FtoS(T_TAFanIn) + Delim;
   sRecord += FtoS(T_TAFanOut);
-
-  currentFile.println(sRecord);
-  LOG((String)"Recording sensors: " + sRecord);
-
-  currentFile.close();
+  
+  FileSizeSensors = SaveRecordToFile(SensorsLogFile, FileSizeSensors, sRecord);
   
 }
 
@@ -148,4 +162,64 @@ String Logger::FtoS(float val) {
     sBuf = (String)cBuf;
     sBuf.trim();
     return sBuf;
+}
+
+//---------------------------------------------------------------------
+// SDReinit - попытка рестарта SDCard
+
+void Logger::SDReinit() {
+  LOG("Trying to reinitialize SDCard");
+  if (!SD.begin(SDPin)) {
+    LOG("Could not initialize SDCard");
+    setErr(true, S_EVT_BOARD_SD_INITFAIL);
+  } else {
+    LOG("SD Card reinitialized");
+    setErr(false, S_EVT_BOARD_SD_REINIT);
+  }
+}
+
+//---------------------------------------------------------------------
+// setErr
+
+void Logger::setErr(bool bErr, uint8_t errLoggerSubEventCode) {
+  bErrFlag = bErr;
+  //Такой вызов ведет к бесконечной рекурсии RecordActivityInt(DEV_BOARD, EVT_BOARD_SD, errLoggerSubEventCode, 0, 0);
+}
+
+//---------------------------------------------------------------------
+// SaveRecordToFile
+
+uint32_t Logger::SaveRecordToFile(char *FileName, uint32_t prevFileSize, String sRecord) {
+  uint32_t newFileSize;
+  char DTFormat[20] = "YYYY-MM-DD;hh:mm:ss;";
+  String sFullRecord;
+
+  // Добавляем дату и время в запись журнала
+  sFullRecord = (String)rtc->now().toString(DTFormat) + sRecord;
+
+  
+  currentFile = SD.open(FileName, FILE_WRITE);
+  if (!currentFile) {
+    LOG("Failed to open file");
+    setErr(true, S_EVT_BOARD_SD_ERRFILEOPEN);
+    return;
+  }
+  bErrFlag = false;
+  if(currentFile.fileSize() != prevFileSize) {
+    newFileSize = currentFile.fileSize();
+  } else {
+    LOG("ERROR!!! File size is not growing");
+    LOG("Trying to reinitialize");
+    setErr(true, S_EVT_BOARD_SD_ERRFILESIZE);
+    SDReinit();
+  }
+
+  currentFile.println(sFullRecord);
+  LOG((String)"Recording " + FileName + ": " + sFullRecord);
+
+  if(!currentFile.sync()) SDReinit();
+  if(!currentFile.close()) SDReinit();
+
+  return newFileSize;
+  
 }

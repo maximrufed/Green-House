@@ -42,9 +42,9 @@ class Earth_Fan
 	TerraAccumulatorSettings TASettings;	// Настройки земляного аккумулятора тепла
 
   private:
-	byte RelayPin;
-	byte FanLedPin;
-	byte ModeLedPin;
+	byte RelayPin = 0xFF;
+	byte FanLedPin = 0xFF;
+	byte ModeLedPin = 0xFF;
 	bool bIsOn;
 	bool bIsManualMode;
 

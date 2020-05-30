@@ -32,9 +32,13 @@
 // -----------------------------------------------------------------------
 // Коды событий МикроКонтроллера
 // -----------------------------------------------------------------------
-#define EVT_BOARD_ON              0x00      // Start operation
-#define S_EVT_BOARD_ON_JUSTON     0x01      // Start operation
-
+#define EVT_BOARD_ON                0x00      // Start operation
+#define S_EVT_BOARD_ON_JUSTON       0x01      // Start operation
+#define EVT_BOARD_SD                0x08      // SDCard
+#define S_EVT_BOARD_SD_REINIT       0x09    // Успешный перезапуск SDCard
+#define S_EVT_BOARD_SD_ERRFILESIZE  0x0A    // ОШИБКА! Файл журнала не растет. Требуется перезапуск SDCard
+#define S_EVT_BOARD_SD_INITFAIL     0x0B    // ОШИБКА! Инициализация SDCard не успешна
+#define S_EVT_BOARD_SD_ERRFILEOPEN  0x0C    // ОШИБКА! Файл не может быть открыт     
 
 // -----------------------------------------------------------------------
 // Коды событий Земляного Аккумулятора (Вентилятора)

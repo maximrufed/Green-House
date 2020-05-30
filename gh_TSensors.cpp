@@ -119,6 +119,8 @@ T_Sensors::T_Sensors(byte pin)
 // Begin
 void T_Sensors::Begin(byte UpdateIntervalMinutes)
 {
+  LOG("T_Sensors Begin");
+  
 	TSensorsPreviousMillis = -60000;							// храним время последнего обновления значений датчиков
 	TSensorsUpdateIntervalMinutes = UpdateIntervalMinutes;		// интервал между обновлениями датчиков температуры на шине
 	DallasTemp.setWaitForConversion(false);						// Устанавливаем асинхронный режим запросов к шине
