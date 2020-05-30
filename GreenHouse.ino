@@ -47,9 +47,9 @@ void setup() {
 
   if (!rtc.begin()) {
     LOG("Couldn't find RTC");  // Запускаем часы реального времени
-    LCDMessage = "Could not find RTC!!";
+    LCDMessage = "RTC FAIL!";
   } else {
-    LCDMessage = "RTC Initialized";
+    LCDMessage = "RTC Ok";
   }
   lcd.clear();
   lcd.setCursor(0, 0);
@@ -59,9 +59,9 @@ void setup() {
   lcd.setCursor(0, 2);
   if (!lg.Begin(&rtc)) {
     LOG("Couldn't initialize SDCard");   // Инициализация логгера
-    LCDMessage = "SDCard failed!!";
+    LCDMessage = "SDCard FAIL!";
   } else {
-    LCDMessage = "SDCard Initialized";
+    LCDMessage = "SDCard Ok";
   }
   lcd.setCursor(0, 1);
   lcd.print(LCDMessage);
@@ -73,15 +73,14 @@ void setup() {
   WinConfig.PinRelayPow           = RELAY_WINDOW_POW;
   WinConfig.PinRelay1             = RELAY_WINDOW_1;
   WinConfig.PinRelay2             = RELAY_WINDOW_2;
-  WinConfig.PinLimitSwitchOpen    = LS_WINDOW_ROOF_OPEN;
   WinConfig.PinLimitSwitchClosed  = LS_WINDOW_ROOF_CLOSED;
   WinConfig.PinWindowMotorLed     = LED_WINDOW;
   WinConfig.PinWindowModeLed      = LED_WINDOW_MANUAL_MODE;
   if (! Window.Begin(WinConfig)) {
     LOG("Couldn't initialize SDCard");   // Инициализация логгера
-    LCDMessage = "Window failed!!";
+    LCDMessage = "Window FAIL!";
   } else {
-    LCDMessage = "Window Initialized";
+    LCDMessage = "Window Ok";
   }
   lcd.setCursor(0, 2);
   lcd.print(LCDMessage);
