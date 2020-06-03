@@ -108,9 +108,31 @@
 #define EEPROM_ADR 0x50 // 'AT24C32 EEPROM'
 #define RTC_ADR 0x68 // 'DS3231 real-time clock' Определяем для порядка. На самом деле адрес прошит в базовой библиотеке RTCLib.h
 
-// Глобальные настройки конфигурации
+// *************************************************************
+// *************************************************************
+// Глобальные настройки конфигурации - МЕНЮ
+// Меню окна
 #define WINDOW_MOTOR_MAX_WORK_MILLIS 2500		// Максимальное время работы мотора открывания окна
 
+// Меню бочки
+#define BARREL_START_FILLING_HOUR     6     // время начала наполнения бочки
+#define BARREL_START_FILLING_MINUTE   0     // время начала наполнения бочки
+#define BARREL_MAX_FILLING_MINUTES    120   // максимальное время вкючения клапана (аварийное отключение)
+
+// Меню полива - грядка 1
+#define SEEDBAD1_WATERING_DAY         1     // дни полива (каждый день 1 - каждый 20й день - 20)
+#define SEEDBAD1_WATERING_START_HOUR  17    // время начала полива
+#define SEEDBAD1_WATERING_START_MINUTE 0    // время начала полива
+#define SEEDBAD1_WATERING_DURATION_MINS 30  // продолжительность полива (минут)
+
+// Меню полива - грядка 2
+#define SEEDBAD2_WATERING_DAY         1     // дни полива (каждый день 1 - каждый 20й день - 20)
+#define SEEDBAD2_WATERING_START_HOUR  17    // время начала полива
+#define SEEDBAD2_WATERING_START_MINUTE 0    // время начала полива
+#define SEEDBAD2_WATERING_DURATION_MINS 30  // продолжительность полива (минут)
+
+// *************************************************************
+// *************************************************************
 // Лог в монитор серийного порта для отладки
 #define LOGGING  // uncomment to turn on Serial monitor
 //#define LOGGING_EARTH_FAN						// Снять комментарии для включения логирования объекта EARTH_FAN

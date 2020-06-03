@@ -25,9 +25,9 @@
 #define DEV_FAN                 1     // Вентилятор
 #define DEV_SIDE_WINDOW         2     // Боковое окно
 #define DEV_DOOR_WINDOW         3     // Торцевое окно
-#define DEV_BARREL_VALVE        4     // Клапан бочки 
-#define DEV_WATERING_LINE1      5     // Клапан грядки 1
-#define DEV_WATERING_LINE2      6     // Клапан крядки 2
+#define DEV_BARREL              4     // Бочка
+#define DEV_SEEDBED1            5     // Грядка 1
+#define DEV_SEEDBED2            6     // Грядка 2
 
 // -----------------------------------------------------------------------
 // Коды событий МикроКонтроллера
@@ -59,7 +59,7 @@
 #define S_EVT_FAN_SETMODE_MANUAL  0x32      // Переход в ручной режим управления вентилятором
 
 // -----------------------------------------------------------------------
-// Коды событий Бокового Окна
+// Коды событий Бокового Окна - Side Window (SW)
 // -----------------------------------------------------------------------
 #define EVT_SW_STOP                   0x40  // Остановка мотора
 #define S_EVT_SW_STOP_HALT            0x41  // Экстренная остановка         
@@ -82,3 +82,23 @@
 #define EVT_SW_ALARM                  0x70      // Режим тревоги окна
 #define S_EVT_SW_ALARM_ON             0x71      // Установка флага тревоги окна
 #define S_EVT_SW_ALARM_OFF            0x72      // Сброс флага тревоги окна
+
+// -----------------------------------------------------------------------
+// Коды событий Оборудования Полива
+// -----------------------------------------------------------------------
+#define EVT_BARREL_VALVE              0x80      // Открытие клапана
+#define S_EVT_BARREL_VALVE_OPEN       0x81      // Открытие клапана
+#define S_EVT_BARREL_VALVE_VCLOSE     0x82      // Закрытие клапана
+
+#define EVT_BARREL_STATE              0x80     // Закрытие клапана
+#define S_EVT_BARREL_STATE_FULL       0x81     // Бочка наполнилась
+#define S_EVT_BARREL_STATE_NOTFULL    0x82     // Уровень воды понизился, бочка уже не полна
+#define S_EVT_BARREL_STATE_EMPTY      0x83      // Бочка пуста
+#define S_EVT_BARREL_STATE_NOTEMPTY   0x84      // Уровень воды повысился, бочка уже не пуста
+#define S_EVT_BARREL_STATE_MAXFILLTIMEEXCEEDED  0x85 // Превышено максимально возможное время наполнения бочки
+#define S_EVT_BARREL_STATE_FILLEMPTYBARREL      0x86 // Начинаем наполнять бочку, т.к. она опустела
+#define S_EVT_BARREL_STATE_ERRFULLANDEMPTY      0x87 // Ошибочное состояние. Бочка и пуста и полна одновременно
+
+#define EVT_BARREL_SETMODE            0xA0      // Установка режима работы бочки
+#define S_EVT_BARREL_SETMODE_AUTO     0xA1      // Переход в автоматический режим управления бочкой
+#define S_EVT_BARREL_SETMODE_MANUAL   0xA2      // Переход в ручной режим управления бочкой
