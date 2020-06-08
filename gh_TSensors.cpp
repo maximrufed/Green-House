@@ -16,45 +16,44 @@ bool T_Sensors::TSensorsPoll()
 		// Считываем обновление температуры с датчиков (ну да, это температура с прошлого цикла - несколько минут назад..)
 		T = (float)DallasTemp.getTempC(TSensorEarthAdr);
 		if( T == (float)-127 ) {
-			LOG("ОШИБКА СЧИТЫВАНИЯ ЗНАЧЕНИЯ ДАТЧИКА ТЕМПЕРАТУРЫ ЗЕМЛИ!");
+			LOG("ОШИБКА СЧИТЫВАНИЯ ДАТЧИКА ТЕМПЕРАТУРЫ ЗЕМЛИ!");
 		} else {
 			TEarth = T;
 		}
 		T = (float)DallasTemp.getTempC(TSensorAirAdr);
 		if( T == (float)-127 ) {
-			LOG("ОШИБКА СЧИТЫВАНИЯ ЗНАЧЕНИЯ ДАТЧИКА ТЕМПЕРАТУРЫ ВОЗДУХА!");
+			LOG("ОШИБКА СЧИТЫВАНИЯ ДАТЧИКА ТЕМПЕРАТУРЫ ВОЗДУХА!");
 		} else {
 			TAir = T;
 		}
 
-    //задокументировать
     T = (float)DallasTemp.getTempC(TSensorBoardAdr );
     if( T == (float)-127 ) {
-      LOG("ОШИБКА СЧИТЫВАНИЯ одного из ДАТЧИКов ТЕМПЕРАТУРЫ!");
+      LOG("ОШИБКА СЧИТЫВАНИЯ ДАТЧИКА ТЕМПЕРАТУРЫ ПРИБОРА!");
     } else {
       TBoard = T;
     }
     T = (float)DallasTemp.getTempC(TSensorOutAdr );
     if( T == (float)-127 ) {
-      LOG("ОШИБКА СЧИТЫВАНИЯ одного из ДАТЧИКов ТЕМПЕРАТУРЫ!");
+      LOG("ОШИБКА СЧИТЫВАНИЯ ДАТЧИКА ТЕМПЕРАТУРЫ УЛИЦЫ!");
     } else {
       TOut  = T;
     }
     T = (float)DallasTemp.getTempC(TSensorEarth2Adr );
     if( T == (float)-127 ) {
-      LOG("ОШИБКА СЧИТЫВАНИЯ одного из ДАТЧИКов ТЕМПЕРАТУРЫ!");
+      LOG("ОШИБКА СЧИТЫВАНИЯ ДАТЧИКА ТЕМПЕРАТУРЫ ГРЯДКИ2!");
     } else {
       TEarth2  = T;
     }
     T = (float)DallasTemp.getTempC(TSensorTAFanInAdr );
     if( T == (float)-127 ) {
-      LOG("ОШИБКА СЧИТЫВАНИЯ одного из ДАТЧИКов ТЕМПЕРАТУРЫ!");
+      LOG("ОШИБКА СЧИТЫВАНИЯ ДАТЧИКА ТЕМПЕРАТУРЫ ВЕНТ ВХОД!");
     } else {
       T_TAFanIn  = T;
     }
     T = (float)DallasTemp.getTempC(TSensorTAFanOutAdr );
     if( T == (float)-127 ) {
-      LOG("ОШИБКА СЧИТЫВАНИЯ одного из ДАТЧИКов ТЕМПЕРАТУРЫ!");
+      LOG("ОШИБКА СЧИТЫВАНИЯ ДАТЧИКА ТЕМПЕРАТУРЫ ВЕНТ ВЫХОД!");
     } else {
       T_TAFanOut = T;
     }

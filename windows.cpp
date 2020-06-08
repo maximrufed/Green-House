@@ -134,29 +134,34 @@ void GHWindow::HaltMotor() {
 
 //---------------------------------------------------------------------
 // Обработка логики работы умного окна
-void GHWindow::WindowPoll(float TEarth, float TAir, bool IsNight) {
+void GHWindow::WindowPoll(int8_t TEarth, int8_t TAir, bool IsNight) {
 	// Если окно сейчас работает, нужно вовремя выключить мотор
 	if( WindowStatus == OPENING || WindowStatus == CLOSING ) {
 		CompleteOperationByTimerOrLS();
     return;
 	}
-
+  //LOG("1");
+  //LOG("TAir: "+(String)TAir+"; Winsetting: "+(String)WinSettings.TAirOpen);
 	// Обработка автоматического режима
 	if( !IsManualMode() ) {
-    if( TAir > WinSettings.TAirOpen and WindowStatus == CLOSED and !IsNight) {
+    //LOG("2");
+    //LOG("WinStatus: " + (String)WindowStatus + " = " + (String)CLOSED + "; IsNight: " + (String)IsNight);
+    if( TAir >= WinSettings.TAirOpen and WindowStatus == CLOSED and !IsNight) {
       LOG("Открываем окно, т.к. достигнута температура открытия");
       // Делаем запись в журнале активности
       lg.RecordActivityInt(DEV_SIDE_WINDOW, EVT_SW_START, S_EVT_SW_START_OPENBYTEMP, (int8_t)TEarth, (int8_t)TAir);
       Open();
       return;
     }
-    if( TAir < WinSettings.TAirOpen and WindowStatus == OPEN) {
+    //LOG("3");
+    if( TAir < WinSettings.TAirClose and WindowStatus == OPEN) {
       LOG("Закрываем окно, т.к. достигнута температура закрытия");
       // Делаем запись в журнале активности
       lg.RecordActivityInt(DEV_SIDE_WINDOW, EVT_SW_START, S_EVT_SW_START_CLOSEBYTEMP, (int8_t)TEarth, (int8_t)TAir);
       Close();
       return;
     }
+    //LOG("4");
     if( IsNight and WindowStatus != CLOSED) {
       LOG("Закрываем окно, т.к. ночь на дворе");
       // Делаем запись в журнале активности
@@ -164,9 +169,9 @@ void GHWindow::WindowPoll(float TEarth, float TAir, bool IsNight) {
       Close();
       return;
     }
-    
+    //LOG("5");
 	}
-
+  //LOG("6");
 }
 
 //---------------------------------------------------------------------

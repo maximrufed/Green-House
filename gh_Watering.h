@@ -24,7 +24,6 @@
 #include "gh_Logger.h"
 extern Logger lg;
 
-
 struct GHBarrelHardwareConfig        // Конфигурация пинов поливающего оборудования 
 {
   byte RelayPin = 0xFF;                 // Реле клапана полива
@@ -48,7 +47,7 @@ class gh_Barrel
   BarrelSettings Settings;
   GHBarrelHardwareConfig Cfg;
   
-  void Begin(GHBarrelHardwareConfig HwCfg);
+  bool Begin(GHBarrelHardwareConfig HwCfg);
   void Poll(byte NowHour, byte NowMinute);
 
   void StartFilling();
@@ -67,7 +66,6 @@ class gh_Barrel
   bool bIsFull;
   bool bIsManualMode;
   unsigned long millisStartFilling;    // Количество миллисекунд, которые уже длится наполнение
-
 };
 
 

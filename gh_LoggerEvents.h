@@ -90,7 +90,7 @@
 #define S_EVT_BARREL_VALVE_OPEN       0x81      // Открытие клапана
 #define S_EVT_BARREL_VALVE_VCLOSE     0x82      // Закрытие клапана
 
-#define EVT_BARREL_STATE              0x80     // Закрытие клапана
+#define EVT_BARREL_STATE              0x80     // События состояния бочки
 #define S_EVT_BARREL_STATE_FULL       0x81     // Бочка наполнилась
 #define S_EVT_BARREL_STATE_NOTFULL    0x82     // Уровень воды понизился, бочка уже не полна
 #define S_EVT_BARREL_STATE_EMPTY      0x83      // Бочка пуста
@@ -98,6 +98,7 @@
 #define S_EVT_BARREL_STATE_MAXFILLTIMEEXCEEDED  0x85 // Превышено максимально возможное время наполнения бочки
 #define S_EVT_BARREL_STATE_FILLEMPTYBARREL      0x86 // Начинаем наполнять бочку, т.к. она опустела
 #define S_EVT_BARREL_STATE_ERRFULLANDEMPTY      0x87 // Ошибочное состояние. Бочка и пуста и полна одновременно
+#define S_EVT_BARREL_STATE_STARTFILLBYTIMER     0x88 // Сработал таймер. Начато наполнение бочки
 
 #define EVT_BARREL_SETMODE            0xA0      // Установка режима работы бочки
 #define S_EVT_BARREL_SETMODE_AUTO     0xA1      // Переход в автоматический режим управления бочкой

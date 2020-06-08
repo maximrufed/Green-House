@@ -8,7 +8,7 @@
 bool gh_RTC :: IsNight(){
 
 	unsigned long currentMillis = millis();
-  
+  //LOG("gh_RTC: IsNight");
 	// Не пытаемся считывать значения датчиков каждый тик, а делаем это не чаще 1 раза в 5 минут (300 000 миллисекунд)
 	if(currentMillis - IsNightPreviousMillis > (long)300000) { 
 		// сохраняем время последнего обновления
@@ -20,12 +20,13 @@ bool gh_RTC :: IsNight(){
 	//int nowHour = nowTime.hour();
 	//LOG(nowHour);
 	int Hour = now().hour();
-	if( Hour > 20 || Hour < 7 ) {
+  //LOG("Hour: " + (String)Hour);
+	if( (Hour > 20) or (Hour < 7) ) {
 		//LOG("Night");
 		return(true);
 	} else {
 		//LOG("Day");
-		return(true);
+		return(false);
 	}
 }
 

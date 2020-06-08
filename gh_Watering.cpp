@@ -3,7 +3,7 @@
 
 //---------------------------------------------------------------------
 // Begin
-void gh_Barrel::Begin(GHBarrelHardwareConfig HwCfg) {
+bool gh_Barrel::Begin(GHBarrelHardwareConfig HwCfg) {
 
   LOG("gh_Barrel Begin");
 
@@ -25,6 +25,11 @@ void gh_Barrel::Begin(GHBarrelHardwareConfig HwCfg) {
   if( Cfg.FullDetectorPin != 0xFF )   pinMode(Cfg.FullDetectorPin,  INPUT_PULLUP);
   if( Cfg.EmptyDetectorPin != 0xFF )  pinMode(Cfg.EmptyDetectorPin, INPUT_PULLUP);
 
+  if(Cfg.RelayPin == 0xFF || Cfg.FullDetectorPin == 0xFF) { 
+    // Минимальная конфигурация оборудования для управления бочкой - реле и геркон наполнения
+    return false;
+  }
+
 	// Устанавливаем автоматический режим работы
 	SetManualMode(false);
 	
@@ -32,11 +37,12 @@ void gh_Barrel::Begin(GHBarrelHardwareConfig HwCfg) {
 	StopFilling();
 
   // Инициализация переменных
-  millisStartFilling = 0;
-
+  millisStartFilling = 0;       // таймер ограничения максимального времени наполнения бочки
+  
   bIsEmpty = false;
   bIsFull = false;
 
+  return true;  
 }
 
 //---------------------------------------------------------------------
@@ -44,9 +50,9 @@ void gh_Barrel::Begin(GHBarrelHardwareConfig HwCfg) {
 void gh_Barrel::Poll(byte NowHour, byte NowMinute) {
 	float DT;
   char buf[100];
-
+  
   // 1. САМЫМ ПЕРВЫМ ДЕЛОМ
-  // Если бочка переполнилась, то срочно остановить процесс, поставить состояние, продолжить обработку
+  // Если бочка наполнилась, то срочно остановить процесс, поставить состояние, продолжить обработку
   if( digitalRead(Cfg.FullDetectorPin) == LOW ) {
     lg.RecordActivityInt(DEV_BARREL, EVT_BARREL_STATE, S_EVT_BARREL_STATE_FULL, 0, 0); // Делаем запись в журнале активности
     bIsFull = true;
@@ -70,7 +76,7 @@ void gh_Barrel::Poll(byte NowHour, byte NowMinute) {
 
   // 4. И НАКОНЕЦ ОБРАБОТКА АВТОМАТИЧЕСКОГО РЕЖИМА
   // Если бочка наполняется, то проверяем на предельную продолжительность наполнения, выключаемся если надо. Выходим
-  if( IsFilling() and (int)(millis()-millisStartFilling)/1000/60 > Settings.MaxFillingMinute) {
+  if( IsFilling() and (int)((millis()-millisStartFilling)/1000/60) > Settings.MaxFillingMinute) {
     lg.RecordActivityInt(DEV_BARREL, EVT_BARREL_STATE, S_EVT_BARREL_STATE_MAXFILLTIMEEXCEEDED, 0, 0); // Делаем запись в журнале активности
     StopFilling();      // СРОЧНО ЗАКРЫВАЕМ КЛАПАН - ПРЕКРАЩАЕМ НАПОЛНЯТЬ БОЧКУ!!!
     return;
@@ -79,12 +85,17 @@ void gh_Barrel::Poll(byte NowHour, byte NowMinute) {
   // Если бочка опустела, начинаем наполнять. Выходим
   if( IsEmpty() and !IsFilling() ) {
     lg.RecordActivityInt(DEV_BARREL, EVT_BARREL_STATE, S_EVT_BARREL_STATE_FILLEMPTYBARREL, 0, 0); // Делаем запись в журнале активности
-    StartFilling();      // СРОЧНО ЗАКРЫВАЕМ КЛАПАН - ПРЕКРАЩАЕМ НАПОЛНЯТЬ БОЧКУ!!!
+    StartFilling(); // Открываем клапан - начинаем наполнять бочку
     return;
   }
 
   // Проверяем на таймер и начинаем наполнять, если нужно. Выходим
-  /*____________доделать это условие и доделать меню ________*/
+  if( !IsFull() and !IsFilling() )
+    if(NowHour == Settings.StartFillingHour and NowMinute == Settings.StartFillingMinute ) {
+        lg.RecordActivityInt(DEV_BARREL, EVT_BARREL_STATE, S_EVT_BARREL_STATE_STARTFILLBYTIMER, 0, 0); // Делаем запись в журнале активности        
+        StartFilling(); // Открываем клапан - начинаем наполнять бочку
+        return;
+    }
   
   // Если бочка и пуста и полна одновременно, озадаченно выходим
   if( IsEmpty() and IsFull() ) {
@@ -148,7 +159,6 @@ bool gh_Barrel::IsFull() {
 bool gh_Barrel::IsFilling() {
   return bIsValveOpen;
 }
-
 
 //---------------------------------------------------------------------
 // Проверить режим работы бочки

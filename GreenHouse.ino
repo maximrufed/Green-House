@@ -8,7 +8,7 @@
 #include "gh_RTC.h"
 #include "gh_windows.h"
 #include "gh_Logger.h"
-
+#include "gh_Watering.h"
 
 //---------------------------------------------------------------------
 //----------------------- GLOBAL OBJECTS --------------------------------
@@ -16,6 +16,7 @@
 T_Sensors TSensors(ONE_WIRE_BUS);
 Earth_Fan EarthFan(RELAY_EARTH_FAN, LED_FAN, LED_FAN_MANUAL_MODE );
 gh_RTC rtc;
+gh_Barrel WaterTank;
 GHWindow Window;
 Logger lg(SDCARD, LED_SD_ERROR);//, LOG_FILE_NAME);
 
@@ -86,16 +87,34 @@ void setup() {
   lcd.print(LCDMessage);
   delay(1000);
 
+  // Инициализируем бочку
+  GHBarrelHardwareConfig WTConfig;
+  WTConfig.RelayPin           = RELAY_BARREL_PUMP;
+  WTConfig.ModeLedPin         = LED_WT_MANUAL_MODE;
+  WTConfig.ValveOpenLedPin    = LED_WT_FILLING;
+  WTConfig.FullDetectorPin    = GC_BARREL_FULL;
+  WTConfig.EmptyDetectorPin   = GC_BARREL_EMPTY;
+
+  if (! WaterTank.Begin(WTConfig)) {
+    LOG("Couldn't initialize WaterTank");   // Инициализация логгера
+    LCDMessage = "Water Tank FAIL!";
+  } else {
+    LCDMessage = "Water Tank Ok";
+  }
+  lcd.setCursor(0, 3);
+  lcd.print(LCDMessage);
+  delay(3000);
+ 
   TSensors.Begin(1); // Интервал опроса датчиков на шине 1 минута
   EarthFan.Begin();
 
-
-  lcd.setCursor(0, 3);
+  lcd.clear();
+  lcd.setCursor(0, 1);
   lcd.print("Startup complete");
   LOG("-------------------------");
   LOG("-----SETUP COMPLETE!-----");
   LOG("-------------------------");
-  delay(5000);
+  delay(3000);
 
 }
 
@@ -111,13 +130,10 @@ void loop() {
   // Обработка быстрых устройств - каждый цикл
 
   // Обработка форточки
-  Window.WindowPoll(TSensors.GetTEarth(), TSensors.GetTAir(), rtc.IsNight());
-
-
-
+  Window.WindowPoll((int8_t)TSensors.GetTEarth(), (int8_t)TSensors.GetTAir(), rtc.IsNight());
 
   // ****************************************************
-  //Обработка медленных устройств - каждые 100 миллисекунд
+  //Обработка медленных устройств - каждые 100 миллисекунд - надосделать
   // Отработка меню
   nav.poll();
 
@@ -133,10 +149,11 @@ void loop() {
   // Обработка вентилятора - земляного аккумулятора
   EarthFan.TerraAccumulatorPoll(TSensors.GetTEarth(), TSensors.GetTAir(), rtc.IsNight());
 
-
+  // Обработка бочки
+  WaterTank.Poll(rtc.now().hour(), rtc.now().minute());
+  
   // Если делать delay, то концевые выключатели не успевают нормально отработать.
   //delay( 100 );
-
 
 }
 

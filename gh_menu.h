@@ -57,7 +57,7 @@ extern LCD_1602_RUS lcd;
 #define txtFan "Ventilator"
 #define txtWindow "Okna"
 #define txtWatering "Poliv"				//ПОЛИВ
-#define txtTank "Bochka"					//БОЧКА
+#define txtBarrel "Bochka"					//БОЧКА
 #define txtConfigurations "Configuration"	//НАСТРОЙКА
 #define txtTAir "TAir = "				//ТВозд = 
 #define txtTEarth "TEarth = "			//ТЗемл = 
@@ -79,6 +79,13 @@ extern LCD_1602_RUS lcd;
 #define txtMotorMaxWorkMillis "MotorLim"		//МаксВр работы мотора мс
 #define txtTAirOpen "T to Open"
 #define txtTAirClose "T to Close"
+
+//BARREL submenu
+#define txtStartFilling "Start Filling"       //НАПОЛН СТАРТ
+#define txtStopFilling "Stop Filling"       //НАПОЛН СТОП
+#define txtStartFillingHour "Autofill Hour"  //АВТО ВКЛ ЧАС
+#define txtStartFillingMinute "Autofill Min"  //АВТО ВКЛ МИН
+#define txtMaxFillingMinute "Max Fill Mins"  //МАКС НАПОЛН МИН 
 
 
 void setMenuSleepTime();

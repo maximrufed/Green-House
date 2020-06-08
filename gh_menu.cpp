@@ -3,10 +3,12 @@
 #include "gh_tsensors.h"
 #include "gh_earthfan.h"
 #include "gh_windows.h"
+#include "gh_Watering.h"
 
 extern T_Sensors TSensors;
 extern Earth_Fan EarthFan;
 extern GHWindow Window;
+extern gh_Barrel WaterTank;
 
 //LCD_1602_RUS lcd(LCD_ADR, 2, 1, 0, 4, 5, 6, 7, 3, POSITIVE);  
 //LCD_1602_RUS <LiquidCrystal_I2C> lcd(0x27, 16, 2);
@@ -112,19 +114,43 @@ MENU(submWindows, txtWindow, doNothing, anyEvent, wrapStyle
 ); 
 
 // ------------------------------------------------------------
-// 
-MENU(submWatering, txtWatering, doNothing, anyEvent, wrapStyle
-	, OP("Vkluchitt", doNothing, noEvent) 
-	, OP("Vyklychit", doNothing, noEvent) 
-	, EXIT("<Back")
+// ------------------------------------------------------------
+// МЕНЮ БОЧКИ
+
+result WaterTankAutoMode() {
+  WaterTank.SetManualMode(false);
+  return proceed;
+}
+
+result WaterTankStartFilling() {
+  if(!WaterTank.IsManualMode()) WaterTank.SetManualMode(true);
+  WaterTank.StartFilling();
+  return proceed;
+}
+
+result WaterTankStopFilling() {
+  if(!WaterTank.IsManualMode()) WaterTank.SetManualMode(true);
+  WaterTank.StopFilling();
+  return proceed;
+}
+
+MENU(submWaterTank, txtBarrel, doNothing, anyEvent, wrapStyle
+  , OP(txtAutoMode,WaterTankAutoMode,enterEvent)
+  , OP(txtStartFilling, WaterTankStartFilling, enterEvent) 
+  , OP(txtStopFilling, WaterTankStopFilling, enterEvent) 
+  , FIELD(WaterTank.Settings.StartFillingHour, txtStartFillingHour, "", 0, 23, 5, 1, doNothing, anyEvent, wrapStyle)
+  , FIELD(WaterTank.Settings.StartFillingMinute, txtStartFillingMinute, "", 0, 59, 5, 1, doNothing, anyEvent, wrapStyle)
+  , FIELD(WaterTank.Settings.MaxFillingMinute, txtMaxFillingMinute, "", 0, 59, 5, 1, doNothing, anyEvent, wrapStyle)
+  , EXIT("<Back")
 ); 
- 
+
 // ------------------------------------------------------------
 // 
-MENU(submWaterTank, txtTank, doNothing, anyEvent, wrapStyle
-	, OP("Napolnitt", doNothing, noEvent) 
-	, EXIT("<Back")
+MENU(submWatering, txtWatering, doNothing, anyEvent, wrapStyle
+  , OP("POLIT", doNothing, noEvent) 
+  , EXIT("<Back")
 ); 
+ 
 
 // ------------------------------------------------------------
 // 
