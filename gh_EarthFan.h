@@ -47,9 +47,6 @@ class Earth_Fan
 	byte ModeLedPin = 0xFF;
 	bool bIsOn;
 	bool bIsManualMode;
-
-  void SetNewFileName(byte CurrentDayOfMonth);    // Генерируем новое имя файла
-
 };
 
 #endif

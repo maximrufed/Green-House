@@ -24,11 +24,8 @@ bool Logger::Begin(gh_RTC *gh_rtc) {
   LOG("Logger Begin");
   rtc = gh_rtc;
 
-  // Устанавливаем имя файла для журналов - каждый запуск новый файл либо если в течение одного дня, то туда же писать.
-  strcpy(ActivityLogFile, rtc->now().toString(ActivityLogFileNamePattern));
-  LOG(ActivityLogFile);
-  strcpy(SensorsLogFile, rtc->now().toString(SensorsLogFileNamePattern));
-  LOG(SensorsLogFile);
+  // Устанавливаем имя файла для журналов - каждый день новый файл. 
+  SetFileNames();
 
   if (!SD.begin(SDPin)) {
     LOG("Could not initialize SDCard");
@@ -198,6 +195,9 @@ uint32_t Logger::SaveRecordToFile(char *FileName, uint32_t prevFileSize, String 
   // Добавляем дату и время в запись журнала
   sFullRecord = (String)rtc->now().toString(DTFormat) + sRecord;
 
+  // Если текущая дата не совпадает с датой в имени файла, 
+  // то обновляем имена файлов - начинаем новые логи каждый день
+  if( FileNameDate != rtc->now().day() ) SetFileNames();
   
   currentFile = SD.open(FileName, FILE_WRITE);
   if (!currentFile) {
@@ -223,5 +223,17 @@ uint32_t Logger::SaveRecordToFile(char *FileName, uint32_t prevFileSize, String 
   if(!currentFile.close()) SDReinit();
 
   return newFileSize;
+  
+}
+
+//---------------------------------------------------------------------
+// SetFileNames
+
+void Logger::SetFileNames( void ) {
+  FileNameDate = rtc->now().day();
+  strcpy(ActivityLogFile, rtc->now().toString(ActivityLogFileNamePattern));
+  LOG(ActivityLogFile);
+  strcpy(SensorsLogFile, rtc->now().toString(SensorsLogFileNamePattern));
+  LOG(SensorsLogFile);
   
 }

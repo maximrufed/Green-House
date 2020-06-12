@@ -44,7 +44,8 @@ class Logger
   void SDReinit();
   void setErr(bool bErr, uint8_t errLoggerSubEventCode);
   uint32_t SaveRecordToFile(char *FileName, uint32_t prevFileSize, String sRecord);
-  
+  void SetFileNames();
+
   SdFat SD;
   File currentFile;               // Открытый файл
 
@@ -67,6 +68,7 @@ class Logger
   
   char ActivityLogFileNamePattern[13] = "acYYMMDD.csv";
   char SensorsLogFileNamePattern[13] = "seYYMMDD.csv";
+  byte FileNameDate;
 };
 
 #endif
