@@ -16,10 +16,15 @@ void gh_Config::Begin(GHWindowSettings *WinSettings, TerraAccumulatorSettings *T
 //---------------------------------------------------------------------
 // Poll
 void gh_Config::Poll(byte Minute) {
-  // Сохраняем конфигурацию каждый полчаса
-  if(Minute%30 == 0) {
+  static bool bNeedToSave=true;
+  // Сохраняем конфигурацию каждые полчаса
+  if(Minute%30 == 0 and bNeedToSave) {
     lg.RecordActivityInt(DEV_BOARD, EVT_BOARD_EEPROM, S_EVT_BOARD_EEPROM_SAVESETTINGSBYTIMER, 0, 0); // Делаем запись в журнале активности
     EEPROM_UpdateSettings();
+    bNeedToSave = false;
+  } 
+  if(Minute%30 == 1) {
+    bNeedToSave = true;
   }
 }
 
