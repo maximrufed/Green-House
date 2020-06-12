@@ -35,9 +35,9 @@ bool GHWindow::Begin(GHWindowHardwareConfig HWConfig) {
   if( WinCfg.PinLimitSwitchClosed != -1 && digitalRead(WinCfg.PinLimitSwitchClosed) == HIGH )
       WindowStatus = OPEN;
 
-	WinSettings.MotorMaxWorkMillis = WINDOW_MOTOR_MAX_WORK_MILLIS;
-	WinSettings.TAirOpen = 30;      // Температура воздуха, при достижении которой 
-	WinSettings.TAirClose = 18;     // Температура воздуха, при достижении которой 
+	Settings.MotorMaxWorkMillis = WINDOW_MOTOR_MAX_WORK_MILLIS;
+	Settings.TAirOpen = 30;      // Температура воздуха, при достижении которой 
+	Settings.TAirClose = 18;     // Температура воздуха, при достижении которой 
 
 	if(WinCfg.PinRelay1 == -1 || WinCfg.PinRelay2 == -1 || WinCfg.PinRelayPow == -1) { 
 		// Минимальная конфигурация оборудования для управления окном - три реле мотора
@@ -144,17 +144,17 @@ void GHWindow::WindowPoll(int8_t TEarth, int8_t TAir, bool IsNight) {
   // Если режим работы не автоматический, то на этом месте заканчиваем обработку
   if(IsManualMode())  return;
 
-  //LOG("TAir: "+(String)TAir+"; Winsetting: "+(String)WinSettings.TAirOpen);
+  //LOG("TAir: "+(String)TAir+"; Winsetting: "+(String)Settings.TAirOpen);
 	// Обработка автоматического режима
   //LOG("WinStatus: " + (String)WindowStatus + " = " + (String)CLOSED + "; IsNight: " + (String)IsNight);
-  if( TAir >= WinSettings.TAirOpen and WindowStatus == CLOSED and !IsNight) {
+  if( TAir >= Settings.TAirOpen and WindowStatus == CLOSED and !IsNight) {
     LOG("Открываем окно, т.к. достигнута температура открытия");
     // Делаем запись в журнале активности
     lg.RecordActivityInt(DEV_SIDE_WINDOW, EVT_SW_START, S_EVT_SW_START_OPENBYTEMP, (int8_t)TEarth, (int8_t)TAir);
     Open();
     return;
   }
-  if( TAir < WinSettings.TAirClose and WindowStatus == OPEN) {
+  if( TAir < Settings.TAirClose and WindowStatus == OPEN) {
     LOG("Закрываем окно, т.к. достигнута температура закрытия");
     // Делаем запись в журнале активности
     lg.RecordActivityInt(DEV_SIDE_WINDOW, EVT_SW_START, S_EVT_SW_START_CLOSEBYTEMP, (int8_t)TEarth, (int8_t)TAir);
@@ -264,7 +264,7 @@ void GHWindow::CompleteOperationByTimerOrLS() {
 		}
 	}
 
-	if( millis() - millisInOperation > WinSettings.MotorMaxWorkMillis ) {
+	if( millis() - millisInOperation > Settings.MotorMaxWorkMillis ) {
 		// Превышено время работы мотора выше лимита. Пора заканчивать
 		LOG("Превышено время работы мотора выше лимита. Пора заканчивать и ставить статус OPEN или CLOSED");
 		if( WindowStatus == OPENING ) {

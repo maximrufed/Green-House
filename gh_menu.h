@@ -87,6 +87,8 @@ extern LCD_1602_RUS lcd;
 #define txtStartFillingMinute "Autofill Min"  //АВТО ВКЛ МИН
 #define txtMaxFillingMinute "Max Fill Mins"  //МАКС НАПОЛН МИН 
 
+//CONFIG submenu
+#define txtConfigToEEPROM "Save Settings EEPROM" //СОХР НАСТР В EEPROM
 
 void setMenuSleepTime();
 result ScreenSaver(menuOut&, idleEvent);

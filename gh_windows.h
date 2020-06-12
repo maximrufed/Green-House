@@ -31,8 +31,8 @@ extern Logger lg;
 struct GHWindowSettings					// Структура для хранения внутренних настроек окна
 {
 	uint16_t MotorMaxWorkMillis; 	// Время работы мотора в секундах для полного открытия/закрытия окна
-  int8_t TAirOpen;             // Температура воздуха, при достижении которой 
-  int8_t TAirClose;            // Температура воздуха, при достижении которой 
+  int8_t TAirOpen;             // Температура воздуха открытия
+  int8_t TAirClose;            // Температура воздуха закрытия
 };
 
 struct GHWindowHardwareConfig				// Конфигурация пинов оборудования окна
@@ -62,7 +62,7 @@ class GHWindow
 	bool IsMotorOn();						// Возврат True если мотор включен
 	bool IsManualMode();					// Проверить режим работы окна
 	bool IsAlarmOn();						// Возврат True если окно находится в режиме тревоги
-	GHWindowSettings WinSettings;			// Настройки окна
+	GHWindowSettings Settings;			// Настройки окна
   
   private:
   const char ObjectName[7] = "Window";      // используется для логгера

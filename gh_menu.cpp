@@ -4,11 +4,15 @@
 #include "gh_earthfan.h"
 #include "gh_windows.h"
 #include "gh_Watering.h"
+#include "gh_Config.h"
+#include "gh_Logger.h"
 
+extern Logger lg;
 extern T_Sensors TSensors;
 extern Earth_Fan EarthFan;
 extern GHWindow Window;
 extern gh_Barrel WaterTank;
+extern gh_Config ControllerConfiguration;
 
 //LCD_1602_RUS lcd(LCD_ADR, 2, 1, 0, 4, 5, 6, 7, 3, POSITIVE);  
 //LCD_1602_RUS <LiquidCrystal_I2C> lcd(0x27, 16, 2);
@@ -74,12 +78,12 @@ MENU(submFan, txtFan, doNothing, anyEvent, wrapStyle
 	,OP(txtAutoMode,FanAutoMode,enterEvent)
 	,OP(txtOn,FanOn,enterEvent)
     ,OP(txtOff,FanOff,enterEvent)
-	, FIELD(EarthFan.TASettings.TAirStartCooling, txtTAirStartCooling, "C", 0, 60, 10, 1, doNothing, anyEvent, wrapStyle)
-	, FIELD(EarthFan.TASettings.TAirStopCooling, txtTAirStopCooling, "C", 0, 60, 10, 1, doNothing, anyEvent, wrapStyle)
-	, FIELD(EarthFan.TASettings.TAirStartHeating, txtTAirStartHeating, "C", 0, 60, 10, 1, doNothing, anyEvent, wrapStyle)
-	, FIELD(EarthFan.TASettings.TAirStopHeating, txtTAirStopHeating, "C", 0, 60, 10, 1, doNothing, anyEvent, wrapStyle)
-	, FIELD(EarthFan.TASettings.DTFanOn, txtDTFanOn, "C", 0, 60, 10, 1, doNothing, anyEvent, wrapStyle)
-	, FIELD(EarthFan.TASettings.DTFanOff, txtDTFanOff, "C", 0, 60, 10, 1, doNothing, anyEvent, wrapStyle)
+	, FIELD(EarthFan.Settings.TAirStartCooling, txtTAirStartCooling, "C", 0, 60, 10, 1, doNothing, anyEvent, wrapStyle)
+	, FIELD(EarthFan.Settings.TAirStopCooling, txtTAirStopCooling, "C", 0, 60, 10, 1, doNothing, anyEvent, wrapStyle)
+	, FIELD(EarthFan.Settings.TAirStartHeating, txtTAirStartHeating, "C", 0, 60, 10, 1, doNothing, anyEvent, wrapStyle)
+	, FIELD(EarthFan.Settings.TAirStopHeating, txtTAirStopHeating, "C", 0, 60, 10, 1, doNothing, anyEvent, wrapStyle)
+	, FIELD(EarthFan.Settings.DTFanOn, txtDTFanOn, "C", 0, 60, 10, 1, doNothing, anyEvent, wrapStyle)
+	, FIELD(EarthFan.Settings.DTFanOff, txtDTFanOff, "C", 0, 60, 10, 1, doNothing, anyEvent, wrapStyle)
 	, EXIT("<Back")
 ); 
 
@@ -107,9 +111,9 @@ MENU(submWindows, txtWindow, doNothing, anyEvent, wrapStyle
 	, OP(txtAutoMode,WindowAutoMode,enterEvent)
 	, OP(txtOpen, WindowOpen, enterEvent) 
 	, OP(txtClose, WindowClose, enterEvent) 
-	, FIELD(Window.WinSettings.MotorMaxWorkMillis, txtMotorMaxWorkMillis, "ms", 400, 10000, 1000, 50, doNothing, anyEvent, wrapStyle)
-  , FIELD(Window.WinSettings.TAirOpen, txtTAirOpen, "C", 0, 40, 5, 1, doNothing, anyEvent, wrapStyle)
-  , FIELD(Window.WinSettings.TAirClose, txtTAirClose, "C", 0, 40, 5, 1, doNothing, anyEvent, wrapStyle)
+	, FIELD(Window.Settings.MotorMaxWorkMillis, txtMotorMaxWorkMillis, "ms", 400, 10000, 1000, 50, doNothing, anyEvent, wrapStyle)
+  , FIELD(Window.Settings.TAirOpen, txtTAirOpen, "C", 0, 40, 5, 1, doNothing, anyEvent, wrapStyle)
+  , FIELD(Window.Settings.TAirClose, txtTAirClose, "C", 0, 40, 5, 1, doNothing, anyEvent, wrapStyle)
 	, EXIT("<Back")
 ); 
 
@@ -145,7 +149,7 @@ MENU(submWaterTank, txtBarrel, doNothing, anyEvent, wrapStyle
 ); 
 
 // ------------------------------------------------------------
-// 
+// меню Полива
 MENU(submWatering, txtWatering, doNothing, anyEvent, wrapStyle
   , OP("POLIT", doNothing, noEvent) 
   , EXIT("<Back")
@@ -153,11 +157,20 @@ MENU(submWatering, txtWatering, doNothing, anyEvent, wrapStyle
  
 
 // ------------------------------------------------------------
-// 
+// Меню Конфигурации
+
+
+result SaveConfigToEEPROM() {
+  lg.RecordActivityInt(DEV_BOARD, EVT_BOARD_EEPROM, S_EVT_BOARD_EEPROM_SAVESETTINGSBYMENU, 0, 0); // Делаем запись в журнале активности
+  ControllerConfiguration.EEPROM_UpdateSettings();
+  return proceed;
+}
+
 
 MENU(submConfigurations, txtConfigurations, doNothing, anyEvent, wrapStyle
 	, FIELD(nav.timeOut, "Screensaver", "sec", 10, 255, 100, 10, doNothing, anyEvent, wrapStyle)
 	, FIELD(screenOffTimeOut, "Screen Off", "sec", 60, 600, 100, 10, doNothing, anyEvent, wrapStyle)
+  , OP(txtConfigToEEPROM, SaveConfigToEEPROM, enterEvent) 
 	, EXIT("<Back")
 ); 
 

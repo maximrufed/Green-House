@@ -34,11 +34,22 @@
 // -----------------------------------------------------------------------
 #define EVT_BOARD_ON                0x00      // Start operation
 #define S_EVT_BOARD_ON_JUSTON       0x01      // Start operation
+
+#define EVT_BOARD_EEPROM                              0x02  // EEPROM
+#define S_EVT_BOARD_EEPROM_GETSETTINGSEMPTYEEPROM     0x03  // Считывание настроек из EEPROM не удалось! EEPROM не инициализирован
+#define S_EVT_BOARD_EEPROM_GETSETTINGSOK              0x04  // Настроки считаны из EEPROM
+#define S_EVT_BOARD_EEPROM_SAVESETTINGS               0x05  // Настроки записаны в EEPROM
+#define S_EVT_BOARD_EEPROM_SAVESETTINGSBYTIMER        0x06  // Запись настроек в EEPROM по таймеру
+#define S_EVT_BOARD_EEPROM_SAVESETTINGSBYMENU         0x07  // Запись настроек в EEPROM через меню
+
 #define EVT_BOARD_SD                0x08      // SDCard
 #define S_EVT_BOARD_SD_REINIT       0x09    // Успешный перезапуск SDCard
 #define S_EVT_BOARD_SD_ERRFILESIZE  0x0A    // ОШИБКА! Файл журнала не растет. Требуется перезапуск SDCard
 #define S_EVT_BOARD_SD_INITFAIL     0x0B    // ОШИБКА! Инициализация SDCard не успешна
 #define S_EVT_BOARD_SD_ERRFILEOPEN  0x0C    // ОШИБКА! Файл не может быть открыт     
+
+   
+
 
 // -----------------------------------------------------------------------
 // Коды событий Земляного Аккумулятора (Вентилятора)
@@ -86,7 +97,7 @@
 // -----------------------------------------------------------------------
 // Коды событий Оборудования Полива
 // -----------------------------------------------------------------------
-#define EVT_BARREL_VALVE              0x80      // Открытие клапана
+#define EVT_BARREL_VALVE              0x80      // Клапан
 #define S_EVT_BARREL_VALVE_OPEN       0x81      // Открытие клапана
 #define S_EVT_BARREL_VALVE_VCLOSE     0x82      // Закрытие клапана
 
@@ -100,6 +111,6 @@
 #define S_EVT_BARREL_STATE_ERRFULLANDEMPTY      0x87 // Ошибочное состояние. Бочка и пуста и полна одновременно
 #define S_EVT_BARREL_STATE_STARTFILLBYTIMER     0x88 // Сработал таймер. Начато наполнение бочки
 
-#define EVT_BARREL_SETMODE            0xA0      // Установка режима работы бочки
-#define S_EVT_BARREL_SETMODE_AUTO     0xA1      // Переход в автоматический режим управления бочкой
-#define S_EVT_BARREL_SETMODE_MANUAL   0xA2      // Переход в ручной режим управления бочкой
+#define EVT_BARREL_SETMODE            0x90      // Установка режима работы бочки
+#define S_EVT_BARREL_SETMODE_AUTO     0x91      // Переход в автоматический режим управления бочкой
+#define S_EVT_BARREL_SETMODE_MANUAL   0x92      // Переход в ручной режим управления бочкой

@@ -9,6 +9,7 @@
 #include "gh_windows.h"
 #include "gh_Logger.h"
 #include "gh_Watering.h"
+#include "gh_Config.h"
 
 //---------------------------------------------------------------------
 //----------------------- GLOBAL OBJECTS --------------------------------
@@ -19,6 +20,7 @@ gh_RTC rtc;
 gh_Barrel WaterTank;
 GHWindow Window;
 Logger lg(SDCARD, LED_SD_ERROR);//, LOG_FILE_NAME);
+gh_Config ControllerConfiguration;
 
 
 //---------------------------------------------------------------------
@@ -107,7 +109,8 @@ void setup() {
  
   TSensors.Begin(1); // Интервал опроса датчиков на шине 1 минута
   EarthFan.Begin();
-
+  ControllerConfiguration.Begin(&Window.Settings, &EarthFan.Settings); // Инициализируем объект сохранения конфигурации
+  
   lcd.clear();
   lcd.setCursor(0, 1);
   lcd.print("Startup complete");
@@ -151,48 +154,10 @@ void loop() {
 
   // Обработка бочки
   WaterTank.Poll(rtc.now().hour(), rtc.now().minute());
-  
+
+  // Сохранение конфигурации в EEPROM и SDCard
+  ControllerConfiguration.Poll(rtc.now().minute());
   // Если делать delay, то концевые выключатели не успевают нормально отработать.
   //delay( 100 );
 
 }
-
-/*
-  void loop() {
-  static unsigned long LastMillis = millis();
-
-  // *****************************************
-  // Обработка быстрых устройств - каждый цикл
-
-  // Обработка форточки
-  Window.WindowPoll(TSensors.GetTEarth(), TSensors.GetTAir(), rtc.IsNight());
-
-
-
-  if( millis() - LastMillis > 100) {
-    LastMillis = millis();
-
-    // ****************************************************
-    //Обработка медленных устройств - каждые 100 миллисекунд
-    // Отработка меню
-    nav.poll();
-
-    // Запрос обновления значений датчиков на шине
-    if( TSensors.UpdateSensorsOnBus() ){
-      // Перерисовать Screensaver
-      nav.idleChanged=true;
-    }
-
-    // Обработка вентилятора - земляного аккумулятора
-    EarthFan.TerraAccumulatorPoll(TSensors.GetTEarth(), TSensors.GetTAir(), rtc.IsNight());
-
-  }
-
-  // Если делать delay, то концевые выключатели не успевают нормально отработать.
-  //delay( 100 );
-
-
-  }
-  //--------------------------------------------------------------------------------------
-
-*/

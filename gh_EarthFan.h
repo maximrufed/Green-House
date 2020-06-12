@@ -39,7 +39,7 @@ class Earth_Fan
 	void TerraAccumulatorPoll(float TEarth, float TAir, bool IsNight);			// Обработка логики работы земляного аккумулятора тепла
 	void SetManualMode(bool bMode);			// Установить/снять ручной режим работы вентилятора
 	bool IsManualMode();					// Проверить режим работы вентилятора
-	TerraAccumulatorSettings TASettings;	// Настройки земляного аккумулятора тепла
+	TerraAccumulatorSettings Settings;	// Настройки земляного аккумулятора тепла
 
   private:
 	byte RelayPin = 0xFF;
