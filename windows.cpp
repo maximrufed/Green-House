@@ -140,38 +140,34 @@ void GHWindow::WindowPoll(int8_t TEarth, int8_t TAir, bool IsNight) {
 		CompleteOperationByTimerOrLS();
     return;
 	}
-  //LOG("1");
+
+  // Если режим работы не автоматический, то на этом месте заканчиваем обработку
+  if(IsManualMode())  return;
+
   //LOG("TAir: "+(String)TAir+"; Winsetting: "+(String)WinSettings.TAirOpen);
 	// Обработка автоматического режима
-	if( !IsManualMode() ) {
-    //LOG("2");
-    //LOG("WinStatus: " + (String)WindowStatus + " = " + (String)CLOSED + "; IsNight: " + (String)IsNight);
-    if( TAir >= WinSettings.TAirOpen and WindowStatus == CLOSED and !IsNight) {
-      LOG("Открываем окно, т.к. достигнута температура открытия");
-      // Делаем запись в журнале активности
-      lg.RecordActivityInt(DEV_SIDE_WINDOW, EVT_SW_START, S_EVT_SW_START_OPENBYTEMP, (int8_t)TEarth, (int8_t)TAir);
-      Open();
-      return;
-    }
-    //LOG("3");
-    if( TAir < WinSettings.TAirClose and WindowStatus == OPEN) {
-      LOG("Закрываем окно, т.к. достигнута температура закрытия");
-      // Делаем запись в журнале активности
-      lg.RecordActivityInt(DEV_SIDE_WINDOW, EVT_SW_START, S_EVT_SW_START_CLOSEBYTEMP, (int8_t)TEarth, (int8_t)TAir);
-      Close();
-      return;
-    }
-    //LOG("4");
-    if( IsNight and WindowStatus != CLOSED) {
-      LOG("Закрываем окно, т.к. ночь на дворе");
-      // Делаем запись в журнале активности
-      lg.RecordActivityInt(DEV_SIDE_WINDOW, EVT_SW_START, S_EVT_SW_START_CLOSEFORNIGHT, 0, 0);
-      Close();
-      return;
-    }
-    //LOG("5");
-	}
-  //LOG("6");
+  //LOG("WinStatus: " + (String)WindowStatus + " = " + (String)CLOSED + "; IsNight: " + (String)IsNight);
+  if( TAir >= WinSettings.TAirOpen and WindowStatus == CLOSED and !IsNight) {
+    LOG("Открываем окно, т.к. достигнута температура открытия");
+    // Делаем запись в журнале активности
+    lg.RecordActivityInt(DEV_SIDE_WINDOW, EVT_SW_START, S_EVT_SW_START_OPENBYTEMP, (int8_t)TEarth, (int8_t)TAir);
+    Open();
+    return;
+  }
+  if( TAir < WinSettings.TAirClose and WindowStatus == OPEN) {
+    LOG("Закрываем окно, т.к. достигнута температура закрытия");
+    // Делаем запись в журнале активности
+    lg.RecordActivityInt(DEV_SIDE_WINDOW, EVT_SW_START, S_EVT_SW_START_CLOSEBYTEMP, (int8_t)TEarth, (int8_t)TAir);
+    Close();
+    return;
+  }
+  if( IsNight and WindowStatus != CLOSED and WindowStatus != CLOSING) {
+    LOG("Закрываем окно, т.к. ночь на дворе");
+    // Делаем запись в журнале активности
+    lg.RecordActivityInt(DEV_SIDE_WINDOW, EVT_SW_START, S_EVT_SW_START_CLOSEFORNIGHT, 0, 0);
+    Close();
+    return;
+  }
 }
 
 //---------------------------------------------------------------------

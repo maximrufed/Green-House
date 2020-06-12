@@ -54,9 +54,11 @@ void gh_Barrel::Poll(byte NowHour, byte NowMinute) {
   // 1. САМЫМ ПЕРВЫМ ДЕЛОМ
   // Если бочка наполнилась, то срочно остановить процесс, поставить состояние, продолжить обработку
   if( digitalRead(Cfg.FullDetectorPin) == LOW ) {
-    lg.RecordActivityInt(DEV_BARREL, EVT_BARREL_STATE, S_EVT_BARREL_STATE_FULL, 0, 0); // Делаем запись в журнале активности
-    bIsFull = true;
-    StopFilling();      // СРОЧНО ЗАКРЫВАЕМ КЛАПАН - ПРЕКРАЩАЕМ НАПОЛНЯТЬ БОЧКУ!!!
+    if(!bIsFull) { // Если мы уже знаем, что бочка наполнена, то и делать ничего больше не будем
+      lg.RecordActivityInt(DEV_BARREL, EVT_BARREL_STATE, S_EVT_BARREL_STATE_FULL, 0, 0); // Делаем запись в журнале активности
+      bIsFull = true;
+      StopFilling();      // СРОЧНО ЗАКРЫВАЕМ КЛАПАН - ПРЕКРАЩАЕМ НАПОЛНЯТЬ БОЧКУ!!!
+    }
   } else if (bIsFull) { // Может быть уровень упал и пора отменить состояние наполненности??
     lg.RecordActivityInt(DEV_BARREL, EVT_BARREL_STATE, S_EVT_BARREL_STATE_NOTFULL, 0, 0); // Делаем запись в журнале активности
     bIsFull = false;
@@ -64,9 +66,11 @@ void gh_Barrel::Poll(byte NowHour, byte NowMinute) {
 
   // 2. ДАЛЕЕ ОБНОВЛЯЕМ СОСТОЯНИЕ ОПУСТОШЕНИЯ
   if( digitalRead(Cfg.EmptyDetectorPin) == LOW ) { // Сработал датчик пустой бочки
-    lg.RecordActivityInt(DEV_BARREL, EVT_BARREL_STATE, S_EVT_BARREL_STATE_EMPTY, 0, 0); // Делаем запись в журнале активности
-    bIsEmpty = true;
-  } else if (bIsFull) { // Может быть уровень повысился и пора отменить состояние пустоты??
+    if( !bIsEmpty ) { // Если мы уже знаем, что бочка пуста, то и делать ничего больше не будем
+      lg.RecordActivityInt(DEV_BARREL, EVT_BARREL_STATE, S_EVT_BARREL_STATE_EMPTY, 0, 0); // Делаем запись в журнале активности
+      bIsEmpty = true;
+    }
+  } else if (bIsEmpty) { // Может быть уровень повысился и пора отменить состояние пустоты??
     lg.RecordActivityInt(DEV_BARREL, EVT_BARREL_STATE, S_EVT_BARREL_STATE_NOTEMPTY, 0, 0); // Делаем запись в журнале активности
     bIsEmpty = false;
   }
@@ -83,8 +87,8 @@ void gh_Barrel::Poll(byte NowHour, byte NowMinute) {
 
   // 5. И НАКОНЕЦ ОБРАБОТКА АВТОМАТИЧЕСКОГО РЕЖИМА
   
-  // Если бочка опустела, начинаем наполнять. Выходим
-  if( IsEmpty() and !IsFilling() ) {
+  // Если бочка опустела, сразу начинаем наполнять никого не спрашиваем. Выходим
+  if( bIsEmpty and !IsFilling() ) {
     lg.RecordActivityInt(DEV_BARREL, EVT_BARREL_STATE, S_EVT_BARREL_STATE_FILLEMPTYBARREL, 0, 0); // Делаем запись в журнале активности
     StartFilling(); // Открываем клапан - начинаем наполнять бочку
     return;

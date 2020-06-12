@@ -33,7 +33,7 @@ class Earth_Fan
 	Earth_Fan(byte pinFan, byte pinFanLed);
 	Earth_Fan(byte pinFan, byte pinFanLed, byte pinFanModeLed);
 	void Begin();
-	bool IsFanOn();							// Возврат True если вентилятор включен
+	bool IsFanOn();						// Возврат True если вентилятор включен
 	void On();								// Включить вентилятор
 	void Off();								// Выключить вентилятор
 	void TerraAccumulatorPoll(float TEarth, float TAir, bool IsNight);			// Обработка логики работы земляного аккумулятора тепла
