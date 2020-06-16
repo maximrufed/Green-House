@@ -56,8 +56,9 @@ extern LCD_1602_RUS lcd;
 */
 #define txtFan "Ventilator"
 #define txtWindow "Okna"
-#define txtWatering "Poliv"				//ПОЛИВ
 #define txtBarrel "Bochka"					//БОЧКА
+#define txtWaterLine1 "WaterLine 1"        //ГРЯДКА 1
+#define txtWaterLine2 "WaterLine 2"        //ГРЯДКА 2
 #define txtConfigurations "Configuration"	//НАСТРОЙКА
 #define txtTAir "TAir = "				//ТВозд = 
 #define txtTEarth "TEarth = "			//ТЗемл = 
@@ -86,6 +87,16 @@ extern LCD_1602_RUS lcd;
 #define txtStartFillingHour "Autofill Hour"  //АВТО ВКЛ ЧАС
 #define txtStartFillingMinute "Autofill Min"  //АВТО ВКЛ МИН
 #define txtMaxFillingMinute "Max Fill Mins"  //МАКС НАПОЛН МИН 
+
+//WATERLINE submenu
+#define txtWateringStartHour "Start Hour" // СТАРТ ЧАС
+#define txtWateringStartMin "Start Min" // СТАРТ МИНУТА
+#define txtWateringIntervalDays "Interval Days" // ИНТЕРВАЛ ДНЕЙ
+#define txtWateringDurationMins "Duration Min" //ДЛИТЕЛЬНОСТЬ МИН
+#define txtResetWateringDate "Reset Schedule" //СБРОС РАСПИСАНИЕ
+#define txtStartWatering "Start Watering" //ПОЛИВ ВКЛ
+#define txtStopWatering "Stop Watering" //ПОЛИВ ВЫКЛ
+
 
 //CONFIG submenu
 #define txtConfigToEEPROM "Save Settings EEPROM" //СОХР НАСТР В EEPROM

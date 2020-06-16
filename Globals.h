@@ -2,7 +2,7 @@
 // Пины на плате Ардуино
 // *************************************************************
 
-#define PRODUCTION_ENV  // comment to switch to TEST pins
+//#define PRODUCTION_ENV  // comment to switch to TEST pins
 
 #ifdef PRODUCTION_ENV
   // **************************************************
@@ -17,12 +17,14 @@
   // Плата светодиодов (Led - L)
   #define LED_FAN_MANUAL_MODE     42  // Индикатор ручного режима вентилятора
   #define LED_FAN                 40  // Индикатор работы вентилятора
-  #define LED_WINDOW_MANUAL_MODE  38  // Индикатор ручного режима окна
-  #define LED_WINDOW              36  // Индикатор работы мотора окна
-  #define LED_SD_ERROR            34  // Индикатор ошибки чтения SD карты (управляется by Logger)
-  #define L3                      32
-  #define LED_WT_MANUAL_MODE      30  // Индикатор ручного режима бочки
-  #define LED_WT_FILLING          28  // Индикатор наполнения бочки
+  #define LED_WT_MANUAL_MODE      38  // Индикатор ручного режима бочки
+  #define LED_WT_FILLING          36  // Индикатор наполнения бочки
+  //#define LED_WINDOW_MANUAL_MODE  38  // Индикатор ручного режима окна
+  //#define LED_WINDOW              36  // Индикатор работы мотора окна
+  #define LED_WL1_MANUAL_MODE     34  // Индикатор ручного режима линии полива 1
+  #define LED_WL1_WATERING        32  // Индикатор работы линии полива 1
+  #define LED_WL2_MANUAL_MODE     30  // Индикатор ручного режима линии полива 2
+  #define LED_WL2_WATERING        28  // Индикатор работы линии полива 2
   
   // Плата бортовая (SideBoard - SB)- к ней коммунируется UTP8 с датчиками и форточкой
   #define GC_BARREL_FULL          39    // Геркон наполненной бочки
@@ -75,7 +77,18 @@
   #define L3                      31
   #define LED_WT_MANUAL_MODE      31  // Индикатор ручного режима бочки
   #define LED_WT_FILLING          31  // Индикатор наполнения бочки
-  
+
+  #define LED_FAN_MANUAL_MODE     31  // Индикатор ручного режима вентилятора
+  #define LED_FAN                 31  // Индикатор работы вентилятора
+  #define LED_WT_MANUAL_MODE      31  // Индикатор ручного режима бочки
+  #define LED_WT_FILLING          31  // Индикатор наполнения бочки
+  //#define LED_WINDOW_MANUAL_MODE  31  // Индикатор ручного режима окна
+  //#define LED_WINDOW              31  // Индикатор работы мотора окна
+  #define LED_WL1_MANUAL_MODE     34  // Индикатор ручного режима линии полива 1
+  #define LED_WL1_WATERING        36  // Индикатор работы линии полива 1
+  #define LED_WL2_MANUAL_MODE     31  // Индикатор ручного режима линии полива 2
+  #define LED_WL2_WATERING        31  // Индикатор работы линии полива 2
+
   // Плата вспомогательная бортовая - к ней коммунируется UTP8 с датчиками и форточкой
   #define GC_BARREL_FULL          23    // Геркон наполненной бочки
   #define GC_BARREL_EMPTY         25    // Геркон опустевшей бочки
@@ -131,10 +144,17 @@
 #define BARREL_START_FILLING_MINUTE   0     // время начала наполнения бочки
 #define BARREL_MAX_FILLING_MINUTES    120   // максимальное время вкючения клапана (аварийное отключение)
 
+// Меню полива
+#define WATERING_LINE_START_DATE      "16/06/2020";         // первая дата полива
+#define WATERING_LINE_INTERVAL_DAYS   1; // интервал полива в днях
+#define WATERING_LINE_START_TIME      "16:00";         // время начала полива
+#define WATERING_LINE_DURATION_MINS   10;   // продолжительность полива (мин)
+
+
 // Меню полива - грядка 1
-#define SEEDBAD1_WATERING_DAY         1     // дни полива (каждый день 1 - каждый 20й день - 20)
+#define SEEDBAD1_INTERVAL_DAYS         1     // дни полива (каждый день 1 - каждый 20й день - 20)
 #define SEEDBAD1_WATERING_START_HOUR  17    // время начала полива
-#define SEEDBAD1_WATERING_START_MINUTE 0    // время начала полива
+#define SEEDBAD1_WATERING_START_MIN    0    // время начала полива
 #define SEEDBAD1_WATERING_DURATION_MINS 30  // продолжительность полива (минут)
 
 // Меню полива - грядка 2

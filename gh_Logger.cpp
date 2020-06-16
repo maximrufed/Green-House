@@ -204,7 +204,7 @@ uint32_t Logger::SaveRecordToFile(char *FileName, uint32_t prevFileSize, String 
     LOG("Failed to open file");
     setErr(true, S_EVT_BOARD_SD_ERRFILEOPEN);
     SDReinit();
-    return;
+    return 0;
   }
   bErrFlag = false;
   if(currentFile.fileSize() != prevFileSize) {

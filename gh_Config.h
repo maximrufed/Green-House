@@ -16,6 +16,7 @@
 #include <avr/eeprom.h>
 #include "gh_EarthFan.h"
 #include "gh_windows.h"
+#include "gh_Watering.h"
 #include "gh_Logger.h"
 extern Logger lg;
 
@@ -24,19 +25,20 @@ struct gh_SettingsRefs
   //byte T;     // 
   GHWindowSettings *Window;
   TerraAccumulatorSettings *TerraAccumulator;
+  BarrelSettings *WaterTank;
 };
 
 class gh_Config
 {
   public:
-  void Begin(GHWindowSettings *WinSettings, TerraAccumulatorSettings *TASettings);
+  void Begin(GHWindowSettings *WinSettings, TerraAccumulatorSettings *TASettings, BarrelSettings *WaterTankSettings);
   void Poll(byte Minute);      
   void EEPROM_UpdateSettings();
   void EEPROM_GetSettings();
 
   gh_SettingsRefs SettingsRefs;
   private:
-  uint16_t EEPROMAdresses[2];
+  uint16_t EEPROMAdresses[3];
 };
 
 #endif

@@ -26,8 +26,7 @@
 #define DEV_SIDE_WINDOW         2     // Боковое окно
 #define DEV_DOOR_WINDOW         3     // Торцевое окно
 #define DEV_BARREL              4     // Бочка
-#define DEV_SEEDBED1            5     // Грядка 1
-#define DEV_SEEDBED2            6     // Грядка 2
+#define DEV_WATERING_LINE       5     // Линия полива грядки
 
 // -----------------------------------------------------------------------
 // Коды событий МикроКонтроллера
@@ -95,22 +94,37 @@
 #define S_EVT_SW_ALARM_OFF            0x72      // Сброс флага тревоги окна
 
 // -----------------------------------------------------------------------
-// Коды событий Оборудования Полива
+// Коды событий Бочки
 // -----------------------------------------------------------------------
 #define EVT_BARREL_VALVE              0x80      // Клапан
 #define S_EVT_BARREL_VALVE_OPEN       0x81      // Открытие клапана
 #define S_EVT_BARREL_VALVE_VCLOSE     0x82      // Закрытие клапана
 
-#define EVT_BARREL_STATE              0x80     // События состояния бочки
-#define S_EVT_BARREL_STATE_FULL       0x81     // Бочка наполнилась
-#define S_EVT_BARREL_STATE_NOTFULL    0x82     // Уровень воды понизился, бочка уже не полна
-#define S_EVT_BARREL_STATE_EMPTY      0x83      // Бочка пуста
-#define S_EVT_BARREL_STATE_NOTEMPTY   0x84      // Уровень воды повысился, бочка уже не пуста
-#define S_EVT_BARREL_STATE_MAXFILLTIMEEXCEEDED  0x85 // Превышено максимально возможное время наполнения бочки
-#define S_EVT_BARREL_STATE_FILLEMPTYBARREL      0x86 // Начинаем наполнять бочку, т.к. она опустела
-#define S_EVT_BARREL_STATE_ERRFULLANDEMPTY      0x87 // Ошибочное состояние. Бочка и пуста и полна одновременно
-#define S_EVT_BARREL_STATE_STARTFILLBYTIMER     0x88 // Сработал таймер. Начато наполнение бочки
+#define EVT_BARREL_STATE              0x90     // События состояния бочки
+#define S_EVT_BARREL_STATE_FULL       0x91     // Бочка наполнилась
+#define S_EVT_BARREL_STATE_NOTFULL    0x92     // Уровень воды понизился, бочка уже не полна
+#define S_EVT_BARREL_STATE_EMPTY      0x93      // Бочка пуста
+#define S_EVT_BARREL_STATE_NOTEMPTY   0x94      // Уровень воды повысился, бочка уже не пуста
+#define S_EVT_BARREL_STATE_MAXFILLTIMEEXCEEDED  0x95 // Превышено максимально возможное время наполнения бочки
+#define S_EVT_BARREL_STATE_FILLEMPTYBARREL      0x96 // Начинаем наполнять бочку, т.к. она опустела
+#define S_EVT_BARREL_STATE_ERRFULLANDEMPTY      0x97 // Ошибочное состояние. Бочка и пуста и полна одновременно
+#define S_EVT_BARREL_STATE_STARTFILLBYTIMER     0x98 // Сработал таймер. Начато наполнение бочки
 
-#define EVT_BARREL_SETMODE            0x90      // Установка режима работы бочки
-#define S_EVT_BARREL_SETMODE_AUTO     0x91      // Переход в автоматический режим управления бочкой
-#define S_EVT_BARREL_SETMODE_MANUAL   0x92      // Переход в ручной режим управления бочкой
+#define EVT_BARREL_SETMODE            0xA0      // Установка режима работы бочки
+#define S_EVT_BARREL_SETMODE_AUTO     0xA1      // Переход в автоматический режим управления бочкой
+#define S_EVT_BARREL_SETMODE_MANUAL   0xA2      // Переход в ручной режим управления бочкой
+
+// -----------------------------------------------------------------------
+// Коды событий Линии полива грядки
+// -----------------------------------------------------------------------
+#define EVT_WATERING_LINE_VALVE                 0xB0      // Линия полива #PARAM1
+#define S_EVT_WATERING_LINE_VALVE_OPEN             0xB1      // Открытие клапана
+#define S_EVT_WATERING_LINE_VALVE_VCLOSE           0xB2      // Закрытие клапана
+
+#define EVT_WATERING_LINE_STATE                 0xC0     // События состояния линии полива #PARAM1
+#define S_EVT_WATERING_LINE_STATE_STARTBYTIMER  0xC1     // Старт полива по тайймеру
+#define S_EVT_WATERING_LINE_STATE_STOPBYTIMER   0xC2     // Окончание полива по тайймеру
+
+#define EVT_WATERING_LINE_SETMODE               0xD0      // Установка режима работы линии полива #PARAM1
+#define S_EVT_WATERING_LINE_SETMODE_AUTO        0xD1      // Переход в автоматический режим управления линией полива
+#define S_EVT_WATERING_LINE_SETMODE_MANUAL      0xD2      // Переход в ручной режим управления линией полива

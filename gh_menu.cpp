@@ -13,6 +13,8 @@ extern Earth_Fan EarthFan;
 extern GHWindow Window;
 extern gh_Barrel WaterTank;
 extern gh_Config ControllerConfiguration;
+extern gh_WaterLine WateringLine1;
+extern gh_WaterLine WateringLine2;
 
 //LCD_1602_RUS lcd(LCD_ADR, 2, 1, 0, 4, 5, 6, 7, 3, POSITIVE);  
 //LCD_1602_RUS <LiquidCrystal_I2C> lcd(0x27, 16, 2);
@@ -149,12 +151,42 @@ MENU(submWaterTank, txtBarrel, doNothing, anyEvent, wrapStyle
 ); 
 
 // ------------------------------------------------------------
-// меню Полива
-MENU(submWatering, txtWatering, doNothing, anyEvent, wrapStyle
-  , OP("POLIT", doNothing, noEvent) 
+// меню Полива грядок
+
+result WaterLine1AutoMode() {
+  WateringLine1.SetManualMode(false);
+  return proceed;
+}
+
+result WaterLine1StartWatering() {
+  if(!WateringLine1.IsManualMode()) WateringLine1.SetManualMode(true);
+  WateringLine1.StartWatering();
+  return proceed;
+}
+
+result WaterLine1StopFilling() {
+  if(!WateringLine1.IsManualMode()) WateringLine1.SetManualMode(true);
+  WateringLine1.StopWatering();
+  return proceed;
+}
+
+result ResetWatering1Date() {
+  WateringLine1.ResetWateringDate();
+  return proceed;
+}
+
+MENU(submWateringLine1, txtWaterLine1, doNothing, anyEvent, wrapStyle
+  , OP(txtAutoMode,WaterLine1AutoMode,enterEvent)
+  , OP(txtStartWatering, WaterLine1StartWatering, enterEvent) 
+  , OP(txtStopWatering, WaterLine1StopFilling, enterEvent) 
+  , OP(txtResetWateringDate, ResetWatering1Date, enterEvent) 
+  , FIELD(WateringLine1.Settings.StartWateringHour, txtWateringStartHour, "", 0, 23, 5, 1, doNothing, anyEvent, wrapStyle)
+  , FIELD(WateringLine1.Settings.StartWateringMin, txtWateringStartMin, "", 0, 59, 5, 1, doNothing, anyEvent, wrapStyle)
+  , FIELD(WateringLine1.Settings.IntervalDays, txtWateringIntervalDays, "", 0, 30, 5, 1, doNothing, anyEvent, wrapStyle)
+  , FIELD(WateringLine1.Settings.DurationMins, txtWateringDurationMins, "", 0, 59, 5, 1, doNothing, anyEvent, wrapStyle)
   , EXIT("<Back")
 ); 
- 
+
 
 // ------------------------------------------------------------
 // Меню Конфигурации
@@ -179,8 +211,9 @@ MENU(submConfigurations, txtConfigurations, doNothing, anyEvent, wrapStyle
 MENU(mainMenu, "Main menu", doNothing, noEvent, wrapStyle
 	, SUBMENU(submFan)
 	, SUBMENU(submWindows)
-	, SUBMENU(submWatering)
 	, SUBMENU(submWaterTank)
+  , SUBMENU(submWateringLine1)
+  , SUBMENU(submWateringLine1)
 	, SUBMENU(submConfigurations)
 	, EXIT("<Back")
 ); 

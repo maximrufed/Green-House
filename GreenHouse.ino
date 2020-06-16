@@ -18,6 +18,8 @@ T_Sensors TSensors(ONE_WIRE_BUS);
 Earth_Fan EarthFan(RELAY_EARTH_FAN, LED_FAN, LED_FAN_MANUAL_MODE );
 gh_RTC rtc;
 gh_Barrel WaterTank;
+gh_WaterLine WateringLine1;
+gh_WaterLine WateringLine2;
 GHWindow Window;
 Logger lg(SDCARD, LED_SD_ERROR);//, LOG_FILE_NAME);
 gh_Config ControllerConfiguration;
@@ -107,17 +109,53 @@ void setup() {
   lcd.print(LCDMessage);
   delay(3000);
  
+  lcd.clear();
+  // Инициализируем линию полива 1
+  WaterLineHardwareConfig WLConfig;
+  WLConfig.RelayPin           = RELAY_WATER_VALVE1;
+  WLConfig.ModeLedPin         = LED_WL1_MANUAL_MODE;
+  WLConfig.ValveOpenLedPin    = LED_WL1_WATERING;
+
+  if (! WateringLine1.Begin(WLConfig)) {
+    LOG("Couldn't initialize Watering Line 1");   // Инициализация логгера
+    LCDMessage = "Water Line1 FAIL!";
+  } else {
+    LCDMessage = "Water Line1 OK!";
+  }
+
+  lcd.setCursor(0, 0);
+  lcd.print(LCDMessage);
+  delay(1000);
+
+  // Инициализируем линию полива 2
+  WLConfig.RelayPin           = RELAY_WATER_VALVE2;
+  WLConfig.ModeLedPin         = LED_WL2_MANUAL_MODE;
+  WLConfig.ValveOpenLedPin    = LED_WL2_WATERING;
+
+  if (! WateringLine2.Begin(WLConfig)) {
+    LOG("Couldn't initialize Watering Line 1");   // Инициализация логгера
+    LCDMessage = "Water Line2 FAIL!";
+  } else {
+    LCDMessage = "Water Line2 OK!";
+  }
+
+  lcd.setCursor(0, 1);
+  lcd.print(LCDMessage);
+  delay(1000);
+
   TSensors.Begin(1); // Интервал опроса датчиков на шине 1 минута
   EarthFan.Begin();
-  ControllerConfiguration.Begin(&Window.Settings, &EarthFan.Settings); // Инициализируем объект сохранения конфигурации
+  ControllerConfiguration.Begin(&Window.Settings, &EarthFan.Settings, &WaterTank.Settings); // Инициализируем объект сохранения конфигурации
+  lcd.setCursor(0, 2);
+  lcd.print("Other devices OK");
+  delay(1000);
   
-  lcd.clear();
-  lcd.setCursor(0, 1);
+  lcd.setCursor(0, 3);
   lcd.print("Startup complete");
+  delay(3000);
   LOG("-------------------------");
   LOG("-----SETUP COMPLETE!-----");
   LOG("-------------------------");
-  delay(3000);
 
 }
 
