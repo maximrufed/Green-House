@@ -7,7 +7,7 @@
 // -----------------------------------------------------------------------
 // Журнал активности (запись через RecordActivity)
 //        Формат журнала CSV
-//        Date         Time      Device_ID   Event_ID   SubEvent_ID   #ARG1   #ARG2
+//        Date         Time      Device_ID   Event_ID   SubEvent_ID   #PARAM1   #PARAM2
 //        YYYY-MM-DD   hh:mm:ss  %d          %d         %d            %d        %d
 //
 // -----------------------------------------------------------------------

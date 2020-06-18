@@ -16,7 +16,7 @@
 #include "globals.h"
 
 #include "gh_Logger.h"
-extern Logger lg;
+extern logger lg;
 
 
 // Возможные состояния окна

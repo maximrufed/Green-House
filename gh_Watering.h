@@ -28,7 +28,7 @@
 #include "gh_Logger.h"
 #include "gh_RTC.h"
 
-extern Logger lg;
+extern logger lg;
 extern gh_RTC rtc;
 
 struct GHBarrelHardwareConfig        // Конфигурация пинов поливающего оборудования 
@@ -108,7 +108,7 @@ struct WaterLineSettings
   int16_t DurationMins;
   
   DateTime StartDate;         // первая дата полива
-  DateTime NextWateringDateTime;  // Плановая дата следующего полива - это не настраивается в меню, но должно сохраняться в EEPROM
+  DateTime NextWateringDate;  // Плановая дата следующего полива - это не настраивается в меню, но должно сохраняться в EEPROM
 };
 
 class gh_WaterLine
@@ -117,7 +117,7 @@ class gh_WaterLine
   WaterLineSettings Settings;
   WaterLineHardwareConfig Cfg;
   
-  bool Begin(WaterLineHardwareConfig HwCfg);
+  bool Begin(WaterLineHardwareConfig HwCfg, DateTime Now);
   void Poll(DateTime Now);
 
   void StartWatering();

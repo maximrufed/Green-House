@@ -7,7 +7,7 @@
 #include "gh_EarthFan.h"
 #include "gh_RTC.h"
 #include "gh_windows.h"
-#include "gh_Logger.h"
+#include "gh_logger.h"
 #include "gh_Watering.h"
 #include "gh_Config.h"
 
@@ -21,7 +21,7 @@ gh_Barrel WaterTank;
 gh_WaterLine WateringLine1;
 gh_WaterLine WateringLine2;
 GHWindow Window;
-Logger lg(SDCARD, LED_SD_ERROR);//, LOG_FILE_NAME);
+logger lg(SDCARD, LED_SD_ERROR);//, LOG_FILE_NAME);
 gh_Config ControllerConfiguration;
 
 
@@ -36,9 +36,10 @@ void setup() {
   Serial.println("Green House project. Created by Anton Kostrov, 2020");
   Serial.flush();
   delay(3000);
-  LOG("-------------------------");
-  LOG("-------SETUP START-------");
-  LOG("-------------------------");
+  char buf[9]="--------";
+  LOG((String)buf+(String)buf+(String)buf);
+  LOG((String)buf+"SETUP START"+(String)buf);
+  LOG((String)buf+(String)buf+(String)buf);
 
   // Инициализация меню
   joystickBtns.begin();
@@ -50,8 +51,9 @@ void setup() {
   nav.timeOut = 10;   // seconds to start screensaver
   options = &myMenuOptions; // Устанавливаем свои значения глобальных Options для меню
 
+  // Запускаем часы реального времени
   if (!rtc.begin()) {
-    LOG("Couldn't find RTC");  // Запускаем часы реального времени
+    LOG("Couldn't find RTC");  
     LCDMessage = "RTC FAIL!";
   } else {
     LCDMessage = "RTC Ok";
@@ -116,7 +118,7 @@ void setup() {
   WLConfig.ModeLedPin         = LED_WL1_MANUAL_MODE;
   WLConfig.ValveOpenLedPin    = LED_WL1_WATERING;
 
-  if (! WateringLine1.Begin(WLConfig)) {
+  if (! WateringLine1.Begin(WLConfig, rtc.now())) {
     LOG("Couldn't initialize Watering Line 1");   // Инициализация логгера
     LCDMessage = "Water Line1 FAIL!";
   } else {
@@ -132,7 +134,7 @@ void setup() {
   WLConfig.ModeLedPin         = LED_WL2_MANUAL_MODE;
   WLConfig.ValveOpenLedPin    = LED_WL2_WATERING;
 
-  if (! WateringLine2.Begin(WLConfig)) {
+  if (! WateringLine2.Begin(WLConfig, rtc.now())) {
     LOG("Couldn't initialize Watering Line 1");   // Инициализация логгера
     LCDMessage = "Water Line2 FAIL!";
   } else {
@@ -145,7 +147,7 @@ void setup() {
 
   TSensors.Begin(1); // Интервал опроса датчиков на шине 1 минута
   EarthFan.Begin();
-  ControllerConfiguration.Begin(&Window.Settings, &EarthFan.Settings, &WaterTank.Settings); // Инициализируем объект сохранения конфигурации
+  ControllerConfiguration.Begin(&Window.Settings, &EarthFan.Settings, &WaterTank.Settings, &WateringLine1.Settings, &WateringLine2.Settings); // Инициализируем объект сохранения конфигурации
   lcd.setCursor(0, 2);
   lcd.print("Other devices OK");
   delay(1000);
@@ -192,6 +194,10 @@ void loop() {
 
   // Обработка бочки
   WaterTank.Poll(rtc.now().hour(), rtc.now().minute());
+
+  // Обработка линий полива
+  WateringLine1.Poll(rtc.now());
+  WateringLine2.Poll(rtc.now());
 
   // Сохранение конфигурации в EEPROM и SDCard
   ControllerConfiguration.Poll(rtc.now().minute());

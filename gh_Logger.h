@@ -7,7 +7,7 @@
 #include <SysCall.h>
 
 // -----------------------------------------------------------------------
-// Класс Logger - регистрирует любые события в журналах
+// Класс logger- регистрирует любые события в журналах
 //
 // Устройства:  SDCard, вебсервер (в проекте)
 //        индикаторы: ошибка (в проекте)
@@ -25,11 +25,11 @@
 //extern gh_RTC rtc;
 
   
-class Logger
+class logger
 {
   public:
-  Logger(uint8_t pinSD);//, char File[12]);
-  Logger(uint8_t pinSD, /*char File[12], */byte pinErrorLed);
+  logger(uint8_t pinSD);//, char File[12]);
+  logger(uint8_t pinSD, /*char File[12], */byte pinErrorLed);
 
   
   void RecordActivityInt(uint8_t DeviceId, uint8_t EventID, uint8_t SubEventID, int8_t Param1, int8_t Param2);   // Запись в журнал активности
@@ -51,7 +51,7 @@ class Logger
 
   String FtoS(float val);           // Преобразование Float to String
   
-  char ObjectName[7] = "Logger";    // используется для логгера
+  char ObjectName[7] = "logger";    // используется для логгера
   gh_RTC *rtc;                    // Ссылка на объект RTC
   uint8_t SDPin;
   

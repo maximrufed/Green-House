@@ -1,15 +1,15 @@
-#include "gh_Logger.h"
+#include "gh_logger.h"
 
 
 
 //---------------------------------------------------------------------
 // Constructor
-Logger::Logger(byte pinSD) {
+logger::logger(byte pinSD) {
   byte i;
   SDPin = pinSD;
 }
 
-Logger::Logger(byte pinSD, byte pinErrorLed) {
+logger::logger(byte pinSD, byte pinErrorLed) {
   byte i;
   SDPin = pinSD;
   ErrorLedPin = pinErrorLed;
@@ -19,7 +19,7 @@ Logger::Logger(byte pinSD, byte pinErrorLed) {
 //---------------------------------------------------------------------
 // Begin
 
-bool Logger::Begin(gh_RTC *gh_rtc) {
+bool logger::Begin(gh_RTC *gh_rtc) {
 
   LOG("Logger Begin");
   rtc = gh_rtc;
@@ -50,7 +50,7 @@ bool Logger::Begin(gh_RTC *gh_rtc) {
   }
   currentFile.close();
 
-  LOG("Log files opened successfully!")
+  LOG("LOG files opened successfully!");
   
   // Делаем запись в журнале активности о запуске
   RecordActivityInt(DEV_BOARD, EVT_BOARD_ON, S_EVT_BOARD_ON_JUSTON, 0, 0);
@@ -68,7 +68,7 @@ bool Logger::Begin(gh_RTC *gh_rtc) {
 //---------------------------------------------------------------------
 // RecordActivityInt
 
-void Logger::RecordActivityInt(uint8_t DeviceID, uint8_t EventID, uint8_t SubEventID, int8_t Param1, int8_t Param2) {
+void logger::RecordActivityInt(uint8_t DeviceID, uint8_t EventID, uint8_t SubEventID, int8_t Param1, int8_t Param2) {
   static String Delim = ";";
   String sRecord = "";
 
@@ -79,7 +79,7 @@ void Logger::RecordActivityInt(uint8_t DeviceID, uint8_t EventID, uint8_t SubEve
  
 }
 
-void Logger::RecordActivityChar(uint8_t DeviceID, uint8_t EventID, uint8_t SubEventID, char *Param1, char *Param2) {
+void logger::RecordActivityChar(uint8_t DeviceID, uint8_t EventID, uint8_t SubEventID, char *Param1, char *Param2) {
   static String Delim = ";";
   String sRecord;
   String sParam1 = Param1;
@@ -93,7 +93,7 @@ void Logger::RecordActivityChar(uint8_t DeviceID, uint8_t EventID, uint8_t SubEv
   FileSizeActivity = SaveRecordToFile(ActivityLogFile, FileSizeActivity, sRecord);
   LOG("!!!");
 }
-void Logger::RecordActivityStr(uint8_t DeviceID, uint8_t EventID, uint8_t SubEventID, String Param1, String Param2) {
+void logger::RecordActivityStr(uint8_t DeviceID, uint8_t EventID, uint8_t SubEventID, String Param1, String Param2) {
   static String Delim = ";";
   String sRecord = "";
 
@@ -106,7 +106,7 @@ void Logger::RecordActivityStr(uint8_t DeviceID, uint8_t EventID, uint8_t SubEve
 //---------------------------------------------------------------------
 // Запись в журнал значений наблюдений
 
-void Logger::RecordSensors(float TEarth, float TAir, float TBoard, float TOut, float TEarth2, float T_TAFanIn, float T_TAFanOut) {
+void logger::RecordSensors(float TEarth, float TAir, float TBoard, float TOut, float TEarth2, float T_TAFanIn, float T_TAFanOut) {
   static String Delim = ";";
   String sRecord = "";
   
@@ -123,9 +123,9 @@ void Logger::RecordSensors(float TEarth, float TAir, float TBoard, float TOut, f
 }
 
 //---------------------------------------------------------------------
-// Logger Poll
+// logger Poll
 
-void Logger::Poll() {
+void logger::Poll() {
   static unsigned long previousMillis = 0;
 
   if(bErrFlag) {
@@ -151,7 +151,7 @@ void Logger::Poll() {
 //---------------------------------------------------------------------
 // FtoS - преобразование из float to String
 
-String Logger::FtoS(float val) {
+String logger::FtoS(float val) {
     char cBuf[8];
     String sBuf;
 
@@ -165,7 +165,7 @@ String Logger::FtoS(float val) {
 //---------------------------------------------------------------------
 // SDReinit - попытка рестарта SDCard
 
-void Logger::SDReinit() {
+void logger::SDReinit() {
   LOG("Trying to reinitialize SDCard");
   if (!SD.begin(SDPin)) {
     LOG("Could not initialize SDCard");
@@ -179,7 +179,7 @@ void Logger::SDReinit() {
 //---------------------------------------------------------------------
 // setErr
 
-void Logger::setErr(bool bErr, uint8_t errLoggerSubEventCode) {
+void logger::setErr(bool bErr, uint8_t errLoggerSubEventCode) {
   bErrFlag = bErr;
   //Такой вызов ведет к бесконечной рекурсии RecordActivityInt(DEV_BOARD, EVT_BOARD_SD, errLoggerSubEventCode, 0, 0);
 }
@@ -187,7 +187,7 @@ void Logger::setErr(bool bErr, uint8_t errLoggerSubEventCode) {
 //---------------------------------------------------------------------
 // SaveRecordToFile
 
-uint32_t Logger::SaveRecordToFile(char *FileName, uint32_t prevFileSize, String sRecord) {
+uint32_t logger::SaveRecordToFile(char *FileName, uint32_t prevFileSize, String sRecord) {
   uint32_t newFileSize;
   char DTFormat[20] = "YYYY-MM-DD;hh:mm:ss;";
   String sFullRecord;
@@ -229,11 +229,16 @@ uint32_t Logger::SaveRecordToFile(char *FileName, uint32_t prevFileSize, String 
 //---------------------------------------------------------------------
 // SetFileNames
 
-void Logger::SetFileNames( void ) {
+void logger::SetFileNames( void ) {
+  char buf[13];
+
+  LOG("logger::SetFileNames");
   FileNameDate = rtc->now().day();
-  strcpy(ActivityLogFile, rtc->now().toString(ActivityLogFileNamePattern));
+  strcpy(buf,ActivityLogFileNamePattern);
+  strcpy(ActivityLogFile, rtc->now().toString(buf));
   LOG(ActivityLogFile);
-  strcpy(SensorsLogFile, rtc->now().toString(SensorsLogFileNamePattern));
+  strcpy(buf,SensorsLogFileNamePattern);
+  strcpy(SensorsLogFile, rtc->now().toString(buf));
   LOG(SensorsLogFile);
   
 }

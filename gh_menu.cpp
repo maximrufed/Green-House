@@ -7,7 +7,7 @@
 #include "gh_Config.h"
 #include "gh_Logger.h"
 
-extern Logger lg;
+extern logger lg;
 extern T_Sensors TSensors;
 extern Earth_Fan EarthFan;
 extern GHWindow Window;

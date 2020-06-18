@@ -72,8 +72,8 @@
   #define LED_FAN_MANUAL_MODE     31  // Индикатор ручного режима вентилятора
   #define LED_FAN                 31  // Индикатор работы вентилятора
   #define LED_WINDOW_MANUAL_MODE  31  // Индикатор ручного режима окна
-  #define LED_WINDOW              34  // Индикатор работы мотора окна
-  #define LED_SD_ERROR            36  // Индикатор ошибки чтения SD карты (управляется by Logger)
+  #define LED_WINDOW              31  // Индикатор работы мотора окна
+  #define LED_SD_ERROR            36  // Индикатор ошибки чтения SD карты (управляется by logger)
   #define L3                      31
   #define LED_WT_MANUAL_MODE      31  // Индикатор ручного режима бочки
   #define LED_WT_FILLING          31  // Индикатор наполнения бочки
@@ -84,10 +84,10 @@
   #define LED_WT_FILLING          31  // Индикатор наполнения бочки
   //#define LED_WINDOW_MANUAL_MODE  31  // Индикатор ручного режима окна
   //#define LED_WINDOW              31  // Индикатор работы мотора окна
-  #define LED_WL1_MANUAL_MODE     34  // Индикатор ручного режима линии полива 1
-  #define LED_WL1_WATERING        36  // Индикатор работы линии полива 1
-  #define LED_WL2_MANUAL_MODE     31  // Индикатор ручного режима линии полива 2
+  #define LED_WL1_WATERING        34  // Индикатор работы линии полива 1
+  #define LED_WL1_MANUAL_MODE     36  // Индикатор ручного режима линии полива 1
   #define LED_WL2_WATERING        31  // Индикатор работы линии полива 2
+  #define LED_WL2_MANUAL_MODE     31  // Индикатор ручного режима линии полива 2
 
   // Плата вспомогательная бортовая - к ней коммунируется UTP8 с датчиками и форточкой
   #define GC_BARREL_FULL          23    // Геркон наполненной бочки
@@ -167,9 +167,9 @@
 // *************************************************************
 // Лог в монитор серийного порта для отладки
 #define LOGGING  // uncomment to turn on Serial monitor
-//#define LOGGING_EARTH_FAN						// Снять комментарии для включения логирования объекта EARTH_FAN
-
-
+//#define LOGGING_EARTH_FAN			 // Снять комментарии для включения логирования объекта EARTH_FAN
+//#define LOGGING_CONFIG           // Снять комментарии для включения логирования объекта GH_CONFIG
+#define LOGGING_WAT              // Снять комментарии для включения логирования объектов GH_BARREL, GH_WATERLINE
 
 
 
@@ -183,4 +183,16 @@
 #define LOG_EA(str) Serial.println(str);
 #else
 #define LOG_EA(str) (str)
+#endif
+
+#ifdef LOGGING_WAT
+#define LOG_WAT(str) Serial.println(str);
+#else
+#define LOG_WAT(str) (str)
+#endif
+
+#ifdef LOGGING_CONFIG
+#define LOG_CFG(str) Serial.println(str);
+#else
+#define LOG_CFG(str) (str)
 #endif
