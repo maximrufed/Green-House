@@ -56,7 +56,7 @@ void gh_Barrel::Poll(byte NowHour, byte NowMinute) {
     if(!bIsFull) { // Если мы уже знаем, что бочка наполнена, то и делать ничего больше не будем
       lg.RecordActivityInt(DEV_BARREL, EVT_BARREL_STATE, S_EVT_BARREL_STATE_FULL, 0, 0); // Делаем запись в журнале активности
       bIsFull = true;
-      StopFilling();      // СРОЧНО ЗАКРЫВАЕМ КЛАПАН - ПРЕКРАЩАЕМ НАПОЛНЯТЬ БОЧКУ!!!
+      if( IsFilling() ) StopFilling();      // СРОЧНО ЗАКРЫВАЕМ КЛАПАН - ПРЕКРАЩАЕМ НАПОЛНЯТЬ БОЧКУ!!!
     }
   } else if (bIsFull) { // Может быть уровень упал и пора отменить состояние наполненности??
     lg.RecordActivityInt(DEV_BARREL, EVT_BARREL_STATE, S_EVT_BARREL_STATE_NOTFULL, 0, 0); // Делаем запись в журнале активности
@@ -65,6 +65,7 @@ void gh_Barrel::Poll(byte NowHour, byte NowMinute) {
 
   // 2. ДАЛЕЕ ОБНОВЛЯЕМ СОСТОЯНИЕ ОПУСТОШЕНИЯ
   if( digitalRead(Cfg.EmptyDetectorPin) == LOW ) { // Сработал датчик пустой бочки
+    LOG_WAT("000000");
     if( !bIsEmpty ) { // Если мы уже знаем, что бочка пуста, то и делать ничего больше не будем
       lg.RecordActivityInt(DEV_BARREL, EVT_BARREL_STATE, S_EVT_BARREL_STATE_EMPTY, 0, 0); // Делаем запись в журнале активности
       bIsEmpty = true;
@@ -87,10 +88,14 @@ void gh_Barrel::Poll(byte NowHour, byte NowMinute) {
   // 5. И НАКОНЕЦ ОБРАБОТКА АВТОМАТИЧЕСКОГО РЕЖИМА
   
   // Если бочка опустела, сразу начинаем наполнять никого не спрашиваем. Выходим
-  if( bIsEmpty and !IsFilling() ) {
-    lg.RecordActivityInt(DEV_BARREL, EVT_BARREL_STATE, S_EVT_BARREL_STATE_FILLEMPTYBARREL, 0, 0); // Делаем запись в журнале активности
-    StartFilling(); // Открываем клапан - начинаем наполнять бочку
-    return;
+  if( bIsEmpty ) {
+    LOG_WAT("1");
+    if(!IsFilling() ) {
+      LOG_WAT("2");
+      lg.RecordActivityInt(DEV_BARREL, EVT_BARREL_STATE, S_EVT_BARREL_STATE_FILLEMPTYBARREL, 0, 0); // Делаем запись в журнале активности
+      StartFilling(); // Открываем клапан - начинаем наполнять бочку
+      return;
+    }
   }
 
   // Проверяем на таймер и начинаем наполнять, если нужно. Выходим
