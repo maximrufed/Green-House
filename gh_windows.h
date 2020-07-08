@@ -53,6 +53,7 @@ struct GHWindowHardwareConfig				// Конфигурация пинов обор
 class GHWindow
 {
   public:
+  GHWindow(void);
 	bool Begin(GHWindowHardwareConfig HWConfig); // Возврат false если не определены два реле управления мотором
 	void Open();							// Открыть окно
 	void Close();							// Закрыть окно

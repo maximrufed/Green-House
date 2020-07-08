@@ -7,6 +7,13 @@ Earth_Fan::Earth_Fan(byte pinFan) {
 	RelayPin = pinFan;
 	FanLedPin = 0;
 	ModeLedPin = 0;
+  // Задаем значения по-умолчанию на случай, если конфигурация не записана в EEPROM
+  Settings.TAirStartCooling = 25;
+  Settings.TAirStopCooling = 20;
+  Settings.TAirStartHeating = 12;
+  Settings.TAirStopHeating = 14;
+  Settings.DTFanOn = 3;
+  Settings.DTFanOff = 1;
 
 }
 
@@ -14,6 +21,13 @@ Earth_Fan::Earth_Fan(byte pinFan, byte pinFanLed) {
 	RelayPin = pinFan;
 	FanLedPin = pinFanLed;
 	ModeLedPin = 0;
+  // Задаем значения по-умолчанию на случай, если конфигурация не записана в EEPROM
+  Settings.TAirStartCooling = 25;
+  Settings.TAirStopCooling = 20;
+  Settings.TAirStartHeating = 12;
+  Settings.TAirStopHeating = 14;
+  Settings.DTFanOn = 3;
+  Settings.DTFanOff = 1;
 
 }
 
@@ -21,7 +35,14 @@ Earth_Fan::Earth_Fan(byte pinFan, byte pinFanLed, byte pinFanModeLed){
 	RelayPin = pinFan;
 	FanLedPin = pinFanLed;
 	ModeLedPin = pinFanModeLed;
-}
+  // Задаем значения по-умолчанию на случай, если конфигурация не записана в EEPROM
+  Settings.TAirStartCooling = 25;
+  Settings.TAirStopCooling = 20;
+  Settings.TAirStartHeating = 12;
+  Settings.TAirStopHeating = 14;
+  Settings.DTFanOn = 3;
+  Settings.DTFanOff = 1;
+ }
 
 
 
@@ -30,14 +51,6 @@ Earth_Fan::Earth_Fan(byte pinFan, byte pinFanLed, byte pinFanModeLed){
 void Earth_Fan::Begin() {
 
   LOG("Earth_Fan Begin");
-
-	// Загружаем сохраненные настройки работы вентилятора
-	Settings.TAirStartCooling = 25;
-	Settings.TAirStopCooling = 20;
-	Settings.TAirStartHeating = 12;
-	Settings.TAirStopHeating = 14;
-	Settings.DTFanOn = 3;
-	Settings.DTFanOff = 1;
 
   if( RelayPin != 0xFF) pinMode(RelayPin, OUTPUT);
   if( FanLedPin != 0xFF) pinMode(FanLedPin, OUTPUT);

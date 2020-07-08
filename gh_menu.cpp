@@ -151,7 +151,8 @@ MENU(submWaterTank, txtBarrel, doNothing, anyEvent, wrapStyle
 ); 
 
 // ------------------------------------------------------------
-// меню Полива грядок
+// ------------------------------------------------------------
+// меню Линии полива №1
 
 result WaterLine1AutoMode() {
   WateringLine1.SetManualMode(false);
@@ -183,7 +184,45 @@ MENU(submWateringLine1, txtWaterLine1, doNothing, anyEvent, wrapStyle
   , FIELD(WateringLine1.Settings.StartWateringHour, txtWateringStartHour, "", 0, 23, 5, 1, doNothing, anyEvent, wrapStyle)
   , FIELD(WateringLine1.Settings.StartWateringMin, txtWateringStartMin, "", 0, 59, 5, 1, doNothing, anyEvent, wrapStyle)
   , FIELD(WateringLine1.Settings.IntervalDays, txtWateringIntervalDays, "", 0, 30, 5, 1, doNothing, anyEvent, wrapStyle)
-  , FIELD(WateringLine1.Settings.DurationMins, txtWateringDurationMins, "", 0, 59, 5, 1, doNothing, anyEvent, wrapStyle)
+  , FIELD(WateringLine1.Settings.DurationMins, txtWateringDurationMins, "", 0, 360, 20, 5, doNothing, anyEvent, wrapStyle)
+  , EXIT("<Back")
+); 
+
+// ------------------------------------------------------------
+// ------------------------------------------------------------
+// меню Линии полива №2
+
+result WaterLine2AutoMode() {
+  WateringLine2.SetManualMode(false);
+  return proceed;
+}
+
+result WaterLine2StartWatering() {
+  if(!WateringLine2.IsManualMode()) WateringLine2.SetManualMode(true);
+  WateringLine2.StartWatering();
+  return proceed;
+}
+
+result WaterLine2StopFilling() {
+  if(!WateringLine2.IsManualMode()) WateringLine2.SetManualMode(true);
+  WateringLine2.StopWatering();
+  return proceed;
+}
+
+result ResetWatering2Date() {
+  WateringLine2.ResetWateringDate();
+  return proceed;
+}
+
+MENU(submWateringLine2, txtWaterLine2, doNothing, anyEvent, wrapStyle
+  , OP(txtAutoMode,WaterLine2AutoMode,enterEvent)
+  , OP(txtStartWatering, WaterLine2StartWatering, enterEvent) 
+  , OP(txtStopWatering, WaterLine2StopFilling, enterEvent) 
+  , OP(txtResetWateringDate, ResetWatering2Date, enterEvent) 
+  , FIELD(WateringLine2.Settings.StartWateringHour, txtWateringStartHour, "", 0, 23, 5, 1, doNothing, anyEvent, wrapStyle)
+  , FIELD(WateringLine2.Settings.StartWateringMin, txtWateringStartMin, "", 0, 59, 5, 1, doNothing, anyEvent, wrapStyle)
+  , FIELD(WateringLine2.Settings.IntervalDays, txtWateringIntervalDays, "", 0, 30, 5, 1, doNothing, anyEvent, wrapStyle)
+  , FIELD(WateringLine2.Settings.DurationMins, txtWateringDurationMins, "", 0, 360, 20, 5, doNothing, anyEvent, wrapStyle)
   , EXIT("<Back")
 ); 
 
@@ -207,13 +246,15 @@ MENU(submConfigurations, txtConfigurations, doNothing, anyEvent, wrapStyle
 ); 
 
 // ------------------------------------------------------------
-// 
+// ------------------------------------------------------------
+// ГЛАВНОЕ МЕНЮ
+
 MENU(mainMenu, "Main menu", doNothing, noEvent, wrapStyle
 	, SUBMENU(submFan)
 	, SUBMENU(submWindows)
 	, SUBMENU(submWaterTank)
   , SUBMENU(submWateringLine1)
-  , SUBMENU(submWateringLine1)
+  , SUBMENU(submWateringLine2)
 	, SUBMENU(submConfigurations)
 	, EXIT("<Back")
 ); 

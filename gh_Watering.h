@@ -54,6 +54,7 @@ class gh_Barrel
   BarrelSettings Settings;
   GHBarrelHardwareConfig Cfg;
   
+  gh_Barrel();
   bool Begin(GHBarrelHardwareConfig HwCfg);
   void Poll(byte NowHour, byte NowMinute);
 
@@ -117,6 +118,7 @@ class gh_WaterLine
   WaterLineSettings Settings;
   WaterLineHardwareConfig Cfg;
   
+  gh_WaterLine();
   bool Begin(WaterLineHardwareConfig HwCfg, DateTime Now);
   void Poll(DateTime Now);
 

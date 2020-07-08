@@ -2,9 +2,18 @@
 
 
 //---------------------------------------------------------------------
+// Constructor
+GHWindow::GHWindow(void) {
+  // Задаем значения по-умолчанию на случай, если конфигурация не записана в EEPROM
+  Settings.MotorMaxWorkMillis = WINDOW_MOTOR_MAX_WORK_MILLIS;
+  Settings.TAirOpen = 30; 
+  Settings.TAirClose = 18;
+}
+
+//---------------------------------------------------------------------
 // Begin
 bool GHWindow::Begin(GHWindowHardwareConfig HWConfig) {
-  LOG("GHWindow Begin");
+  LOG_WIN("GHWindow Begin");
   
 	WinCfg.PinRelayPow    = HWConfig.PinRelayPow;
 	WinCfg.PinRelay1			= HWConfig.PinRelay1;
@@ -30,21 +39,24 @@ bool GHWindow::Begin(GHWindowHardwareConfig HWConfig) {
   bIsManualMode = false;
   millisInOperation = 0;
 
-	WindowStatus = CLOSED; // По-умолчанию считаем окно закрытым
-  // Если концевой выключатель закрытого окна заявлен в конфигурации и он не замкнут, тогда считаем окно открытым
-  if( WinCfg.PinLimitSwitchClosed != -1 && digitalRead(WinCfg.PinLimitSwitchClosed) == HIGH )
-      WindowStatus = OPEN;
-
-	Settings.MotorMaxWorkMillis = WINDOW_MOTOR_MAX_WORK_MILLIS;
-	Settings.TAirOpen = 30;      // Температура воздуха, при достижении которой 
-	Settings.TAirClose = 18;     // Температура воздуха, при достижении которой 
-
 	if(WinCfg.PinRelay1 == -1 || WinCfg.PinRelay2 == -1 || WinCfg.PinRelayPow == -1) { 
 		// Минимальная конфигурация оборудования для управления окном - три реле мотора
 		SetAlarm(true);
 		return false;
 	}
 
+
+  /*if( WinCfg.PinLimitSwitchClosed != -1 && digitalRead(WinCfg.PinLimitSwitchClosed) == HIGH ) {
+      // Если концевой выключатель закрытого окна заявлен в конфигурации и он не замкнут, тогда считаем окно открытым
+      WindowStatus = OPEN;
+      Open();
+  } else {
+      WindowStatus = CLOSED; // По-умолчанию считаем окно закрытым
+      Close();
+  }*/
+  WindowStatus = CLOSED; // По-умолчанию считаем окно закрытым
+  
+  
   // На всякий пожарный выключаем мотор
 	StopMotor();
 
@@ -55,7 +67,7 @@ bool GHWindow::Begin(GHWindowHardwareConfig HWConfig) {
 //---------------------------------------------------------------------
 // Открыть окно
 void GHWindow::Open() {
-    LOG("GHWindow::Open()");
+  LOG_WIN("GHWindow::Open()");
 
 	if( WindowStatus == OPEN || WindowStatus == OPENING ) return;
 	
@@ -63,7 +75,7 @@ void GHWindow::Open() {
 	// Если концевой выключатель открытого окна уже замкнут, то нельзя включать мотор
 		WindowStatus = OPENING_FAILED;
 		// Ставим сигнал тревоги и выходим
-		LOG("Ставим сигнал тревоги и выходим");
+		LOG_WIN("Ставим сигнал тревоги и выходим");
 		SetAlarm (true);
 		return;
 	}
@@ -111,8 +123,8 @@ void GHWindow::Close() {
 //---------------------------------------------------------------------
 // Экстренная остановка мотора, включение индикатора тревоги
 void GHWindow::HaltMotor() {
-	LOG("GHWindow::HaltMotor");
-	LOG("Экстренная остановка");
+	LOG_WIN("GHWindow::HaltMotor");
+	LOG_WIN("Экстренная остановка");
 	StopMotor();
 	switch ( WindowStatus ) {
 		case OPENING:
@@ -123,8 +135,8 @@ void GHWindow::HaltMotor() {
 		case CLOSING:
 			WindowStatus = CLOSING_FAILED;
 			// Включить режим тревоги
-			SetAlarm(true);
-			break;
+			SetAlarm  (true);
+			break;  
 	}
 
   // Делаем запись в журнале активности
@@ -132,6 +144,10 @@ void GHWindow::HaltMotor() {
 
 }
 
+
+  //для отладки
+  unsigned long win_prev_millis = millis();
+  
 //---------------------------------------------------------------------
 // Обработка логики работы умного окна
 void GHWindow::WindowPoll(int8_t TEarth, int8_t TAir, bool IsNight) {
@@ -144,25 +160,29 @@ void GHWindow::WindowPoll(int8_t TEarth, int8_t TAir, bool IsNight) {
   // Если режим работы не автоматический, то на этом месте заканчиваем обработку
   if(IsManualMode())  return;
 
-  //LOG("TAir: "+(String)TAir+"; Winsetting: "+(String)Settings.TAirOpen);
-	// Обработка автоматического режима
-  //LOG("WinStatus: " + (String)WindowStatus + " = " + (String)CLOSED + "; IsNight: " + (String)IsNight);
+  // Обработка автоматического режима
+  if(millis() - win_prev_millis > 10000) {
+    win_prev_millis = millis();
+    LOG_WIN("GHWindow::WindowPoll Автоматический режим");
+    LOG_WIN("TAir: "+(String)TAir+"; Winsetting: "+(String)Settings.TAirOpen);
+    LOG_WIN("WinStatus: " + (String)WindowStatus + " = " + (String)WindowStatus + "; IsNight: " + (String)IsNight);
+  }
   if( TAir >= Settings.TAirOpen and WindowStatus == CLOSED and !IsNight) {
-    LOG("Открываем окно, т.к. достигнута температура открытия");
+    LOG_WIN("Открываем окно, т.к. достигнута температура открытия");
     // Делаем запись в журнале активности
     lg.RecordActivityInt(DEV_SIDE_WINDOW, EVT_SW_START, S_EVT_SW_START_OPENBYTEMP, (int8_t)TEarth, (int8_t)TAir);
     Open();
     return;
   }
   if( TAir < Settings.TAirClose and WindowStatus == OPEN) {
-    LOG("Закрываем окно, т.к. достигнута температура закрытия");
+    LOG_WIN("Закрываем окно, т.к. достигнута температура закрытия");
     // Делаем запись в журнале активности
     lg.RecordActivityInt(DEV_SIDE_WINDOW, EVT_SW_START, S_EVT_SW_START_CLOSEBYTEMP, (int8_t)TEarth, (int8_t)TAir);
     Close();
     return;
   }
   if( IsNight and WindowStatus != CLOSED and WindowStatus != CLOSING) {
-    LOG("Закрываем окно, т.к. ночь на дворе");
+    LOG_WIN("Закрываем окно, т.к. ночь на дворе");
     // Делаем запись в журнале активности
     lg.RecordActivityInt(DEV_SIDE_WINDOW, EVT_SW_START, S_EVT_SW_START_CLOSEFORNIGHT, 0, 0);
     Close();
@@ -216,26 +236,26 @@ bool GHWindow::IsAlarmOn() {
 // Завершить операцию закрытия/открытия по таймеру или концевому выключателю
 void GHWindow::CompleteOperationByTimerOrLS() {
 
-    //LOG("GHWindow::CompleteOperationByTimerOrLS()");
+    //LOG_WIN("GHWindow::CompleteOperationByTimerOrLS()");
 
 	if( WinCfg.PinLimitSwitchOpen != -1 && digitalRead(WinCfg.PinLimitSwitchOpen) == LOW ) { 
 		// Сработал концевой выключатель открытого окна
-		LOG("Сработал концевой выключатель открытого окна");
+		LOG_WIN("Сработал концевой выключатель открытого окна");
 		switch( WindowStatus ) {
 			case OPENING:
 				// Все нормально, окно успешно открылось
-				LOG("Все нормально, окно успешно открылось");
+				LOG_WIN("Все нормально, окно успешно открылось");
 				WindowStatus = OPEN;
 				StopMotor();
         lg.RecordActivityInt(DEV_SIDE_WINDOW, EVT_SW_STOP, S_EVT_SW_STOP_OPENEDBYLS, 0, 0);     // Делаем запись в журнале активности
 				return;
 			case CLOSING:
 				// Теоретически мы как раз стартуем закрытие из положения замкнутого выключателя открытия
-				LOG("Окно CLOSING, но Теоретически мы как раз стартуем закрытие из положения замкнутого выключателя открытия");
+				LOG_WIN("Окно CLOSING, но Теоретически мы как раз стартуем закрытие из положения замкнутого выключателя открытия");
 				break;
 			default:
 				// Любой другой статус - это непорядок, халтимся
-				LOG("Окно не OPENING и не CLOSING - это непорядок, халтимся");
+				LOG_WIN("Окно не OPENING и не CLOSING - это непорядок, халтимся");
 				HaltMotor();
 				return;
 		}
@@ -243,22 +263,22 @@ void GHWindow::CompleteOperationByTimerOrLS() {
 
 	// Сработал концевой выключатель закрытого окна
 	if( WinCfg.PinLimitSwitchClosed != -1 && digitalRead(WinCfg.PinLimitSwitchClosed) == LOW ) { 
-		LOG("Сработал концевой выключатель закрытого окна");
+		LOG_WIN("Сработал концевой выключатель закрытого окна");
 		switch( WindowStatus ) {
 			case CLOSING:
 				// Все нормально, окно успешно закрылось
-				LOG("Все нормально, окно успешно закрылось");
+				LOG_WIN("Все нормально, окно успешно закрылось");
 				WindowStatus = CLOSED;
 				StopMotor();
         lg.RecordActivityInt(DEV_SIDE_WINDOW, EVT_SW_STOP, S_EVT_SW_STOP_CLOSEDBYLS, 0, 0);     // Делаем запись в журнале активности
 				return;
 			case OPENING:
 				// Теоретически мы как раз стартуем открытие из положения замкнутого выключателя закрытия
-				LOG("Окно OPENING, но Теоретически мы как раз стартуем открытие из положения замкнутого выключателя закрытия");
+				LOG_WIN("Окно OPENING, но Теоретически мы как раз стартуем открытие из положения замкнутого выключателя закрытия");
 				break;
 			default:
 				// Любой другой статус - это непорядок, халтимся
-				LOG("Окно не OPENING и не CLOSING - это непорядок, халтимся");
+				LOG_WIN("Окно не OPENING и не CLOSING - это непорядок, халтимся");
 				HaltMotor();
 				return;
 		}
@@ -266,7 +286,7 @@ void GHWindow::CompleteOperationByTimerOrLS() {
 
 	if( millis() - millisInOperation > Settings.MotorMaxWorkMillis ) {
 		// Превышено время работы мотора выше лимита. Пора заканчивать
-		LOG("Превышено время работы мотора выше лимита. Пора заканчивать и ставить статус OPEN или CLOSED");
+		LOG_WIN("Превышено время работы мотора выше лимита. Пора заканчивать и ставить статус OPEN или CLOSED");
 		if( WindowStatus == OPENING ) {
 			WindowStatus = OPEN;
       lg.RecordActivityInt(DEV_SIDE_WINDOW, EVT_SW_STOP, S_EVT_SW_STOP_OPENEDBYTIMER, 0, 0);     // Делаем запись в журнале активности
@@ -276,7 +296,7 @@ void GHWindow::CompleteOperationByTimerOrLS() {
 		}
 
 		StopMotor();
-		LOG("GHWindow::CompleteOperationByTimerOrLS   ----- RETURN");
+		LOG_WIN("GHWindow::CompleteOperationByTimerOrLS   ----- RETURN");
 		return;
 
 	}
@@ -287,8 +307,8 @@ void GHWindow::CompleteOperationByTimerOrLS() {
 //---------------------------------------------------------------------
 // Установить режим открывания
 void GHWindow::SetMotorToOpen() {
-	LOG("GHWindow::SetMotorToOpen");
-	LOG("Включаем мотор на открывание");
+	LOG_WIN("GHWindow::SetMotorToOpen");
+	LOG_WIN("Включаем мотор на открывание");
 	digitalWrite(WinCfg.PinRelay1, LOW);
 	digitalWrite(WinCfg.PinRelay2, HIGH);
 }
@@ -296,8 +316,8 @@ void GHWindow::SetMotorToOpen() {
 //---------------------------------------------------------------------
 // Установить режим закрывания
 void GHWindow::SetMotorToClose() {
-	LOG("GHWindow::SetMotorToClose");
-	LOG("Включаем мотор на закрывание");
+	LOG_WIN("GHWindow::SetMotorToClose");
+	LOG_WIN("Включаем мотор на закрывание");
 	digitalWrite(WinCfg.PinRelay1, HIGH);
 	digitalWrite(WinCfg.PinRelay2, LOW);
 }
@@ -305,8 +325,8 @@ void GHWindow::SetMotorToClose() {
 //---------------------------------------------------------------------
 // Включить мотор
 void GHWindow::StartMotor() {
-  LOG("GHWindow::StartMotor");
-  LOG("Включаем мотор");
+  LOG_WIN("GHWindow::StartMotor");
+  LOG_WIN("Включаем мотор");
   delay(50);
   digitalWrite(WinCfg.PinRelayPow, LOW);
   bIsMotorOn = true;
@@ -317,8 +337,8 @@ void GHWindow::StartMotor() {
 //---------------------------------------------------------------------
 // Выключить мотор
 void GHWindow::StopMotor() {
-  LOG("GHWindow::StopMotor");
-  LOG("Выключаем мотор");
+  LOG_WIN("GHWindow::StopMotor");
+  LOG_WIN("Выключаем мотор");
   digitalWrite(WinCfg.PinRelayPow, HIGH);
   delay(50);
   digitalWrite(WinCfg.PinRelay1, HIGH);

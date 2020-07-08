@@ -15,7 +15,8 @@
 //----------------------- GLOBAL OBJECTS --------------------------------
 
 T_Sensors TSensors(ONE_WIRE_BUS);
-Earth_Fan EarthFan(RELAY_EARTH_FAN, LED_FAN, LED_FAN_MANUAL_MODE );
+//Earth_Fan EarthFan(RELAY_EARTH_FAN, LED_FAN, LED_FAN_MANUAL_MODE );
+Earth_Fan EarthFan(RELAY_EARTH_FAN);
 gh_RTC rtc;
 gh_Barrel WaterTank;
 gh_WaterLine WateringLine1;
@@ -74,6 +75,9 @@ void setup() {
   lcd.print(LCDMessage);
   delay(1000);
   
+  // Инициализируем объект сохранения конфигурации
+  // ВАЖНО! Инициализировать его до основных объектов, т.к. он считывает для них настройки из EEPROM
+  ControllerConfiguration.Begin(&Window.Settings, &EarthFan.Settings, &WaterTank.Settings, &WateringLine1.Settings, &WateringLine2.Settings); 
 
   // Инициализируем окно
   GHWindowHardwareConfig WinConfig;
@@ -135,7 +139,7 @@ void setup() {
   WLConfig.ValveOpenLedPin    = LED_WL2_WATERING;
 
   if (! WateringLine2.Begin(WLConfig, rtc.now())) {
-    LOG("Couldn't initialize Watering Line 1");   // Инициализация логгера
+    LOG("Couldn't initialize Watering Line 2");   // Инициализация логгера
     LCDMessage = "Water Line2 FAIL!";
   } else {
     LCDMessage = "Water Line2 OK!";
@@ -147,7 +151,6 @@ void setup() {
 
   TSensors.Begin(1); // Интервал опроса датчиков на шине 1 минута
   EarthFan.Begin();
-  ControllerConfiguration.Begin(&Window.Settings, &EarthFan.Settings, &WaterTank.Settings, &WateringLine1.Settings, &WateringLine2.Settings); // Инициализируем объект сохранения конфигурации
   lcd.setCursor(0, 2);
   lcd.print("Other devices OK");
   delay(1000);
@@ -169,14 +172,25 @@ long prevmill = 0;
 
 void loop() {
 
-  // *****************************************
-  // Обработка быстрых устройств - каждый цикл
+  // ------------------------------------------------------------------------------------------------------
+  // Секция для обработки событий, вызванных другими устройствами. 
+  // Важно делать это в начале цикла, т.к. некоторые состояния очень быстро исчезают (например, пустая бочка + не наполнение ее
+  // ------------------------------------------------------------------------------------------------------
+  
+  // Если бочка пуста, но еще не наполняется (это условие нужно, чтобы вызывать StopWatering только один раз), то останавливаем полив, чтобы не поливать холодной водой.
+  if(!WaterTank.IsFilling() and WaterTank.IsEmpty()) {
+    if (WateringLine1.IsWatering()) WateringLine1.StopWatering();
+    if (WateringLine2.IsWatering()) WateringLine2.StopWatering();
+  }
+
+
+  // ------------------------------------------------------------------------------------------------------
+  // Секция для стандартное обработки устройств функцией poll
+  // ------------------------------------------------------------------------------------------------------
 
   // Обработка форточки
   Window.WindowPoll((int8_t)TSensors.GetTEarth(), (int8_t)TSensors.GetTAir(), rtc.IsNight());
 
-  // ****************************************************
-  //Обработка медленных устройств - каждые 100 миллисекунд - надосделать
   // Отработка меню
   nav.poll();
 
@@ -201,7 +215,5 @@ void loop() {
 
   // Сохранение конфигурации в EEPROM и SDCard
   ControllerConfiguration.Poll(rtc.now().minute());
-  // Если делать delay, то концевые выключатели не успевают нормально отработать.
-  //delay( 100 );
 
 }

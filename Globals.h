@@ -2,7 +2,7 @@
 // Пины на плате Ардуино
 // *************************************************************
 
-//#define PRODUCTION_ENV  // comment to switch to TEST pins
+#define PRODUCTION_ENV  // comment to switch to TEST pins
 
 #ifdef PRODUCTION_ENV
   // **************************************************
@@ -15,12 +15,13 @@
   #define BTN_SEL                 26  // Кнопка Ввод
   
   // Плата светодиодов (Led - L)
-  #define LED_FAN_MANUAL_MODE     42  // Индикатор ручного режима вентилятора
-  #define LED_FAN                 40  // Индикатор работы вентилятора
+  //#define LED_FAN_MANUAL_MODE     42  // Индикатор ручного режима вентилятора
+  //#define LED_FAN                 40  // Индикатор работы вентилятора
+  #define LED_WINDOW_MANUAL_MODE  42  // Индикатор ручного режима окна
+  #define LED_WINDOW              40  // Индикатор работы мотора окна
   #define LED_WT_MANUAL_MODE      38  // Индикатор ручного режима бочки
   #define LED_WT_FILLING          36  // Индикатор наполнения бочки
-  //#define LED_WINDOW_MANUAL_MODE  38  // Индикатор ручного режима окна
-  //#define LED_WINDOW              36  // Индикатор работы мотора окна
+  #define LED_SD_ERROR            38  // Индикатор ошибки чтения SD карты (управляется by logger)
   #define LED_WL1_MANUAL_MODE     34  // Индикатор ручного режима линии полива 1
   #define LED_WL1_WATERING        32  // Индикатор работы линии полива 1
   #define LED_WL2_MANUAL_MODE     30  // Индикатор ручного режима линии полива 2
@@ -46,7 +47,7 @@
   #define RELAY_WATER_VALVE2      37 // Реле №8 - клапан полива линии №2
 
   // SDCard
-  #define SDCARD                  13  // Модуль SD Карточки
+  #define SDCARD                  4  // Модуль SD Карточки
   #define LOG_FILE_NAME           "gh_" // Начало имени файла для журнала - из него получится вот такое имя gh_20200525.csv
 
   // Адреса устройств на шине ONE_WIRE
@@ -71,8 +72,8 @@
   // Плата светодиодов
   #define LED_FAN_MANUAL_MODE     31  // Индикатор ручного режима вентилятора
   #define LED_FAN                 31  // Индикатор работы вентилятора
-  #define LED_WINDOW_MANUAL_MODE  31  // Индикатор ручного режима окна
-  #define LED_WINDOW              31  // Индикатор работы мотора окна
+  //#define LED_WINDOW_MANUAL_MODE  31  // Индикатор ручного режима окна
+  //#define LED_WINDOW              31  // Индикатор работы мотора окна
   #define LED_SD_ERROR            36  // Индикатор ошибки чтения SD карты (управляется by logger)
   #define L3                      31
   #define LED_WT_MANUAL_MODE      31  // Индикатор ручного режима бочки
@@ -166,10 +167,11 @@
 // *************************************************************
 // *************************************************************
 // Лог в монитор серийного порта для отладки
-#define LOGGING  // uncomment to turn on Serial monitor
+//#define LOGGING  // uncomment to turn on Serial monitor
 //#define LOGGING_EARTH_FAN			 // Снять комментарии для включения логирования объекта EARTH_FAN
 //#define LOGGING_CONFIG           // Снять комментарии для включения логирования объекта GH_CONFIG
 #define LOGGING_WAT              // Снять комментарии для включения логирования объектов GH_BARREL, GH_WATERLINE
+//#define LOGGING_WIN              // Снять комментарии для включения логирования объекта GH_WINDOW
 
 
 
@@ -189,6 +191,12 @@
 #define LOG_WAT(str) Serial.println(str);
 #else
 #define LOG_WAT(str) (str)
+#endif
+
+#ifdef LOGGING_WIN
+#define LOG_WIN(str) Serial.println(str);
+#else
+#define LOG_WIN(str) (str)
 #endif
 
 #ifdef LOGGING_CONFIG

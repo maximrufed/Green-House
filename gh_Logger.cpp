@@ -189,7 +189,7 @@ void logger::setErr(bool bErr, uint8_t errLoggerSubEventCode) {
 
 uint32_t logger::SaveRecordToFile(char *FileName, uint32_t prevFileSize, String sRecord) {
   uint32_t newFileSize;
-  char DTFormat[20] = "YYYY-MM-DD;hh:mm:ss;";
+  char DTFormat[21] = "YYYY-MM-DD;hh:mm:ss;";
   String sFullRecord;
 
   // Добавляем дату и время в запись журнала

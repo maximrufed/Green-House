@@ -1,16 +1,19 @@
 #include "gh_Watering.h"
 
+//---------------------------------------------------------------------
+// Constructor
+gh_Barrel::gh_Barrel() {
+  // Устанавливаем значения по-умолчанию на случай, если конфигурация не записана в EEPROM
+  Settings.StartFillingHour = BARREL_START_FILLING_HOUR;
+  Settings.StartFillingMinute = BARREL_START_FILLING_MINUTE;
+  Settings.MaxFillingMinute = BARREL_MAX_FILLING_MINUTES;  
+}
 
 //---------------------------------------------------------------------
 // Begin
 bool gh_Barrel::Begin(GHBarrelHardwareConfig HwCfg) {
 
   LOG_WAT("gh_Barrel Begin");
-
-	// Загружаем сохраненные настройки работы
-	Settings.StartFillingHour = BARREL_START_FILLING_HOUR;
-	Settings.StartFillingMinute = BARREL_START_FILLING_MINUTE;
-	Settings.MaxFillingMinute = BARREL_MAX_FILLING_MINUTES;
 
   // Инициализируем пины
   Cfg.RelayPin = HwCfg.RelayPin;
@@ -45,19 +48,29 @@ bool gh_Barrel::Begin(GHBarrelHardwareConfig HwCfg) {
   return true;  
 }
 
+  //для отладки
+  unsigned long wat_prev_millis = millis();
+
 //---------------------------------------------------------------------
 // Обработка логики работы бочки
 void gh_Barrel::Poll(byte NowHour, byte NowMinute) {
 	float DT;
   
+  if(millis() - wat_prev_millis > 10000) {
+    wat_prev_millis = millis();
+    LOG_WAT("GH_Barrel::Poll");
+    LOG_WAT("IsFull: "+(String)IsFull() + ";   IsEmpty: " + (String)IsEmpty());
+    LOG_WAT("IsFilling: "+(String)IsFilling() + ";   IsManualMode: " + (String)IsManualMode());
+  }
   // 1. САМЫМ ПЕРВЫМ ДЕЛОМ
-  // Если бочка наполнилась, то срочно остановить процесс, поставить состояние, продолжить обработку
+  // Если бочка наполнилась, то срочно остановить процесс, поставить состояние, выйти
   if( digitalRead(Cfg.FullDetectorPin) == LOW ) {
     if(!bIsFull) { // Если мы уже знаем, что бочка наполнена, то и делать ничего больше не будем
       lg.RecordActivityInt(DEV_BARREL, EVT_BARREL_STATE, S_EVT_BARREL_STATE_FULL, 0, 0); // Делаем запись в журнале активности
       bIsFull = true;
       if( IsFilling() ) StopFilling();      // СРОЧНО ЗАКРЫВАЕМ КЛАПАН - ПРЕКРАЩАЕМ НАПОЛНЯТЬ БОЧКУ!!!
     }
+    return;
   } else if (bIsFull) { // Может быть уровень упал и пора отменить состояние наполненности??
     lg.RecordActivityInt(DEV_BARREL, EVT_BARREL_STATE, S_EVT_BARREL_STATE_NOTFULL, 0, 0); // Делаем запись в журнале активности
     bIsFull = false;
@@ -184,11 +197,10 @@ bool gh_Barrel::IsManualMode(){
 //--------------------------------------------------------------------------------------------------
 //--------------------------------------------------------------------------------------------------
 
-bool gh_WaterLine::Begin(WaterLineHardwareConfig HwCfg, DateTime Now) {
-
-  LOG_WAT("gh_WaterLine Begin. Valve: " + (String)HwCfg.RelayPin);
-
-  // Загружаем сохраненные настройки работы
+//---------------------------------------------------------------------
+// Constructor
+gh_WaterLine::gh_WaterLine() {
+  // Устанавливаем значения по-умолчанию на случай, если конфигурация не записана в EEPROM
   Settings.IntervalDays           = SEEDBAD1_INTERVAL_DAYS;                // интервал полива в днях
   Settings.StartWateringHour      = SEEDBAD1_WATERING_START_HOUR;         // время начала полива
   Settings.StartWateringMin       = SEEDBAD1_WATERING_START_MIN;         // время начала полива
@@ -197,17 +209,25 @@ bool gh_WaterLine::Begin(WaterLineHardwareConfig HwCfg, DateTime Now) {
   //Сбрасываем дату полива на сегодня
   ResetWateringDate();
 
-  // Но! Если сейчас время уже больше, чем задано расписанием, то считаем, что поезд ушел и поливать будем в следующий раз
+}
+
+//---------------------------------------------------------------------
+// Begin
+bool gh_WaterLine::Begin(WaterLineHardwareConfig HwCfg, DateTime Now) {
+
+  LOG_WAT("gh_WaterLine Begin. Valve: " + (String)HwCfg.RelayPin);
+
+  // Если сейчас время уже больше, чем задано расписанием, то считаем, что поезд ушел и поливать будем в следующий раз
   if( Now > (Now - TimeSpan(0, Now.hour(), Now.minute(), Now.second()) + TimeSpan(0, Settings.StartWateringHour, Settings.StartWateringMin, 0))) {
-    LOG_WAT("Но! Если сейчас время уже больше, чем задано расписанием, то считаем, что поезд ушел и поливать будем в следующий раз");
+    LOG_WAT("Cейчас время уже больше, чем задано расписанием - считаем, что поезд ушел и поливать будем в следующий раз");
     Settings.NextWateringDate = Settings.NextWateringDate + TimeSpan(Settings.IntervalDays, 0, 0, 0);
   }
-  
-  LOG_WAT((String)Settings.StartDate.timestamp() );
-  LOG_WAT((String)Settings.StartWateringHour);
-  LOG_WAT((String)Settings.StartWateringMin);
-  LOG_WAT((String)Settings.IntervalDays);
-  LOG_WAT((String)Settings.NextWateringDate.timestamp());
+
+  LOG_WAT("StartDate " + (String)Settings.StartDate.timestamp() );
+  LOG_WAT("StartWateringHour " + (String)Settings.StartWateringHour);
+  LOG_WAT("StartWateringMin " + (String)Settings.StartWateringMin);
+  LOG_WAT("IntervalDays " + (String)Settings.IntervalDays);
+  LOG_WAT("NextWateringDate " + (String)Settings.NextWateringDate.timestamp());
 
   // Инициализируем пины
   Cfg.RelayPin = HwCfg.RelayPin;
@@ -252,7 +272,7 @@ void gh_WaterLine::Poll(DateTime Now) {
     return;
   }
 
-  // 2. ДАЛЕЕ, Если бочка работает в ручном режиме, то выходим без обработки
+  // 2. ДАЛЕЕ, Если линия полива работает в ручном режиме, то выходим без обработки
   if(IsManualMode()) return;
 
   // 3. И НАКОНЕЦ ОБРАБОТКА АВТОМАТИЧЕСКОГО РЕЖИМА
@@ -335,11 +355,13 @@ void gh_WaterLine::SetManualMode(bool bMode) {
 
   if(Cfg.ModeLedPin != 0xFF) digitalWrite(Cfg.ModeLedPin, bMode ? HIGH : LOW);
  
-  if( bIsManualMode )
+  if( bIsManualMode ) {
     lg.RecordActivityInt(DEV_WATERING_LINE, EVT_WATERING_LINE_SETMODE, S_EVT_WATERING_LINE_SETMODE_MANUAL, Cfg.RelayPin, 0); // Делаем запись в журнале активности
-  else
+  } else {
+    ResetWateringDate();  // При установке автоматического режима работы ресетим дату полива
     lg.RecordActivityInt(DEV_WATERING_LINE, EVT_WATERING_LINE_SETMODE, S_EVT_WATERING_LINE_SETMODE_AUTO, Cfg.RelayPin, 0); // Делаем запись в журнале активности
-
+  }
+  
   // Остановить полив при смене режима работы
   StopWatering();
   
