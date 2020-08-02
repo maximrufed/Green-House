@@ -34,7 +34,7 @@ void setup() {
 
   Serial.begin(115200);
   while (!Serial);
-  Serial.println("Green House project. Created by Anton Kostrov, 2020");
+  Serial.println("Green House by Anton Kostrov, 2020. " + DateTime(F(__DATE__), F(__TIME__)).timestamp());
   Serial.flush();
   delay(3000);
   char buf[9]="--------";
@@ -53,12 +53,16 @@ void setup() {
   options = &myMenuOptions; // Устанавливаем свои значения глобальных Options для меню
 
   // Запускаем часы реального времени
-  if (!rtc.begin()) {
+  if (!rtc.begin() or (rtc.now().year()==2000)) {
     LOG("Couldn't find RTC");  
     LCDMessage = "RTC FAIL!";
+    delay(2000);
   } else {
     LCDMessage = "RTC Ok";
+    LCDMessage = rtc.now().timestamp();
   }
+  Serial.println("Now: " + rtc.now().timestamp());
+
   lcd.clear();
   lcd.setCursor(0, 0);
   lcd.print(LCDMessage);
@@ -68,6 +72,7 @@ void setup() {
   if (!lg.Begin(&rtc)) {
     LOG("Couldn't initialize SDCard");   // Инициализация логгера
     LCDMessage = "SDCard FAIL!";
+    delay(2000);
   } else {
     LCDMessage = "SDCard Ok";
   }
@@ -88,8 +93,9 @@ void setup() {
   WinConfig.PinWindowMotorLed     = LED_WINDOW;
   WinConfig.PinWindowModeLed      = LED_WINDOW_MANUAL_MODE;
   if (! Window.Begin(WinConfig)) {
-    LOG("Couldn't initialize SDCard");   // Инициализация логгера
+    LOG("Couldn't initialize Window");
     LCDMessage = "Window FAIL!";
+    delay(2000);
   } else {
     LCDMessage = "Window Ok";
   }
@@ -108,6 +114,7 @@ void setup() {
   if (! WaterTank.Begin(WTConfig)) {
     LOG("Couldn't initialize WaterTank");   // Инициализация логгера
     LCDMessage = "Water Tank FAIL!";
+    delay(2000);
   } else {
     LCDMessage = "Water Tank Ok";
   }
@@ -125,6 +132,7 @@ void setup() {
   if (! WateringLine1.Begin(WLConfig, rtc.now())) {
     LOG("Couldn't initialize Watering Line 1");   // Инициализация логгера
     LCDMessage = "Water Line1 FAIL!";
+    delay(2000);
   } else {
     LCDMessage = "Water Line1 OK!";
   }
@@ -141,6 +149,7 @@ void setup() {
   if (! WateringLine2.Begin(WLConfig, rtc.now())) {
     LOG("Couldn't initialize Watering Line 2");   // Инициализация логгера
     LCDMessage = "Water Line2 FAIL!";
+    delay(2000);
   } else {
     LCDMessage = "Water Line2 OK!";
   }

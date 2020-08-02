@@ -47,7 +47,7 @@
   #define RELAY_WATER_VALVE2      37 // Реле №8 - клапан полива линии №2
 
   // SDCard
-  #define SDCARD                  4  // Модуль SD Карточки
+  #define SDCARD                  4 // Модуль SD Карточки
   #define LOG_FILE_NAME           "gh_" // Начало имени файла для журнала - из него получится вот такое имя gh_20200525.csv
 
   // Адреса устройств на шине ONE_WIRE
@@ -72,8 +72,8 @@
   // Плата светодиодов
   #define LED_FAN_MANUAL_MODE     31  // Индикатор ручного режима вентилятора
   #define LED_FAN                 31  // Индикатор работы вентилятора
-  //#define LED_WINDOW_MANUAL_MODE  31  // Индикатор ручного режима окна
-  //#define LED_WINDOW              31  // Индикатор работы мотора окна
+  #define LED_WINDOW_MANUAL_MODE  31  // Индикатор ручного режима окна
+  #define LED_WINDOW              31  // Индикатор работы мотора окна
   #define LED_SD_ERROR            36  // Индикатор ошибки чтения SD карты (управляется by logger)
   #define L3                      31
   #define LED_WT_MANUAL_MODE      31  // Индикатор ручного режима бочки
@@ -152,17 +152,11 @@
 #define WATERING_LINE_DURATION_MINS   10;   // продолжительность полива (мин)
 
 
-// Меню полива - грядка 1
-#define SEEDBAD1_INTERVAL_DAYS         1     // дни полива (каждый день 1 - каждый 20й день - 20)
-#define SEEDBAD1_WATERING_START_HOUR  17    // время начала полива
-#define SEEDBAD1_WATERING_START_MIN    0    // время начала полива
-#define SEEDBAD1_WATERING_DURATION_MINS 30  // продолжительность полива (минут)
-
-// Меню полива - грядка 2
-#define SEEDBAD2_WATERING_DAY         1     // дни полива (каждый день 1 - каждый 20й день - 20)
-#define SEEDBAD2_WATERING_START_HOUR  17    // время начала полива
-#define SEEDBAD2_WATERING_START_MINUTE 0    // время начала полива
-#define SEEDBAD2_WATERING_DURATION_MINS 30  // продолжительность полива (минут)
+// Меню полива - грядка - значения по-умолчанию
+#define SEEDBAD_INTERVAL_DAYS         1     // дни полива (каждый день 1 - каждый 20й день - 20)
+#define SEEDBAD_WATERING_START_HOUR  17    // время начала полива
+#define SEEDBAD_WATERING_START_MIN    0    // время начала полива
+#define SEEDBAD_WATERING_DURATION_MINS 30  // продолжительность полива (минут)
 
 // *************************************************************
 // *************************************************************
@@ -170,7 +164,7 @@
 //#define LOGGING  // uncomment to turn on Serial monitor
 //#define LOGGING_EARTH_FAN			 // Снять комментарии для включения логирования объекта EARTH_FAN
 //#define LOGGING_CONFIG           // Снять комментарии для включения логирования объекта GH_CONFIG
-#define LOGGING_WAT              // Снять комментарии для включения логирования объектов GH_BARREL, GH_WATERLINE
+//#define LOGGING_WAT              // Снять комментарии для включения логирования объектов GH_BARREL, GH_WATERLINE
 //#define LOGGING_WIN              // Снять комментарии для включения логирования объекта GH_WINDOW
 
 

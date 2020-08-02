@@ -201,13 +201,10 @@ bool gh_Barrel::IsManualMode(){
 // Constructor
 gh_WaterLine::gh_WaterLine() {
   // Устанавливаем значения по-умолчанию на случай, если конфигурация не записана в EEPROM
-  Settings.IntervalDays           = SEEDBAD1_INTERVAL_DAYS;                // интервал полива в днях
-  Settings.StartWateringHour      = SEEDBAD1_WATERING_START_HOUR;         // время начала полива
-  Settings.StartWateringMin       = SEEDBAD1_WATERING_START_MIN;         // время начала полива
-  Settings.DurationMins   = SEEDBAD1_WATERING_DURATION_MINS;                // продолжительность полива (мин)
-
-  //Сбрасываем дату полива на сегодня
-  ResetWateringDate();
+  Settings.IntervalDays           = SEEDBAD_INTERVAL_DAYS;                // интервал полива в днях
+  Settings.StartWateringHour      = SEEDBAD_WATERING_START_HOUR;         // время начала полива
+  Settings.StartWateringMin       = SEEDBAD_WATERING_START_MIN;         // время начала полива
+  Settings.DurationMins   = SEEDBAD_WATERING_DURATION_MINS;                // продолжительность полива (мин)
 
 }
 
@@ -253,6 +250,9 @@ bool gh_WaterLine::Begin(WaterLineHardwareConfig HwCfg, DateTime Now) {
 
   // Инициализация переменных
   millisStartWatering = 0;       // таймер ограничения максимального времени полива
+
+  //Сбрасываем дату полива на сегодня
+  ResetWateringDate();
 
   return true;  
 }

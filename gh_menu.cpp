@@ -58,6 +58,7 @@ menuIn* inputsList[] = {&joystickBtns, &serial};
 
 chainStream<2> in(inputsList);//3 is the number of inputs
 
+
 // ------------------------------------------------------------
 // ------------------------------------------------------------
 // Меню ВЕНТИЛЯТОР
